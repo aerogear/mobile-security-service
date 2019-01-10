@@ -1,18 +1,27 @@
 package main
 
 import (
+	dotenv "github.com/joho/godotenv"
 	"github.com/aerogear/mobile-security-service-server/pkg/config"
 	"github.com/labstack/echo"
 	log "github.com/sirupsen/logrus"
 )
 
-func main() {
+func init() {
 	config := config.Get()
-	e := echo.New()
 
 	initLogger(config.LogLevel, config.LogFormat)
 
-	log.WithFields(log.Fields{"listenAddress": config.ListenAddress}).Info("Starting application")
+	err := dotenv.Load()
+
+	if err != nil {
+		log.Info("No .env file found, using default values instead.")
+	}
+}
+
+func main() {
+	config := config.Get()
+	e := echo.New()
 
 	// start webserver
 	if err := e.Start(config.ListenAddress); err != nil {
