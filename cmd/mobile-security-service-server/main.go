@@ -2,8 +2,10 @@ package main
 
 import (
 	dotenv "github.com/joho/godotenv"
+
 	"github.com/aerogear/mobile-security-service-server/pkg/config"
 	"github.com/labstack/echo"
+
 	log "github.com/sirupsen/logrus"
 )
 
