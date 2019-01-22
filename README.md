@@ -1,6 +1,6 @@
 # Mobile Security Service
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/aerogear/mobile-security-service-server)](https://goreportcard.com/badge/github.com/aerogear/mobile-security-service-serverhttps://goreportcard.com/report/github.com/aerogear/aerogear-app-metrics)
+[![Go Report Card](https://goreportcard.com/badge/github.com/aerogear/mobile-security-service-server)](https://goreportcard.com/badge/github.com/aerogear/mobile-security-service-server)
 
 This is the server component of the AeroGear Mobile Security Service. It is a RESTful API that allows developers to view, enable and disable specific versions of applications on demand, with the information stored in a PostgreSQL database. The service is written in [Golang](https://golang.org/).
 
@@ -28,7 +28,7 @@ git clone git@github.com:aerogear/mobile-security-service-server.git $GOPATH/src
 ### Install Dependencies
 
 ```sh
-dep ensure
+make setup
 ```
 
 Note this is using the `dep` package manager under the hood. You will see the dependencies installed in the `vendor` folder.
@@ -100,6 +100,42 @@ The Swagger UI is available at [localhost:8080](http://localhost:8080).
 There is also a [Chrome extension](https://chrome.google.com/webstore/detail/swagger-ui-console/ljlmonadebogfjabhkppkoohjkjclfai?hl=en) you can use instead of running a Docker container.
 
 Paste [https://raw.githubusercontent.com/aerogear/mobile-security-service-server/master/apispec.yaml](https://raw.githubusercontent.com/aerogear/mobile-security-service-server/master/apispec.yaml) and press **Explore**.
+
+## Building & Testing
+
+The `Makefile` provides commands for building and testing the code. Some dependencies are required to run these commands.
+
+### Dependencies
+
+Dependencies may be required to run some of the `Make` commands. Below are instructions on how to install them.
+
+#### errcheck
+
+[errcheck](https://github.com/kisielk/errcheck) is required to run the `make errcheck` command.
+
+Install:
+
+```sh
+go get -u github.com/kisielk/errcheck
+```
+
+| Command                       | Description                                                                                     |
+|-------------------------------|-------------------------------------------------------------------------------------------------|
+| `make setup`                  | Downloads dependencies into `vendor`                                                            |
+| `make build`                  | Compile a binary compatible with your current system into `./mobile-security-service-server`    |
+| `make build_linux`            | Compile a Linux binary into `./dist/linux_amd64/mobile-security-service-server`                 |
+| `make docker_build`           | Compile a binary and create a Docker image from it.                                             |
+| `make docker_build_release`   | Compile a binary and create a Docker image with a release tag                                   |
+| `make docker_build_master`    | Compile a binary and create a Docker image tagged `master`                                      |
+| `make test`                   | Runs unit tests                                                                                 |
+| `make test-integration`       | Runs integration tests                                                                          |
+| `make test-integration-cover` | Runs integration tests and outputs results to a log file                                        |
+| `make errcheck`               | Checks for unchecked errors using [errcheck](https://github.com/kisielk/errcheck)               |
+| `make vet`                    | Examines source code and reports suspicious constructs using [vet](https://golang.org/cmd/vet/) |
+| `make fmt`                    | Formats code using [gofmt](https://golang.org/cmd/gofmt/)                                       |
+| `make clean`                  | Removes binary compiled using `make build`                                                      |
+| `make docker_push_release`    | Pushes release image to Docker image hosting repository                                         |
+| `make docker_push_master`     | Pushes master image to Docker image hosting repository                                          |
 
 ## Built With
 
