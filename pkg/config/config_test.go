@@ -11,6 +11,10 @@ func TestGet(t *testing.T) {
 		ListenAddress: ":3000",
 		LogLevel:      "info",
 		LogFormat:     "text",
+		CORS: CORSConfig{
+			AllowOrigins:     []string{"*"},
+			AllowCredentials: false,
+		},
 	}
 
 	tests := []struct {
@@ -28,11 +32,17 @@ func TestGet(t *testing.T) {
 				ListenAddress: ":4000",
 				LogLevel:      "error",
 				LogFormat:     "json",
+				CORS: CORSConfig{
+					AllowOrigins:     []string{"http://localhost:1234", "http://localhost:2345"},
+					AllowCredentials: false,
+				},
 			},
 			envVars: map[string]string{
 				"PORT":       "4000",
 				"LOG_LEVEL":  "error",
 				"LOG_FORMAT": "json",
+				"ACCESS_CONTROL_ALLOW_ORIGIN": "http://localhost:1234,http://localhost:2345",
+				"ACCESS_CONTROL_ALLOW_CREDENTIALS": "false",
 			},
 		},
 		{
@@ -42,6 +52,8 @@ func TestGet(t *testing.T) {
 				"PORT":       "",
 				"LOG_LEVEL":  "",
 				"LOG_FORMAT": "",
+				"ACCESS_CONTROL_ALLOW_ORIGIN": "",
+				"ACCESS_CONTROL_ALLOW_CREDENTIALS": "",
 			},
 		},
 	}
@@ -136,6 +148,43 @@ func Test_getEnvInt(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := getEnvInt(tt.args.name, tt.args.defaultVal); got != tt.want {
 				t.Errorf("getEnvInt() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_getEnvSlice(t *testing.T) {
+	type args struct {
+		name       string
+		defaultVal []string
+		sep        string
+	}
+	tests := []struct {
+		name   string
+		args   args
+		want   []string
+		envVar string
+	}{
+		{
+			name: "getEnvSlice() should return default value when no environment variable is set",
+			args: args{"ACCESS_CONTROL_ALLOW_ORIGIN", []string{"*"}, ","},
+			want: []string{"*"},
+		},
+		{
+			name:   "getEnvSlice() should return environment variable as slice when set instead of default value",
+			args:   args{"ACCESS_CONTROL_ALLOW_ORIGIN", []string{"*"}, ","},
+			envVar: "http://example.com,http://aerogear.org",
+			want:   []string{"http://example.com", "http://aerogear.org"},
+		},
+	}
+	for _, tt := range tests {
+		if len(tt.envVar) > 0 {
+			os.Setenv(tt.args.name, tt.envVar)
+		}
+
+		t.Run(tt.name, func(t *testing.T) {
+			if got := getEnvSlice(tt.args.name, tt.args.defaultVal, tt.args.sep); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("getEnvSlice() = %v, want %v", got, tt.want)
 			}
 		})
 	}

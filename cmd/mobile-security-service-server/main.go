@@ -1,9 +1,10 @@
 package main
 
 import (
-	dotenv "github.com/joho/godotenv"
-
+  dotenv "github.com/joho/godotenv"
+  
 	"github.com/aerogear/mobile-security-service-server/pkg/config"
+	"github.com/aerogear/mobile-security-service-server/pkg/middleware"	
 	"github.com/labstack/echo"
 
 	log "github.com/sirupsen/logrus"
@@ -24,6 +25,9 @@ func init() {
 func main() {
 	config := config.Get()
 	e := echo.New()
+
+	// Load middleware
+	middleware.Init(e, config)
 
 	// start webserver
 	if err := e.Start(config.ListenAddress); err != nil {
