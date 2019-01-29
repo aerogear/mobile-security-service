@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/aerogear/mobile-security-service/pkg/config"
-	"github.com/aerogear/mobile-security-service/pkg/middleware"
+	"github.com/aerogear/mobile-security-service/pkg/web/middleware"
 	dotenv "github.com/joho/godotenv"
 	"github.com/labstack/echo"
 	log "github.com/sirupsen/logrus"
