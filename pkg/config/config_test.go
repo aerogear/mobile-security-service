@@ -11,6 +11,10 @@ func TestGet(t *testing.T) {
 		ListenAddress: ":3000",
 		LogLevel:      "info",
 		LogFormat:     "text",
+		CORS: CORSConfig{
+			AllowOrigins:     []string{"*"},
+			AllowCredentials: false,
+		},
 	}
 
 	tests := []struct {
@@ -28,11 +32,17 @@ func TestGet(t *testing.T) {
 				ListenAddress: ":4000",
 				LogLevel:      "error",
 				LogFormat:     "json",
+				CORS: CORSConfig{
+					AllowOrigins:     []string{"http://localhost:1234", "http://localhost:2345"},
+					AllowCredentials: false,
+				},
 			},
 			envVars: map[string]string{
 				"PORT":       "4000",
 				"LOG_LEVEL":  "error",
 				"LOG_FORMAT": "json",
+				"ACCESS_CONTROL_ALLOW_ORIGIN": "http://localhost:1234,http://localhost:2345",
+				"ACCESS_CONTROL_ALLOW_CREDENTIALS": "false",
 			},
 		},
 		{
@@ -42,6 +52,8 @@ func TestGet(t *testing.T) {
 				"PORT":       "",
 				"LOG_LEVEL":  "",
 				"LOG_FORMAT": "",
+				"ACCESS_CONTROL_ALLOW_ORIGIN": "",
+				"ACCESS_CONTROL_ALLOW_CREDENTIALS": "",
 			},
 		},
 	}
@@ -148,9 +160,9 @@ func Test_getEnvSlice(t *testing.T) {
 		sep        string
 	}
 	tests := []struct {
-		name string
-		args args
-		want []string
+		name   string
+		args   args
+		want   []string
 		envVar string
 	}{
 		{
