@@ -2,8 +2,8 @@
 # Build customization
 builds:
   # makefile currently relies on this name
-  - binary: mobile-security-service-server
-    main: ./cmd/mobile-security-service-server/main.go
+  - binary: mobile-security-service
+    main: ./cmd/mobile-security-service/main.go
     goos:
       - windows
       - darwin
