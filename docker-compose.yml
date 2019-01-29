@@ -13,7 +13,7 @@ services:
     build:
       context: .
       args:
-        BINARY: ./mobile-security-service-server
+        BINARY: ./mobile-security-service
     environment:
       PGHOST: db
       PGUSER: postgres

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/aerogear/mobile-security-service-server/pkg/config"
+	"github.com/aerogear/mobile-security-service/pkg/config"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )

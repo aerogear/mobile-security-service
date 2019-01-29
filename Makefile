@@ -1,12 +1,12 @@
-APP_NAME = mobile-security-service-server
+APP_NAME = mobile-security-service
 ORG_NAME = aerogear
 PKG = github.com/$(ORG_NAME)/$(APP_NAME)
-APP_FILE=./cmd/mobile-security-service-server/main.go
+APP_FILE=./cmd/mobile-security-service/main.go
 TOP_SRC_DIRS = pkg
 PACKAGES     ?= $(shell sh -c "find $(TOP_SRC_DIRS) -name \\*_test.go \
                    -exec dirname {} \\; | sort | uniq")
 BIN_DIR := $(GOPATH)/bin				   
-BINARY ?= mobile-security-service-server
+BINARY ?= mobile-security-service
 
 # This follows the output format for goreleaser
 BINARY_LINUX_64 = ./dist/linux_amd64/$(BINARY)

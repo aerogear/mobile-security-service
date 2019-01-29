@@ -1,12 +1,10 @@
 package main
 
 import (
-  dotenv "github.com/joho/godotenv"
-  
-	"github.com/aerogear/mobile-security-service-server/pkg/config"
-	"github.com/aerogear/mobile-security-service-server/pkg/middleware"	
+	"github.com/aerogear/mobile-security-service/pkg/config"
+	"github.com/aerogear/mobile-security-service/pkg/middleware"
+	dotenv "github.com/joho/godotenv"
 	"github.com/labstack/echo"
-
 	log "github.com/sirupsen/logrus"
 )
 
