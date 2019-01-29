@@ -35,11 +35,11 @@ docker_build: build_linux
 	docker build -t $(DOCKER_LATEST_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
 
 .PHONY: docker_build_release
-docker_build_release: build_linux
-	docker build -t $(DOCKER_RELEASE_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
+docker_build_release:
+	docker build -t $(DOCKER_LATEST_TAG) -t $(DOCKER_RELEASE_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
 
 .PHONY: docker_build_master
-docker_build_master: build_linux
+docker_build_master:
 	docker build -t $(DOCKER_MASTER_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
 
 .PHONY: test
