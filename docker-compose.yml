@@ -10,10 +10,7 @@ services:
       POSTGRESQL_USER: postgresql
       POSTGRESQL_DATABASE: aerogear_mobile_security_service
   api:
-    build:
-      context: .
-      args:
-        BINARY: ./mobile-security-service
+    build: .
     environment:
       PGHOST: db
       PGUSER: postgres

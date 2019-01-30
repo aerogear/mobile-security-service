@@ -1,6 +1,15 @@
+FROM openshift/origin-release:golang-1.10 as builder
+
+WORKDIR /go/src/github.com/aerogear/mobile-security-service
+COPY . .
+RUN go build -o mobile-security-service ./cmd/mobile-security-service/main.go
+
 FROM centos:7
-ARG BINARY=./mobile-security-service
+
+COPY --from=builder /go/src/github.com/aerogear/mobile-security-service /usr/bin/
+
 EXPOSE 3000
 
-COPY ${BINARY} /opt/mobile-security-service
-ENTRYPOINT ["/opt/mobile-security-service"]
+USER 1001
+
+ENTRYPOINT ["/usr/bin/mobile-security-service"]
