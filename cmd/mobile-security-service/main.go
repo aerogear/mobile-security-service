@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/aerogear/mobile-security-service/pkg/config"
+	"github.com/aerogear/mobile-security-service/pkg/web/apps"
 	"github.com/aerogear/mobile-security-service/pkg/web/middleware"
 	dotenv "github.com/joho/godotenv"
 	"github.com/labstack/echo"
@@ -27,6 +28,8 @@ func main() {
 	// Load middleware
 	middleware.Init(e, config)
 
+	initHandlers(e)
+
 	// start webserver
 	if err := e.Start(config.ListenAddress); err != nil {
 		panic("failed to start" + err.Error())
@@ -51,4 +54,15 @@ func initLogger(level, format string) {
 	default:
 		log.Fatalf("log format %v is not allowed. Must be one of [text, json]", format)
 	}
+}
+
+// Invoke handlers, services and repositories here
+func initHandlers(e *echo.Echo) {
+	// App handler setup
+	appsPostgreSQLRepository := apps.NewPostgreSQLRepository()
+	appsService := apps.NewService(appsPostgreSQLRepository)
+	appsHandler := apps.NewHTTPHandler(e, appsService)
+
+	// Define /app routes
+	e.GET("/apps", appsHandler.GetApps)
 }
