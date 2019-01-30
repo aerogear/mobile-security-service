@@ -3,6 +3,7 @@
 [![CircleCI](https://circleci.com/gh/aerogear/mobile-security-service.svg?style=svg)](https://circleci.com/gh/aerogear/mobile-security-service)
 [![Go Report Card](https://goreportcard.com/badge/github.com/aerogear/mobile-security-service)](https://goreportcard.com/report/github.com/aerogear/mobile-security-service)
 [![Coverage Status](https://coveralls.io/repos/github/aerogear/mobile-security-service/badge.svg?branch=master)](https://coveralls.io/github/aerogear/mobile-security-service?branch=master)
+[![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 This is the server component of the AeroGear Mobile Security Service. It is a RESTful API that allows developers to view, enable and disable specific versions of applications on demand, with the information stored in a PostgreSQL database. The service is written in [Golang](https://golang.org/).
 
