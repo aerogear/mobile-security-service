@@ -13,7 +13,7 @@ This is the server component of the AeroGear Mobile Security Service. It is a RE
 * [Install the dep package manager](https://golang.github.io/dep/docs/installation.html)
 * [Install Docker and Docker Compose](https://docs.docker.com/compose/install/)
 
-See the [Contributing Guide](./CONTRIBUTING.md) for more information.
+See the [Contributing Guide](https://aerogear.org/community/#guides) for more information.
 
 ## Getting Started
 
@@ -146,12 +146,8 @@ go get -u github.com/kisielk/errcheck
 
 ## Contributing
 
-All contributions are hugely appreciated. Please see our [Contributing Guide](./CONTRIBUTING.md) for guidelines on how to open issues and pull requests. Please check out our [Code of Conduct](./.github/CODE_OF_CONDUCT) too.
+All contributions are hugely appreciated. Please see our [Contributing Guide](https://aerogear.org/community/#guides) for guidelines on how to open issues and pull requests. Please check out our [Code of Conduct](./.github/CODE_OF_CONDUCT.md) too.
 
 ## Questions
 
-There are a number of ways you can get in in touch with us:
-
-* Open a [GitHub issue](https://github.com/aerogear/mobile-security-service/issues/new).
-* Start a thread in the [Aerogear Mailing List](https://groups.google.com/forum/#!forum/aerogear) (Open to anyone).
-* Reach out to us on IRC. The Aerogear team can be found at the #Aerogear channel on [freenode.net](https://freenode.net/) (Open to anyone).
+There are a number of ways you can get in in touch with us, please see the [AeroGear community](https://aerogear.org/community/#contact).
