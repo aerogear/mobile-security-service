@@ -18,6 +18,7 @@ DOCKER_RELEASE_TAG = $(ORG_NAME)/$(APP_NAME):$(RELEASE_TAG)
 
 LDFLAGS=-ldflags "-w -s -X main.Version=${TAG}"
 
+
 .PHONY: setup
 setup:
 	dep ensure
