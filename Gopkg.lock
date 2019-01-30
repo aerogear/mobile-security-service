@@ -26,15 +26,15 @@
   version = "v1.0.1"
 
 [[projects]]
-  digest = "1:73c5062c19c602b4d279b581b0ee3ffe43f61bfc37e91885b89190154bb5e909"
+  digest = "1:efd601ad1d1189884f37ed075fadb5bbd17f1f5acf5862827247c6da56d125ba"
   name = "github.com/labstack/echo"
   packages = [
     ".",
     "middleware",
   ]
   pruneopts = "UT"
-  revision = "c7eb8da9ec73e78c4f38413f3f835e0cd52c7d72"
-  version = "v3.3.8"
+  revision = "38772c686c76b501f94bd6cd5b77f5842e93b559"
+  version = "v3.3.10"
 
 [[projects]]
   digest = "1:764bce605f1c70823a567ac3205a03e6b7f375ca747d8820fded0b0abddda802"
@@ -91,7 +91,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:cea8a31af44e77908c71e68561ce2e5992cf08d3ec29a3f9007f90c9b29bd001"
+  digest = "1:4078ffacb97ad7cd3968cc7acd20552234a8eb70cf5c84a7bc9d85bdcfc9ff3e"
   name = "golang.org/x/crypto"
   packages = [
     "acme",
@@ -99,18 +99,18 @@
     "ssh/terminal",
   ]
   pruneopts = "UT"
-  revision = "ff983b9c42bc9fbf91556e191cc8efb585c16908"
+  revision = "b01c7a72566457eb1420261cdafef86638fc3861"
 
 [[projects]]
   branch = "master"
-  digest = "1:43cde116ff48f299eddb7e6515677e6d0a2c915854bb05a333877f07c3bb3033"
+  digest = "1:f5987dbdcc6c3fb59ea5d4e4344a009308608b22c0ba24ef74c4f1e2a6032904"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "11f53e03133963fb11ae0588e08b5e0b85be8be5"
+  revision = "302c3dd5f1cc82baae8e44d9c3178e89b6e2b345"
 
 [solve-meta]
   analyzer-name = "dep"
