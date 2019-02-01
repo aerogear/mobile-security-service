@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/aerogear/mobile-security-service/badge.svg?branch=master)](https://coveralls.io/github/aerogear/mobile-security-service?branch=master)
 [![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
-This is the server component of the AeroGear Mobile Security Service. It is a RESTful API that allows developers to view, enable and disable specific versions of applications on demand, with the information stored in a PostgreSQL database. The service is written in [Golang](https://golang.org/).
+This is the server component of the AeroGear Mobile Security Service. It is a RESTful API that allows developers to view, enable and disable specific versions of applications on demand, with the information stored in a PostgreSQL database.
 
 ## Prerequisites
 
@@ -18,7 +18,7 @@ See the [Contributing Guide](https://aerogear.org/community/#guides) for more in
 
 ## Getting Started
 
-If you'd like to simply run the entire application in `docker-compose`, check out the relevant section.
+If you'd like to simply run the entire application in `docker-compose`, follow [these instructions](#Run-Entire-Application-with-Docker-Compose).
 
 Golang projects are kept in a [workspace](https://golang.org/doc/code.html#Workspaces) that follows a very specific architecture. Before cloning this repo, be sure you have a `$GOPATH` environment variable set up.
 
