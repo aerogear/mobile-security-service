@@ -93,7 +93,7 @@ Now the application will use the values defined in `.env`.
 A [Swagger](https://swagger.io/) UI can be used for testing the mobile-security-service service.
 
 ```bash
-docker run -p 8080:8080 -e API_URL=https://raw.githubusercontent.com/aerogear/mobile-security-service/master/apispec.yaml swaggerapi/swagger-ui
+docker run -p 8080:8080 -e API_URL=https://raw.githubusercontent.com/aerogear/mobile-security-service/master/api/swagger.yaml swaggerapi/swagger-ui
 ```
 
 The Swagger UI is available at [localhost:8080](http://localhost:8080).
@@ -102,7 +102,7 @@ The Swagger UI is available at [localhost:8080](http://localhost:8080).
 
 There is also a [Chrome extension](https://chrome.google.com/webstore/detail/swagger-ui-console/ljlmonadebogfjabhkppkoohjkjclfai?hl=en) you can use instead of running a Docker container.
 
-Paste [https://raw.githubusercontent.com/aerogear/mobile-security-service/master/apispec.yaml](https://raw.githubusercontent.com/aerogear/mobile-security-service/master/apispec.yaml) and press **Explore**.
+Paste [https://raw.githubusercontent.com/aerogear/mobile-security-service/master/api/swagger.yaml](https://raw.githubusercontent.com/aerogear/mobile-security-service/master/api/swagger.yaml) and press **Explore**.
 
 ## Building & Testing
 
