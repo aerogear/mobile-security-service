@@ -11,8 +11,14 @@ for i in `cat ./shafile.txt`;
 do 
   # gets the git commit message based on the sha
   gitmessage=`git log --format=%B -n 1 "$i"`
-
-  # fix(commit-filter-check): add commit messages (AEROGEAR-038928990423)
+  
+  ####################### TEST STRINGS comment out line 13 to use #########################################
+  #gitmessage="feat: sdasdsadsaas (AEROGEAR-asdsada)"
+  #gitmessage="feat(some txt): some txt (AEROGEAR-****)"
+  #gitmessage="docs(some txt): some txt (AEROGEAR-1234)"
+  #gitmessage="fix(some txt): some txt (AEROGEAR-5678)"
+  #########################################################################################################
+ 
   messagecheck=`echo $gitmessage | grep -w "feat\|fix\|docs"`
   if [ -z "$messagecheck" ]
   then 
@@ -20,6 +26,7 @@ do
       echo "  feat(feature-name)"
       echo "  fix(fix-name)"
       echo "  docs(docs-change)"
+      echo " "
   fi
   messagecheck=`echo $gitmessage | grep "(AEROGEAR-"`
   if  [ -z "$messagecheck" ]
@@ -27,16 +34,18 @@ do
       echo "Your commit message must end with the following"
       echo "  (AEROGEAR-****)"
       echo "Where **** is the Jira number"
+      echo " " 
   fi
-  messagecheck=`echo $gitmessage | grep "): "`
+  messagecheck=`echo $gitmessage | grep ": "`
   if  [ -z "$messagecheck" ]
   then 
       echo "Your commit message has a formatting error please take note of special characters '():' position and use in the example below"
       echo "   type(some txt): some txt (AEROGEAR-****)"
       echo "Where 'type' is fix, feat or docs and **** is the Jira number"
+      echo " "
   fi
 
-  messagecheck=`echo $gitmessage | grep -w "feat\|fix\|docs" | grep "(AEROGEAR-" | grep "): "`
+  messagecheck=`echo $gitmessage | grep -w "feat\|fix\|docs" | grep "(AEROGEAR-" | grep ": "`
 
  
 
