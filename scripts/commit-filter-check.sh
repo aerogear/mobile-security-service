@@ -16,7 +16,7 @@ do
   messagecheck=`echo $gitmessage | grep -w "feat\|fix\|docs"`
   if [ -z "$messagecheck" ]
   then 
-      echo "Your commit message must beging with one of the following"
+      echo "Your commit message must begin with one of the following"
       echo "  feat(feature-name)"
       echo "  fix(fix-name)"
       echo "  docs(docs-change)"
