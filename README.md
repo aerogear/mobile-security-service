@@ -125,8 +125,9 @@ go get -u github.com/kisielk/errcheck
 | Command                       | Description                                                                                     |
 |-------------------------------|-------------------------------------------------------------------------------------------------|
 | `make setup`                  | Downloads dependencies into `vendor`                                                            |
-| `make build`                  | Compile a binary compatible with your current system into `./mobile-security-service`    |
-| `make build_linux`            | Compile a Linux binary into `./dist/linux_amd64/mobile-security-service`                 |
+| `make setup_githooks`         | Symlink all Git hooks from `.githooks` into `.git/hooks`                                        |
+| `make build`                  | Compile a binary compatible with your current system into `./mobile-security-service`           |
+| `make build_linux`            | Compile a Linux binary into `./dist/linux_amd64/mobile-security-service`                        |
 | `make docker_build`           | Compile a binary and create a Docker image from it.                                             |
 | `make docker_build_release`   | Compile a binary and create a Docker image with a release tag                                   |
 | `make docker_build_master`    | Compile a binary and create a Docker image tagged `master`                                      |
