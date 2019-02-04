@@ -18,7 +18,6 @@ jobs:
     
     steps:
       - checkout
-      - run: pwd
       - run: ./scripts/commit-filter-check.sh 
       - run: go get github.com/mattn/goveralls
       - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
