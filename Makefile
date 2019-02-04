@@ -72,7 +72,7 @@ errcheck:
 .PHONY: vet
 vet:
 	@echo go vet
-	@errcheck -ignoretests $$(go list ./...)
+	go vet $$(go list ./... | grep -v /vendor/)
 
 .PHONY: fmt
 fmt:
