@@ -86,6 +86,11 @@ Now the application will use the values defined in `.env`.
 | ACCESS_CONTROL_ALLOW_ORIGIN      | *       | Can be multiple URL values separated with commas. Example: `ACCESS_CONTROL_ALLOW_ORIGIN=http://www.example.com,http://example.com` |
 | ACCESS_CONTROL_ALLOW_CREDENTIALS | false   | Can be one of `[true, false]`                                                                                                      |
 
+#### Database Entity Relationship Diagram
+<img src="https://user-images.githubusercontent.com/1596014/52293332-7229e380-296e-11e9-9bc4-5322f0fbe0ab.png" width="700" height="300">
+
+*Lucid Chart Link:* https://www.lucidchart.com/documents/edit/6293d791-8f70-47bb-8136-438128c27129/0
+
 ### Using Swagger UI
 
 #### Method 1
