@@ -2,7 +2,7 @@
 
 ./scripts/commit-filter-check.sh && rc=$? || rc=$?
 echo return code : $rc
-if $rc == 1
+if [ $rc == 1 ]
 then
 	echo "Script return code 1 so commit failed"
 	exit 1
