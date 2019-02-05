@@ -19,8 +19,14 @@ DOCKER_RELEASE_TAG = $(ORG_NAME)/$(APP_NAME):$(RELEASE_TAG)
 LDFLAGS=-ldflags "-w -s -X main.Version=${TAG}"
 
 .PHONY: setup
-setup:
+setup: setup_githooks
+	@echo Installing application dependencies:
 	dep ensure
+
+.PHONY: setup_githooks
+setup_githooks:
+	@echo Setting up Git hooks:
+	ln -sf $$PWD/.githooks/* $$PWD/.git/hooks/
 
 .PHONY: build
 build: setup

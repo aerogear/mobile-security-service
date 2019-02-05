@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# Run some pre commit checks on the Go source code. Prevent the commit if any errors are found
+echo "Running pre-commit checks on your code..."
+
+
+# Format the Go code
+go fmt $(go list ./... | grep -v /vendor/)
+
+# Check all files for errors
+{
+	errcheck -ignoretests $(go list ./... | grep -v /vendor/)
+} || {
+	exitStatus=$?
+
+	if [ $exitStatus ]; then
+		printf "\nErrors found in your code, please fix them and try again."
+		exit 1
+	fi
+}
+
+# Check all files for suspicious constructs
+{
+	go vet $(go list ./... | grep -v /vendor/)
+} || {
+	exitStatus=$?
+
+	if [ $exitStatus ]; then
+		printf "\nIssues found in your code, please fix them and try again."
+		exit 1
+	fi
+}
