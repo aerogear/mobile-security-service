@@ -14,7 +14,7 @@ commit_message_check (){
       gitmessage=`git log --format=%B -n 1 "$i"`
       
       ####################### TEST STRINGS comment out line 13 to use #########################################
-      #gitmessage="feat: sdasdsadsaas (AEROGEAR-asdsada)"
+      #gitmessage="feat sdasdsadsaas (AEROGEAR-asdsada)"
       #gitmessage="feat(some txt): some txt (AEROGEAR-****)"
       #gitmessage="docs(some txt): some txt (AEROGEAR-1234)"
       #gitmessage="fix(some txt): some txt (AEROGEAR-5678)"
@@ -60,7 +60,6 @@ commit_message_check (){
             echo " "
             rm shafile.txt >/dev/null 2>&1
             set -o errexit
-            return true
       else
             echo "$messagecheck"
             echo "'$i' commit message passed"
@@ -68,5 +67,6 @@ commit_message_check (){
       done
       rm shafile.txt  >/dev/null 2>&1
 }
+
 # Calling the function
 commit_message_check
