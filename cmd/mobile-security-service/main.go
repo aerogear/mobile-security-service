@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/aerogear/mobile-security-service/pkg/config"
+	"github.com/aerogear/mobile-security-service/pkg/web/router"
 	"github.com/aerogear/mobile-security-service/pkg/web/apps"
-	"github.com/aerogear/mobile-security-service/pkg/web/middleware"
 	dotenv "github.com/joho/godotenv"
 	"github.com/labstack/echo"
 	log "github.com/sirupsen/logrus"
@@ -23,12 +23,10 @@ func init() {
 
 func main() {
 	config := config.Get()
-	e := echo.New()
 
-	// Load middleware
-	middleware.Init(e, config)
+	e := router.NewRouter(config)
 
-	initHandlers(e)
+	initHandlers(e, config)
 
 	// start webserver
 	if err := e.Start(config.ListenAddress); err != nil {
@@ -57,12 +55,16 @@ func initLogger(level, format string) {
 }
 
 // Invoke handlers, services and repositories here
-func initHandlers(e *echo.Echo) {
+func initHandlers(e *echo.Echo, c config.Config) {
+	// Prefix api routes
+	apiRoutePrefix := c.ApiRoutePrefix
+	apiGroup := e.Group(apiRoutePrefix)
+
 	// App handler setup
 	appsPostgreSQLRepository := apps.NewPostgreSQLRepository()
 	appsService := apps.NewService(appsPostgreSQLRepository)
 	appsHandler := apps.NewHTTPHandler(e, appsService)
 
-	// Define /app routes
-	e.GET("/apps", appsHandler.GetApps)
+	// Setup routes
+	router.SetAppRoutes(apiGroup, appsHandler)
 }

@@ -15,6 +15,8 @@ func TestGet(t *testing.T) {
 			AllowOrigins:     []string{"*"},
 			AllowCredentials: false,
 		},
+		StaticFilesDir: "",
+		ApiRoutePrefix: "/api",
 	}
 
 	tests := []struct {
@@ -36,6 +38,8 @@ func TestGet(t *testing.T) {
 					AllowOrigins:     []string{"http://localhost:1234", "http://localhost:2345"},
 					AllowCredentials: false,
 				},
+				StaticFilesDir: "static",
+				ApiRoutePrefix: "/api",
 			},
 			envVars: map[string]string{
 				"PORT":                             "4000",
@@ -43,6 +47,7 @@ func TestGet(t *testing.T) {
 				"LOG_FORMAT":                       "json",
 				"ACCESS_CONTROL_ALLOW_ORIGIN":      "http://localhost:1234,http://localhost:2345",
 				"ACCESS_CONTROL_ALLOW_CREDENTIALS": "false",
+				"STATIC_FILES_DIR":                 "static",
 			},
 		},
 		{
@@ -54,6 +59,7 @@ func TestGet(t *testing.T) {
 				"LOG_FORMAT":                       "",
 				"ACCESS_CONTROL_ALLOW_ORIGIN":      "",
 				"ACCESS_CONTROL_ALLOW_CREDENTIALS": "",
+				"STATIC_FILES_DIR":                 "",
 			},
 		},
 	}

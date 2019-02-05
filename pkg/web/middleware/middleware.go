@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	log "github.com/sirupsen/logrus"
+	"strings"
 	"time"
 )
 
@@ -12,6 +13,16 @@ import (
 func Init(e *echo.Echo, c config.Config) {
 	e.Use(corsWithConfig(c)) // CORS
 	e.Use(Logger)
+	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		Root:  c.StaticFilesDir,
+		HTML5: true,
+		Index: "index.html",
+		Skipper: func(context echo.Context) bool {
+			// We don't want to return the SPA if any api/* is called, it should act like a normal API.
+			return strings.HasPrefix(context.Request().URL.Path, c.ApiRoutePrefix)
+		},
+		Browse: false,
+	}))
 }
 
 // corsWithConfig defines custom CORS rules for this server
