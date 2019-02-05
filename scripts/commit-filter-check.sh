@@ -20,7 +20,7 @@ commit_message_check (){
       #gitmessage="fix(some txt): some txt (AEROGEAR-5678)"
       #########################################################################################################
       
-      messagecheck=`echo $gitmessage | grep -w "feat\|fix\|docs"`
+      messagecheck=`echo $gitmessage | grep -w "feat\|fix\|docs\|breaking"`
       if [ -z "$messagecheck" ]
       then 
             echo "Your commit message must begin with one of the following"
