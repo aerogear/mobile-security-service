@@ -8,10 +8,12 @@ import (
 )
 
 type Config struct {
-	ListenAddress string
-	LogLevel      string
-	LogFormat     string
-	CORS          CORSConfig
+	ListenAddress  string
+	LogLevel       string
+	LogFormat      string
+	CORS           CORSConfig
+	StaticFilesDir string
+	ApiRoutePrefix string
 }
 
 type CORSConfig struct {
@@ -28,6 +30,8 @@ func Get() Config {
 			AllowOrigins:     getEnvSlice("ACCESS_CONTROL_ALLOW_ORIGIN", []string{"*"}, ","),
 			AllowCredentials: getEnvBool("ACCESS_CONTROL_ALLOW_CREDENTIALS", false),
 		},
+		StaticFilesDir: getEnv("STATIC_FILES_DIR", ""),
+		ApiRoutePrefix: "/api", //should start with a "/",
 	}
 }
 
