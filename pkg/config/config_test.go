@@ -17,6 +17,10 @@ func TestGet(t *testing.T) {
 		},
 		StaticFilesDir: "",
 		ApiRoutePrefix: "/api",
+		DB: DBConfig{
+			ConnectionString: "connect_timeout=5 dbname=mobile_security_service host=localhost password=postgres port=5432 sslmode=disable user=postgresql",
+			MaxConnections:   100,
+		},
 	}
 
 	tests := []struct {
@@ -40,6 +44,10 @@ func TestGet(t *testing.T) {
 				},
 				StaticFilesDir: "static",
 				ApiRoutePrefix: "/api",
+				DB: DBConfig{
+					ConnectionString: "connect_timeout=5 dbname=mobile_security_service host=localhost password=postgres port=5432 sslmode=disable user=postgresql",
+					MaxConnections:   100,
+				},
 			},
 			envVars: map[string]string{
 				"PORT":                             "4000",
@@ -48,6 +56,18 @@ func TestGet(t *testing.T) {
 				"ACCESS_CONTROL_ALLOW_ORIGIN":      "http://localhost:1234,http://localhost:2345",
 				"ACCESS_CONTROL_ALLOW_CREDENTIALS": "false",
 				"STATIC_FILES_DIR":                 "static",
+				"PGDATABASE":                       "mobile_security_service",
+				"PGUSER":                           "postgresql",
+				"PGPASSWORD":                       "postgres",
+				"PGHOST":                           "localhost",
+				"PGPORT":                           "5432",
+				"PGSSLMODE":                        "disable",
+				"PGCONNECT_TIMEOUT":                "5",
+				"PGAPPNAME":                        "",
+				"PGSSLCERT":                        "",
+				"PGSSLKEY":                         "",
+				"PGSSLROOTCERT":                    "",
+				"DB_MAX_CONNECTIONS":               "100",
 			},
 		},
 		{
@@ -60,6 +80,18 @@ func TestGet(t *testing.T) {
 				"ACCESS_CONTROL_ALLOW_ORIGIN":      "",
 				"ACCESS_CONTROL_ALLOW_CREDENTIALS": "",
 				"STATIC_FILES_DIR":                 "",
+				"PGDATABASE":                       "",
+				"PGUSER":                           "",
+				"PGPASSWORD":                       "",
+				"PGHOST":                           "",
+				"PGPORT":                           "",
+				"PGSSLMODE":                        "",
+				"PGCONNECT_TIMEOUT":                "",
+				"PGAPPNAME":                        "",
+				"PGSSLCERT":                        "",
+				"PGSSLKEY":                         "",
+				"PGSSLROOTCERT":                    "",
+				"DB_MAX_CONNECTIONS":               "",
 			},
 		},
 	}
@@ -191,6 +223,64 @@ func Test_getEnvSlice(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := getEnvSlice(tt.args.name, tt.args.defaultVal, tt.args.sep); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("getEnvSlice() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_getDBConnectionString(t *testing.T) {
+	tests := []struct {
+		name    string
+		want    string
+		envVars map[string]string
+	}{
+		{
+			name: "getDBConnectionString() should build a connection string using environment variables",
+			want: "connect_timeout=5 dbname=testdb host=127.0.0.1 password=postgresql port=5431 sslmode=disable user=postgresql1",
+			envVars: map[string]string{
+				"PGDATABASE":         "testdb",
+				"PGUSER":             "postgresql1",
+				"PGPASSWORD":         "postgresql",
+				"PGHOST":             "127.0.0.1",
+				"PGPORT":             "5431",
+				"PGSSLMODE":          "disable",
+				"PGCONNECT_TIMEOUT":  "5",
+				"PGAPPNAME":          "",
+				"PGSSLCERT":          "",
+				"PGSSLKEY":           "",
+				"PGSSLROOTCERT":      "",
+				"DB_MAX_CONNECTIONS": "100",
+			},
+		},
+		{
+			name: "getDBConnectionString() should build a connection string using the default values when environment variables are not set",
+			want: "connect_timeout=5 dbname=mobile_security_service host=localhost password=postgres port=5432 sslmode=disable user=postgresql",
+			envVars: map[string]string{
+				"PGDATABASE":         "",
+				"PGUSER":             "",
+				"PGPASSWORD":         "",
+				"PGHOST":             "",
+				"PGPORT":             "",
+				"PGSSLMODE":          "",
+				"PGCONNECT_TIMEOUT":  "",
+				"PGAPPNAME":          "",
+				"PGSSLCERT":          "",
+				"PGSSLKEY":           "",
+				"PGSSLROOTCERT":      "",
+				"DB_MAX_CONNECTIONS": "",
+			},
+		},
+	}
+	for _, tt := range tests {
+		if len(tt.envVars) != 0 {
+			for key, val := range tt.envVars {
+				os.Setenv(key, val)
+			}
+		}
+
+		t.Run(tt.name, func(t *testing.T) {
+			if got := getDBConnectionString(); got != tt.want {
+				t.Errorf("getDBConnectionString() = %v, want %v", got, tt.want)
 			}
 		})
 	}

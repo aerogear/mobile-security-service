@@ -1,7 +1,10 @@
 package main
 
 import (
+	"database/sql"
+
 	"github.com/aerogear/mobile-security-service/pkg/config"
+	"github.com/aerogear/mobile-security-service/pkg/db"
 	"github.com/aerogear/mobile-security-service/pkg/web/apps"
 	"github.com/aerogear/mobile-security-service/pkg/web/router"
 	dotenv "github.com/joho/godotenv"
@@ -26,7 +29,8 @@ func main() {
 
 	e := router.NewRouter(config)
 
-	initHandlers(e, config)
+	db := connectDatabase(config)
+	setupServer(e, config, db)
 
 	// start webserver
 	if err := e.Start(config.ListenAddress); err != nil {
@@ -54,14 +58,29 @@ func initLogger(level, format string) {
 	}
 }
 
+// Make a connection to the PostgreSQL database
+func connectDatabase(c config.Config) *sql.DB {
+	dbConn, err := db.Connect(c.DB.ConnectionString, c.DB.MaxConnections)
+
+	if err != nil {
+		panic("failed to connect to SQL database: " + err.Error())
+	}
+
+	if err := db.Setup(dbConn); err != nil {
+		panic("failed to perform database setup: " + err.Error())
+	}
+
+	return dbConn
+}
+
 // Invoke handlers, services and repositories here
-func initHandlers(e *echo.Echo, c config.Config) {
+func setupServer(e *echo.Echo, c config.Config, dbConn *sql.DB) {
 	// Prefix api routes
 	apiRoutePrefix := c.ApiRoutePrefix
 	apiGroup := e.Group(apiRoutePrefix)
 
 	// App handler setup
-	appsPostgreSQLRepository := apps.NewPostgreSQLRepository()
+	appsPostgreSQLRepository := apps.NewPostgreSQLRepository(dbConn)
 	appsService := apps.NewService(appsPostgreSQLRepository)
 	appsHandler := apps.NewHTTPHandler(e, appsService)
 

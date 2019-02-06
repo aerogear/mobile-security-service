@@ -1,7 +1,7 @@
 package models
 
-// AppVersion model
-type AppVersion struct {
+// Version model
+type Version struct {
 	ID               int64  `json:"id"`
 	Version          string `json:"version"`
 	AppID            string `json:"appId"`
