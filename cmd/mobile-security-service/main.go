@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/aerogear/mobile-security-service/pkg/config"
-	"github.com/aerogear/mobile-security-service/pkg/web/router"
 	"github.com/aerogear/mobile-security-service/pkg/web/apps"
+	"github.com/aerogear/mobile-security-service/pkg/web/router"
 	dotenv "github.com/joho/godotenv"
 	"github.com/labstack/echo"
 	log "github.com/sirupsen/logrus"
