@@ -19,11 +19,12 @@ var (
 	WHERE a.deleted_at IS NULL 
 	GROUP BY a.id;`
 
-	getAppVersionsQueryString = `SELECT v.id,v.version,v.id, v.disabled, v.disabled_message, v.num_of_app_launches,
+	getAppVersionsQueryString = `SELECT v.id,v.version,v.app_id, v.disabled, v.disabled_message, v.num_of_app_launches,
 	COALESCE\(COUNT\(DISTINCT d.id\),0\) as num_of_current_installs
 	FROM version as v LEFT JOIN device as d on v.id = d.version_id
 	WHERE v.app_id = \$1 
 	GROUP BY v.id;`
+	getAppByIDQueryString = `SELECT id,app_id,app_name FROM app WHERE id=\$1;`
 )
 
 func Test_appsPostgreSQLRepository_GetApps_WillReturnTwoApps(t *testing.T) {
@@ -162,5 +163,35 @@ func Test_appsPostgreSQLRepository_GetAppVersions_WillReturnNoAppVersions(t *tes
 
 	if versions != nil && len(*versions) != 0 {
 		t.Fatalf("Expected 0 apps to be returned from the database, got %v", len(*versions))
+	}
+}
+
+func Test_appsPostgreSQLRepository_GetAppByID(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("Unexpected error opening a stub database connection: %v", err)
+	}
+
+	defer db.Close()
+
+	mockApp := helpers.GetMockAppList()
+	cols := []string{"id", "app_id", "app_name"}
+	ID := "7f89ce49-a736-459e-9110-e52d049fc025"
+
+	// Insert app
+	row := sqlmock.NewRows(cols).AddRow(mockApp[0].ID, mockApp[0].AppID, mockApp[0].AppName)
+
+	// We should expected to get back only the app with matching id
+	mock.ExpectQuery(getAppByIDQueryString).WithArgs(ID).WillReturnRows(row)
+	a := NewPostgreSQLRepository(db)
+
+	app, err := a.GetAppByID(ID)
+
+	if err != nil {
+		t.Fatalf("Got error trying to get apps from database: %v", err)
+	}
+
+	if app == &mockApp[0] {
+		t.Fatalf("Expected an app to be returned from the database,want %v, got %v", &mockApp[0], app)
 	}
 }

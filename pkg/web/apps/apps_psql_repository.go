@@ -2,10 +2,9 @@ package apps
 
 import (
 	"database/sql"
-
-	log "github.com/sirupsen/logrus"
-
 	"github.com/aerogear/mobile-security-service/pkg/models"
+	_ "github.com/lib/pq"
+	log "github.com/sirupsen/logrus"
 )
 
 type (
@@ -15,6 +14,12 @@ type (
 	}
 
 	// PostgreSQLRepository interface defines the methods to be implemented
+	PostgreSQLRepository interface {
+		GetApps() (*[]models.App, error)
+		GetAppByID(ID string) (*models.App, error)
+		GetAppVersionsByAppID(ID string) (*[]models.Version, error)
+	}
+
 	appsPostgreSQLRepository struct {
 		db *sql.DB
 	}
@@ -68,7 +73,7 @@ func (a *appsPostgreSQLRepository) GetApps() (*[]models.App, error) {
 
 func (a *appsPostgreSQLRepository) GetAppVersionsByAppID(id string) (*[]models.Version, error) {
 	rows, err := a.db.Query(`
-	SELECT v.id,v.version,v.id, v.disabled, v.disabled_message, v.num_of_app_launches,
+	SELECT v.id,v.version,v.app_id, v.disabled, v.disabled_message, v.num_of_app_launches,
 	COALESCE(COUNT(DISTINCT d.id),0) as num_of_current_installs
 	FROM version as v LEFT JOIN device as d on v.id = d.version_id
 	WHERE v.app_id = $1 
@@ -105,4 +110,20 @@ func (a *appsPostgreSQLRepository) GetAppVersionsByAppID(id string) (*[]models.V
 	}
 
 	return &versions, nil
+}
+
+// GetAppByID retrieves an app by id from the database
+func (a *appsPostgreSQLRepository) GetAppByID(ID string) (*models.App, error) {
+	var app models.App
+	//var v models.Version
+
+	sqlStatment := `SELECT id,app_id,app_name FROM app WHERE id=$1;`
+	row := a.db.QueryRow(sqlStatment, ID)
+	err := row.Scan(&app.ID, &app.AppID, &app.AppName)
+	if err != nil {
+		return nil, err
+	}
+
+	return &app, nil
+
 }

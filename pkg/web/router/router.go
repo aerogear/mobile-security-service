@@ -68,7 +68,7 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	//     description: Invalid id supplied
 	//   404:
 	//     description: App not found
-	r.GET("/apps/{id}", appsHandler.GetAppByID) // TODO: Implement correctly the call of the method passing the parameters
+	r.GET("/apps/:id", appsHandler.GetAppByID) // TODO: Implement correctly the call of the method passing the parameters
 
 	// swagger:operation PUT /apps/{id} App
 	//
@@ -99,7 +99,7 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	//     description: Invalid app supplied
 	//   404:
 	//     description: App not found
-	r.PUT("/apps/{id}", appsHandler.UpdateApp) // TODO: Implement correctly the call of the method passing the parameters
+	r.PUT("/apps/:id", appsHandler.UpdateApp) // TODO: Implement correctly the call of the method passing the parameters
 
 	// swagger:operation POST /init appInitResponse
 	//

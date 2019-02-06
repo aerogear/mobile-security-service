@@ -8,4 +8,5 @@ import (
 type Repository interface {
 	GetApps() (*[]models.App, error)
 	GetAppVersionsByAppID(id string) (*[]models.Version, error)
+	GetAppByID(ID string) (*models.App, error)
 }

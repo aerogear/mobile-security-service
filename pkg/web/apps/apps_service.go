@@ -9,6 +9,7 @@ type (
 	// Service defines the interface methods to be used
 	Service interface {
 		GetApps() (*[]models.App, error)
+		GetAppByID(ID string) (*models.App, error)
 	}
 
 	appsService struct {
@@ -33,4 +34,22 @@ func (a *appsService) GetApps() (*[]models.App, error) {
 	}
 
 	return apps, nil
+}
+
+// GetAppByID retrieves app by id from the repository
+func (a *appsService) GetAppByID(id string) (*models.App, error) {
+
+	app, err := a.repository.GetAppByID(id)
+
+	if err != nil {
+		return nil, err
+	}
+	if app == nil {
+		return nil, models.ErrNotFound
+	}
+
+	deployedVersions, _ := a.repository.GetAppVersionsByAppID(app.AppID)
+	app.DeployedVersions = deployedVersions
+
+	return app, nil
 }
