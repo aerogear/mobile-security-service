@@ -9,6 +9,7 @@ info:
 tags:
 - name: apps
   description: All app endpoints
+basePath: /api
 schemes:
 - https
 - http
@@ -28,17 +29,17 @@ paths:
           description: successful operation
           schema:
             $ref: '#/definitions/Apps'
-  /apps/{appId}:
+  /apps/{id}:
     get:
       tags:
       - apps
-      summary: Get app by appId
+      summary: Get app by id
       description: Retrieve all information for a single app including all child information
       operationId: getAppById
       produces:
       - application/json
       parameters:
-      - name: appId
+      - name: id
         in: path
         description: The id for the app that needs to be fetched.
         required: true
@@ -49,7 +50,7 @@ paths:
           schema:
             $ref: '#/definitions/App'
         400:
-          description: Invalid appId supplied
+          description: Invalid id supplied
         404:
           description: App not found
     put:
@@ -61,7 +62,7 @@ paths:
       produces:
       - application/json
       parameters:
-      - name: appId
+      - name: id
         in: path
         description: The id for the app that needs to be updated.
         required: true
@@ -79,7 +80,7 @@ paths:
           description: Invalid app supplied
         404:
           description: App not found
-  /apps/{appId}/init:
+  /init:
     post:
       tags:
       - apps
@@ -89,11 +90,6 @@ paths:
       produces:
       - application/json
       parameters:
-      - name: appId
-        in: path
-        description: The id for the app.
-        required: true
-        type: string
       - in: body
         name: body
         description: Updated app object
@@ -121,8 +117,7 @@ definitions:
         type: integer
         format: int64
       appId:
-        type: integer
-        format: int64
+        type: string
       appName:
         type: string
       deployedVersions:
@@ -151,9 +146,8 @@ definitions:
   AppInit:
     type: object
     properties:
-      id:
-        type: integer
-        format: int64
+      appId:
+        type: string
       version:
         type: string
       deviceType:
@@ -168,6 +162,8 @@ definitions:
       id:
         type: integer
         format: int64
+      appId:
+        type: string
       disabled:
         type: boolean
         default: false
@@ -179,8 +175,7 @@ definitions:
         type: integer
         format: int64
       appId:
-        type: integer
-        format: int64
+        type: string
       appName:
         type: string
       numOfDeployedVersions:
@@ -189,6 +184,6 @@ definitions:
       numOfClients:
         type: integer
         format: int64
-      numOfAppLaunches:
+      numOfAppStartups:
         type: integer
         format: int64
