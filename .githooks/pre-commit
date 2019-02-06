@@ -3,13 +3,14 @@
 # Run some pre commit checks on the Go source code. Prevent the commit if any errors are found
 echo "Running pre-commit checks on your code..."
 
+FILES=$(go list ./...  | grep -v /vendor/)
 
 # Format the Go code
-go fmt $(go list ./... | grep -v /vendor/)
+go fmt ${FILES}
 
 # Check all files for errors
 {
-	errcheck -ignoretests $(go list ./... | grep -v /vendor/)
+	errcheck -ignoretests ${FILES}
 } || {
 	exitStatus=$?
 
@@ -21,12 +22,23 @@ go fmt $(go list ./... | grep -v /vendor/)
 
 # Check all files for suspicious constructs
 {
-	go vet $(go list ./... | grep -v /vendor/)
+	go vet ${FILES}
 } || {
 	exitStatus=$?
 
 	if [ $exitStatus ]; then
 		printf "\nIssues found in your code, please fix them and try again."
+		exit 1
+	fi
+}
+
+{
+	go test -cover ${FILES}
+} || {
+	exitStatus=$?
+
+	if [ $exitStatus ]; then
+		printf "\nUnit test(s) failed. Please fix your code and try again."
 		exit 1
 	fi
 }
