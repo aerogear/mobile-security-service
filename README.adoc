@@ -1,0 +1,207 @@
+ifdef::env-github[]
+:status:
+:outfilesuffix: .adoc
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+:table-caption!:
+endif::[]
+
+:toc:
+:toc-placement!:
+
+= Mobile Security Service
+
+ifdef::status[]
+.*Project health*
+image:https://circleci.com/gh/aerogear/mobile-security-service.svg?style=svg[Build Status (CircleCI), link=https://circleci.com/gh/aerogear/mobile-security-service]
+image:https://img.shields.io/:license-Apache2-blue.svg[License (License), link=http://www.apache.org/licenses/LICENSE-2.0]
+image:https://coveralls.io/repos/github/aerogear/mobile-security-service/badge.svg?branch=master[Coverage Status (Coveralls), link=https://coveralls.io/github/aerogear/mobile-security-service?branch=master]
+image:https://goreportcard.com/badge/github.com/aerogear/mobile-security-service[Go Report Card (Go Report Card), link=https://goreportcard.com/report/github.com/aerogear/mobile-security-service]
+endif::[]
+
+:toc:
+toc::[]
+
+== Overview
+
+This is the server component of the AeroGear Mobile Security Service. It is a RESTful API that allows developers to view, enable and disable specific versions of applications on demand, with the information stored in a PostgreSQL database.
+
+== Prerequisites
+
+.Prerequisites
+|===
+|https://golang.org/doc/install[Install Golang]
+|https://github.com/golang/go/wiki/SettingGOPATH[Ensure the $GOPATH environment variable is set]
+|https://docs.docker.com/compose/install/[Install the dep package manager]
+|https://docs.docker.com/compose/install/[Install Docker and Docker Compose]
+|===
+
+See the https://aerogear.org/community/#guides[Contributing Guide] for more information.
+
+== Getting Started
+
+If you'd like to simply run the entire application in `docker-compose`, follow link:#Run-Entire-Application-with-Docker-Compose[these instructions].
+
+Golang projects are kept in a https://golang.org/doc/code.html#Workspaces[workspace] that follows a very specific architecture. Before cloning this repo, be sure you have a `$GOPATH` environment variable set up.
+
+:numbered:
+=== Clone the Repository
+
+[source,shell]
+----
+git clone git@github.com:aerogear/mobile-security-service.git $GOPATH/src/github.com/aerogear/mobile-security-service
+----
+
+=== Install Dependencies
+
+[source,shell]
+----
+make setup
+----
+
+NOTE: This is using the `dep` package manager under the hood. You will see the dependencies installed in the `vendor` folder.
+
+=== Start the Server
+
+[source,shell]
+----
+go run cmd/mobile-security-service/main.go
+----
+
+=== Run Entire Application with Docker Compose
+
+This section shows how to start the entire application with `docker-compose`. This is useful for doing some quick tests (using the SDKs) for example.
+
+First, compile a Linux compatible binary:
+
+[source,shell]
+----
+go build -o mobile-security-service cmd/mobile-security-service/main.go
+----
+
+This binary will be used to build the Docker image. Now start the entire application.
+
+[source,shell]
+----
+docker-compose up
+----
+:numbered!:
+
+== Setup and configurations
+
+=== Environment Variables
+
+The **mobile-security-service** is configured using environment variables.
+
+* By default, the application will look for system environment variables to use.
+* If a system environment variable cannot be found, the application will then check the `.env` file in the application root.
+* If the `.env` file does not exist, or if the variable is not defined in the file, the application will use the default value defined in link:./pkg/config/config.go[config.go].
+
+=== Add your own .env file
+
+Make a copy of the example file `.env.example`.
+
+[source,shell]
+----
+cp .env.example .env
+----
+
+Now the application will use the values defined in `.env`.
+
+=== Server Configuration
+
+.Server Configuration
+|===
+| *Variable* | *Default* | *Description*
+| PORT                             | 3000    | The port the server will listen on
+| LOG_LEVEL                        | info    | Can be one of `[debug, info, warning, error, fatal, panic]`
+| LOG_FORMAT                       | text    | Can be one of `[text, json]`
+| ACCESS_CONTROL_ALLOW_ORIGIN      | *       | Can be multiple URL values separated with commas. Example: `ACCESS_CONTROL_ALLOW_ORIGIN=http://www.example.com,http://example.com`
+| ACCESS_CONTROL_ALLOW_CREDENTIALS | false   | Can be one of `[true, false]`
+|===
+
+== Database
+=== Database Entity Relationship Diagram
+
+image::https://user-images.githubusercontent.com/1596014/52293332-7229e380-296e-11e9-9bc4-5322f0fbe0ab.png[Diagram]
+
+https://www.lucidchart.com/documents/edit/6293d791-8f70-47bb-8136-438128c27129/0[Lucid Chart Link]
+
+== Using Swagger UI
+
+=== Method 1
+
+A https://swagger.io/[Swagger] UI can be used for testing the mobile-security-service service.
+
+[source,shell]
+----
+docker run -p 8080:8080 -e API_URL=https://raw.githubusercontent.com/aerogear/mobile-security-service/master/api/swagger.yaml swaggerapi/swagger-ui
+----
+
+The Swagger UI is available at http://localhost:8080[localhost:8080].
+
+=== Method 2
+
+There is also a https://chrome.google.com/webstore/detail/swagger-ui-console/ljlmonadebogfjabhkppkoohjkjclfai?hl=en[Chrome extension] you can use instead of running a Docker container.
+
+Paste https://raw.githubusercontent.com/aerogear/mobile-security-service/master/api/swagger.yaml[https://raw.githubusercontent.com/aerogear/mobile-security-service/master/api/swagger.yaml] and press **Explore**.
+
+== Building & Testing
+
+The `Makefile` provides commands for building and testing the code. Some dependencies are required to run these commands.
+
+== Dependencies
+
+Dependencies may be required to run some of the `Make` commands. Below are instructions on how to install them.
+
+== Developing Helpers
+=== Errcheck
+
+The https://github.com/kisielk/errcheck[errcheck] is required to run the `make errcheck` command.
+
+Install:
+
+[source,shell]
+----
+go get -u github.com/kisielk/errcheck
+----
+
+=== Commands
+
+.Commands
+|===
+| *Command*                       | *Description*
+| `make setup`                  | Downloads dependencies into `vendor`
+| `make setup_githooks`         | Symlink all Git hooks from `.githooks` into `.git/hooks`
+| `make build`                  | Compile a binary compatible with your current system into `./mobile-security-service`
+| `make build_linux`            | Compile a Linux binary into `./dist/linux_amd64/mobile-security-service`
+| `make docker_build`           | Compile a binary and create a Docker image from it.
+| `make docker_build_release`   | Compile a binary and create a Docker image with a release tag
+| `make docker_build_master`    | Compile a binary and create a Docker image tagged `master`
+| `make test`                   | Runs unit tests
+| `make test-integration`       | Runs integration tests
+| `make test-integration-cover` | Runs integration tests and outputs results to a log file
+| `make errcheck`               | Checks for unchecked errors using https://github.com/kisielk/errcheck[errcheck]
+| `make vet`                    | Examines source code and reports suspicious constructs using https://golang.org/cmd/vet/[vet]
+| `make fmt`                    | Formats code using https://golang.org/cmd/gofmt/[gofmt]
+| `make clean`                  | Removes binary compiled using `make build`
+| `make docker_push_release`    | Pushes release image to Docker image hosting repository
+| `make docker_push_master`     | Pushes master image to Docker image hosting repository
+|===
+
+== Built With
+
+* https://golang.org/[Golang] - Programming language used
+* https://echo.labstack.com/[Echo] - Web framework used
+
+== Contributing
+
+All contributions are hugely appreciated. Please see our https://aerogear.org/community/#guides[Contributing Guide] for guidelines on how to open issues and pull requests. Please check out our link:./.github/CODE_OF_CONDUCT.md[Code of Conduct] too.
+
+== Questions
+
+There are a number of ways you can get in in touch with us, please see the https://aerogear.org/community/#contact[AeroGear community].
+
