@@ -3,6 +3,9 @@ package apps
 import (
 	"net/http"
 
+	"github.com/aerogear/mobile-security-service/pkg/models"
+
+	"github.com/aerogear/mobile-security-service/pkg/httperrors"
 	"github.com/labstack/echo"
 )
 
@@ -26,8 +29,13 @@ func NewHTTPHandler(e *echo.Echo, s Service) *HTTPHandler {
 func (a *HTTPHandler) GetApps(c echo.Context) error {
 	apps, err := a.Service.GetApps(c)
 
+	// If no apps have been found, return a HTTP Status code of 204 with no response body
+	if err == models.ErrNotFound {
+		return c.NoContent(http.StatusNoContent)
+	}
+
 	if err != nil {
-		return err
+		return httperrors.GetHTTPResponseFromErr(c, err)
 	}
 
 	return c.JSON(http.StatusOK, apps)
