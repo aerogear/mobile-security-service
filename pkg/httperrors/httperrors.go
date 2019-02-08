@@ -3,6 +3,7 @@ package httperrors
 import (
 	"encoding/json"
 
+	"github.com/aerogear/mobile-security-service/pkg/models"
 	"github.com/labstack/echo"
 )
 
@@ -121,4 +122,23 @@ func HTTPError(c echo.Context, statusCode int, message string) (e error) {
 	}
 
 	return c.JSON(statusCode, resBody)
+}
+
+// GetHTTPResponseFromErr returns the mapped http error to the generic errors model.
+func GetHTTPResponseFromErr(c echo.Context, err error) (e error) {
+
+	switch err {
+	case models.ErrInternalServerError:
+		return InternalServerError(c, err.Error())
+	case models.ErrNotFound:
+		return NotFound(c, err.Error())
+	case models.ErrConflict:
+		return Conflict(c, err.Error())
+	case models.ErrBadParamInput:
+		return BadRequest(c, err.Error())
+	case models.ErrUnauthorized:
+		return Unauthorized(c, err.Error())
+	default:
+		return InternalServerError(c, "")
+	}
 }
