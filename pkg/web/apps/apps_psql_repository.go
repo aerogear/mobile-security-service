@@ -7,17 +7,13 @@ import (
 
 type (
 	// PostgreSQLRepository interface defines the methods to be implemented
-	PostgreSQLRepository interface {
-		GetApps(c echo.Context) (*[]models.App, error)
-	}
-
 	appsPostgreSQLRepository struct {
 		// TODO: Add Db connection
 	}
 )
 
 // NewPostgreSQLRepository creates a new instance of appsPostgreSQLRepository
-func NewPostgreSQLRepository() PostgreSQLRepository {
+func NewPostgreSQLRepository() Repository {
 	return &appsPostgreSQLRepository{}
 }
 

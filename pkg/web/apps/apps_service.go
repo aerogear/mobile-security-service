@@ -12,20 +12,20 @@ type (
 	}
 
 	appsService struct {
-		psqlRepository PostgreSQLRepository
+		repository Repository
 	}
 )
 
 // NewService instantiates this service
-func NewService(psqlRepository PostgreSQLRepository) Service {
+func NewService(repository Repository) Service {
 	return &appsService{
-		psqlRepository: psqlRepository,
+		repository: repository,
 	}
 }
 
 // GetApps retrieves the list of apps from the repository
 func (a *appsService) GetApps(c echo.Context) (*[]models.App, error) {
-	apps, err := a.psqlRepository.GetApps(c)
+	apps, err := a.repository.GetApps(c)
 
 	if err != nil {
 		return nil, models.ErrNotFound

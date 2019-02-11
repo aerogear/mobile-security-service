@@ -38,7 +38,7 @@ func Test_appsService_GetApps(t *testing.T) {
 
 		t.Run(tt.name, func(t *testing.T) {
 			a := &appsService{
-				psqlRepository: appsPostgreSQLRepository,
+				repository: appsPostgreSQLRepository,
 			}
 
 			got, err := a.GetApps(tt.args.c)
