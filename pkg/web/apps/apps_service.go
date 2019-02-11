@@ -1,7 +1,6 @@
 package apps
 
 import (
-	"github.com/aerogear/mobile-security-service/pkg/httperrors"
 	"github.com/aerogear/mobile-security-service/pkg/models"
 	"github.com/labstack/echo"
 )
@@ -29,7 +28,7 @@ func (a *appsService) GetApps(c echo.Context) (*[]models.App, error) {
 	apps, err := a.psqlRepository.GetApps(c)
 
 	if err != nil {
-		return nil, httperrors.NotFound(c, "No apps found")
+		return nil, models.ErrNotFound
 	}
 
 	return apps, nil
