@@ -1,6 +1,5 @@
 vendor
 .vendor-new
-.vscode
 debug
 .env
 dist
@@ -8,3 +7,34 @@ coverage*.out
 .idea/*
 mobile-security-service
 !cmd/mobile-security-service
+.vscode/*
+!.vscode/launch.json
+
+
+## ui/.gitignore
+
+# dependencies
+ui/node_modules
+ui/.pnp
+ui/.pnp.js
+
+# testing
+ui/coverage
+
+# production
+ui/build
+
+# misc
+ui/.DS_Store
+ui/.env.local
+ui/.env.development.local
+ui/.env.test.local
+ui/.env.production.local
+
+ui/npm-debug.log*
+ui/yarn-debug.log*
+ui/yarn-error.log*
+ui/yarn.lock
+
+ui/.vscode/*
+!ui/.vscode/launch.json
