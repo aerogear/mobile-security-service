@@ -1,6 +1,7 @@
 package models
 
 // App is the model struct for apps
+// swagger:model App
 type App struct {
 	ID                    string    `json:"id"`
 	AppID                 string    `json:"appId"`

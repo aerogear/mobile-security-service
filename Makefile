@@ -2,6 +2,7 @@ APP_NAME = mobile-security-service
 ORG_NAME = aerogear
 PKG = github.com/$(ORG_NAME)/$(APP_NAME)
 APP_FILE=./cmd/mobile-security-service/main.go
+APP_FILE_DIR=cmd/mobile-security-service
 TOP_SRC_DIRS = pkg
 PACKAGES     ?= $(shell sh -c "find $(TOP_SRC_DIRS) -name \\*_test.go \
                    -exec dirname {} \\; | sort | uniq")
@@ -22,6 +23,14 @@ LDFLAGS=-ldflags "-w -s -X main.Version=${TAG}"
 setup: setup_githooks
 	@echo Installing application dependencies:
 	dep ensure
+	make build_swagger_api
+
+.PHONY: build_swagger_api
+build_swagger_api:
+	@echo Installing Swagger dep:
+	go get -u github.com/go-swagger/go-swagger/cmd/swagger
+	@echo Updating Swagger api:
+	cd $(APP_FILE_DIR); swagger generate spec -m -o ../../api/swagger.yaml
 
 .PHONY: setup_githooks
 setup_githooks:

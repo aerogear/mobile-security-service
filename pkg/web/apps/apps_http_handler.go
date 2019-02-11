@@ -40,3 +40,27 @@ func (a *HTTPHandler) GetApps(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, apps)
 }
+
+// TODO: Implement
+//GetAppById returns a app with the ID in JSON format from the AppService
+func (a *HTTPHandler) GetAppById(c echo.Context) error {
+	apps, err := a.Service.GetApps()
+
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, apps)
+}
+
+// TODO: Implement
+//UpdateApp returns a app updated with the ID in JSON format from the AppService
+func (a *HTTPHandler) UpdateApp(c echo.Context) error {
+	apps, err := a.Service.GetApps()
+
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, apps)
+}
