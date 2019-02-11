@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class App extends Component {
-  render() {
+class App extends React.Component {
+  render () {
     return (
-      <div className="App">
-          <p>
+      <div className='App'>
+        <p>
             Mobile Security Service
-          </p>
+        </p>
       </div>
     );
   }

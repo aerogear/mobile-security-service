@@ -1,0 +1,7 @@
+{
+    "extends": ["react-app","standard"],
+    "rules": {
+        "semi": [2, "always"],
+        "prefer-const": [2]
+    }
+}
