@@ -25,6 +25,8 @@ setup: setup_githooks
 
 .PHONY: setup_githooks
 setup_githooks:
+	@echo Installing errcheck dependence:
+	go get -u github.com/kisielk/errcheck
 	@echo Setting up Git hooks:
 	ln -sf $$PWD/.githooks/* $$PWD/.git/hooks/
 
