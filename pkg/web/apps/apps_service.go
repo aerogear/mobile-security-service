@@ -2,13 +2,12 @@ package apps
 
 import (
 	"github.com/aerogear/mobile-security-service/pkg/models"
-	"github.com/labstack/echo"
 )
 
 type (
 	// Service defines the interface methods to be used
 	Service interface {
-		GetApps(ctx echo.Context) (*[]models.App, error)
+		GetApps() (*[]models.App, error)
 	}
 
 	appsService struct {
@@ -24,8 +23,8 @@ func NewService(repository Repository) Service {
 }
 
 // GetApps retrieves the list of apps from the repository
-func (a *appsService) GetApps(c echo.Context) (*[]models.App, error) {
-	apps, err := a.repository.GetApps(c)
+func (a *appsService) GetApps() (*[]models.App, error) {
+	apps, err := a.repository.GetApps()
 
 	if err != nil {
 		return nil, models.ErrNotFound
