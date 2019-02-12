@@ -5,16 +5,11 @@ import (
 	"testing"
 
 	"github.com/aerogear/mobile-security-service/pkg/models"
-	"github.com/labstack/echo"
 )
 
 func Test_appsService_GetApps(t *testing.T) {
-	type args struct {
-		c echo.Context
-	}
 	tests := []struct {
 		name    string
-		args    args
 		want    *[]models.App
 		wantErr bool
 	}{
@@ -38,10 +33,10 @@ func Test_appsService_GetApps(t *testing.T) {
 
 		t.Run(tt.name, func(t *testing.T) {
 			a := &appsService{
-				psqlRepository: appsPostgreSQLRepository,
+				repository: appsPostgreSQLRepository,
 			}
 
-			got, err := a.GetApps(tt.args.c)
+			got, err := a.GetApps()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("appsService.GetApps() error = %v, wantErr %v", err, tt.wantErr)
 				return

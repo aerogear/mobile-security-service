@@ -27,7 +27,7 @@ func NewHTTPHandler(e *echo.Echo, s Service) *HTTPHandler {
 
 // GetApps returns all apps as JSON from the AppService
 func (a *HTTPHandler) GetApps(c echo.Context) error {
-	apps, err := a.Service.GetApps(c)
+	apps, err := a.Service.GetApps()
 
 	// If no apps have been found, return a HTTP Status code of 204 with no response body
 	if err == models.ErrNotFound {
