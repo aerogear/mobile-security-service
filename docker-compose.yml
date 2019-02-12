@@ -6,16 +6,16 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRESQL_PASSWORD: postgres
       POSTGRESQL_USER: postgresql
-      POSTGRESQL_DATABASE: aerogear_mobile_security_service
+      POSTGRESQL_PASSWORD: postgres
+      POSTGRESQL_DATABASE: mobile_security_service
   api:
     build: .
     environment:
       PGHOST: db
-      PGUSER: postgres
+      PGUSER: postgresql
       PGPASSWORD: postgres
-      PGDATABASE: aerogear_mobile_security_service
+      PGDATABASE: mobile_security_service
     ports:
       - "3000:3000"
     depends_on:

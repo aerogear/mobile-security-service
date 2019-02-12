@@ -121,9 +121,29 @@ Now the application will use the values defined in `.env`.
 | LOG_FORMAT                       | text    | Can be one of `[text, json]`
 | ACCESS_CONTROL_ALLOW_ORIGIN      | *       | Can be multiple URL values separated with commas. Example: `ACCESS_CONTROL_ALLOW_ORIGIN=http://www.example.com,http://example.com`
 | ACCESS_CONTROL_ALLOW_CREDENTIALS | false   | Can be one of `[true, false]`
+| DBMAX_CONNECTIONS                | 100     | The maximum number of concurrent database connections the server will open
 |===
 
 == Database
+
+The database connection is configured using the table of environment variables below. These environment variables correspond to the PostgreSQL https://www.postgresql.org/docs/current/static/libpq-envars.html[libpq environment variables]. The table below shows all of the environment variables supported by the `pq` driver used in this server.
+
+.Database Configuration
+|===
+| *Variable*        | *Default*               | *Description*                                                                                                                                  
+| PGDATABASE        | mobile_security_service | The database to connect to                                                                                                                   
+| PGUSER            | postgresql              | The database user                                                                                                                            
+| PGPASSWORD        | postgres                | The database password                                                                                                                        
+| PGHOST            | localhost               | The database hostname to connect to                                                                                                          
+| PGPORT            | 5432                    | The database port to connect to                                                                                                              
+| PGSSLMODE         | disable                 | The SSL mode                                                                                                                                 
+| PGCONNECT_TIMEOUT | 5                       | The default connection timeout (seconds)                                                                                                     
+| PGAPPNAME         |                         | The [application_name](https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNECT-APPLICATION-NAME) connection parameter
+| PGSSLCERT         |                         | The [sslcert](https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNECT-SSLCERT) connection parameter.                 
+| PGSSLKEY          |                         | The [sslkey](https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNECT-SSLKEY) connection parameter.                   
+| PGSSLROOTCERT     |                         | The [sslrootcert](https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNECT-SSLROOTCERT) connection parameter
+|===         
+
 === Database Entity Relationship Diagram
 
 image::https://user-images.githubusercontent.com/1596014/52293332-7229e380-296e-11e9-9bc4-5322f0fbe0ab.png[Diagram]

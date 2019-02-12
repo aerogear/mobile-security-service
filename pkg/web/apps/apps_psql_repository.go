@@ -1,25 +1,26 @@
 package apps
 
 import (
+	"database/sql"
 	"github.com/aerogear/mobile-security-service/pkg/models"
 )
 
 type (
 	// PostgreSQLRepository interface defines the methods to be implemented
 	appsPostgreSQLRepository struct {
-		// TODO: Add Db connection
+		db *sql.DB
 	}
 )
 
 // NewPostgreSQLRepository creates a new instance of appsPostgreSQLRepository
-func NewPostgreSQLRepository() Repository {
-	return &appsPostgreSQLRepository{}
+func NewPostgreSQLRepository(db *sql.DB) Repository {
+	return &appsPostgreSQLRepository{db}
 }
 
 // GetApps retrieves all apps from the database
 func (a *appsPostgreSQLRepository) GetApps() (*[]models.App, error) {
 	app1 := models.App{
-		ID:                    1,
+		ID:                    "a0874c82-2b7f-11e9-b210-d663bd873d93",
 		AppID:                 "com.aerogear.app1",
 		AppName:               "app1",
 		NumOfDeployedVersions: 1,
