@@ -151,6 +151,14 @@
   revision = "aca44879d5644da7c5b8ec6a1115e9b6ea6c40d9"
 
 [[projects]]
+  digest = "1:bcf7a85791e7f2a7d3099085f4ccddd7105fd449a322599114c3701e0d7a510d"
+  name = "gopkg.in/DATA-DOG/go-sqlmock.v1"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "472e287dbafe67e526a3797165b64cb14f34705a"
+  version = "v1.3.2"
+
+[[projects]]
   digest = "1:718abca23a6d23b21b30197dd2c2bd2ee3ba88081b12caed1edb0d6bb5ef843a"
   name = "gopkg.in/go-playground/validator.v9"
   packages = ["."]
@@ -167,6 +175,7 @@
     "github.com/labstack/echo/middleware",
     "github.com/lib/pq",
     "github.com/sirupsen/logrus",
+    "gopkg.in/DATA-DOG/go-sqlmock.v1",
     "gopkg.in/go-playground/validator.v9",
   ]
   solver-name = "gps-cdcl"

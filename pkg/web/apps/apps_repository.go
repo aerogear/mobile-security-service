@@ -7,4 +7,5 @@ import (
 // Repository represent the app's repository contract
 type Repository interface {
 	GetApps() (*[]models.App, error)
+	GetAppVersionsByAppID(id string) (*[]models.Version, error)
 }

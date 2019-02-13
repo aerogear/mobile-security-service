@@ -8,4 +8,5 @@ var (
 	ErrConflict            = errors.New("Your Item already exists")
 	ErrBadParamInput       = errors.New("Given Param is not valid")
 	ErrUnauthorized        = errors.New("Missing or Invalid authentication token")
+	ErrDatabaseError       = errors.New("An error has occurred in the database")
 )

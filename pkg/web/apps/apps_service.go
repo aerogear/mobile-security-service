@@ -1,6 +1,7 @@
 package apps
 
 import (
+	// "github.com/sirupsen/logrus"
 	"github.com/aerogear/mobile-security-service/pkg/models"
 )
 
@@ -26,8 +27,19 @@ func NewService(repository Repository) Service {
 func (a *appsService) GetApps() (*[]models.App, error) {
 	apps, err := a.repository.GetApps()
 
+	// Check for errors and return the appropriate error to the handler
 	if err != nil {
-		return nil, models.ErrNotFound
+		return nil, err
+	}
+
+	// iterate over the list of apps and get the deployed versions for each
+	for i, app := range *apps {
+		deployedVersions, err := a.repository.GetAppVersionsByAppID(app.AppID)
+
+		if err == nil {
+			app.DeployedVersions = deployedVersions
+			(*apps)[i] = app
+		}
 	}
 
 	return apps, nil
