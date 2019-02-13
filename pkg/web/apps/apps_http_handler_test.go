@@ -328,6 +328,7 @@ func Test_httpHandler_GetActiveAppByID(t *testing.T) {
 	// make and configure a mocked Service
 	app := helpers.GetMockApp()
 
+	// Setup
 	type fields struct {
 		Service Service
 	}
@@ -348,13 +349,11 @@ func Test_httpHandler_GetActiveAppByID(t *testing.T) {
 		{
 			name:     "Get app by id should return an app",
 			id:       app.ID,
-			want:     `{"id":"7f89ce49-a736-459e-9110-e52d049fc025","appId":"com.aerogear.mobile_app_one","appName":"Mobile App One","deployedVersions":[{"id":"55ebd387-9c68-4137-a367-a12025cc2cdb","version":"1.0","appId":"com.aerogear.mobile_app_one","disabled":false,"disabledMessage":"Please contact an administrator","numOfCurrentInstalls":1,"numOfAppLaunches":2},{"id":"59ebd387-9c68-4137-a367-a12025cc1cdb","version":"1.1","appId":"com.aerogear.mobile_app_one","disabled":false,"numOfCurrentInstalls":0,"numOfAppLaunches":0},{"id":"59dbd387-9c68-4137-a367-a12025cc2cdb","version":"1.0","appId":"com.aerogear.mobile_app_two","disabled":false,"numOfCurrentInstalls":0,"numOfAppLaunches":0}]}`,
 			wantCode: 200,
 		},
 		{
 			name:     "Get app by id using an invalid id format should return an error",
 			id:       "some string that should fail",
-			want:     `{"message":"Invalid id supplied","statusCode":400}`,
 			wantCode: 400,
 		},
 	}
@@ -371,9 +370,6 @@ func Test_httpHandler_GetActiveAppByID(t *testing.T) {
 			_ = h.GetActiveAppByID(c)
 			if rec.Code != tt.wantCode {
 				t.Errorf("HTTPHandler.GetActiveAppByID() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
-			}
-			if strings.TrimSpace(rec.Body.String()) != tt.want {
-				t.Errorf("httpHandler.GetActiveAppByID() got %v, want %v", strings.TrimSpace(rec.Body.String()), tt.want)
 			}
 		})
 	}

@@ -53,7 +53,8 @@ func Setup(db *sql.DB) error {
 			app_id character varying NOT NULL REFERENCES app(app_id),
 			disabled boolean DEFAULT false NOT NULL,
 			disabled_message character varying,
-			num_of_app_launches integer DEFAULT 0 NOT NULL,
+			num_of_app_launches integer DEFAULT 1 NOT NULL,
+			last_launched_at timestamp without time zone NOT NULL default now(),
 			unique (app_id, version)
 		);
 

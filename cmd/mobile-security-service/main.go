@@ -21,6 +21,7 @@ import (
 	"github.com/aerogear/mobile-security-service/pkg/config"
 	"github.com/aerogear/mobile-security-service/pkg/db"
 	"github.com/aerogear/mobile-security-service/pkg/web/apps"
+	"github.com/aerogear/mobile-security-service/pkg/web/initclient"
 	"github.com/aerogear/mobile-security-service/pkg/web/router"
 	dotenv "github.com/joho/godotenv"
 	"github.com/labstack/echo"
@@ -99,6 +100,12 @@ func setupServer(e *echo.Echo, c config.Config, dbConn *sql.DB) {
 	appsService := apps.NewService(appsPostgreSQLRepository)
 	appsHandler := apps.NewHTTPHandler(e, appsService)
 
-	// Setup routes
+	// Setup app routes
 	router.SetAppRoutes(apiGroup, appsHandler)
+
+	// Initclient handler setup
+	initclientHandler := initclient.NewHTTPHandler(e, appsService)
+
+	// Setup initclient routes
+	router.SetInitRoutes(apiGroup, initclientHandler)
 }

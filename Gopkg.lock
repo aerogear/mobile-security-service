@@ -29,12 +29,12 @@
   version = "v0.16.0"
 
 [[projects]]
-  digest = "1:236d7e1bdb50d8f68559af37dbcf9d142d56b431c9b2176d41e2a009b664cda8"
+  digest = "1:582b704bebaa06b48c29b0cec224a6058a09c86883aaddabde889cd1a5f73e1b"
   name = "github.com/google/uuid"
   packages = ["."]
   pruneopts = "UT"
-  revision = "9b3b1e0f5f99ae461456d768e7d301a7acdaa2d8"
-  version = "v1.1.0"
+  revision = "0cd6bf5da1e1c83f8b45653022c74f71af0538a4"
+  version = "v1.1.1"
 
 [[projects]]
   digest = "1:ecd9aa82687cf31d1585d4ac61d0ba180e42e8a6182b85bd785fcca8dfeefc1b"
@@ -45,12 +45,12 @@
   version = "v1.3.0"
 
 [[projects]]
-  digest = "1:0a69a1c0db3591fcefb47f115b224592c8dfa4368b7ba9fae509d5e16cdc95c8"
+  digest = "1:31e761d97c76151dde79e9d28964a812c46efc5baee4085b86f68f0c654450de"
   name = "github.com/konsorten/go-windows-terminal-sequences"
   packages = ["."]
   pruneopts = "UT"
-  revision = "5c8c8bd35d3832f5d134ae1e1e375b69a4d25242"
-  version = "v1.0.1"
+  revision = "f55edac94c9bbba5d6182a4be46d86a2c9b5b50e"
+  version = "v1.0.2"
 
 [[projects]]
   digest = "1:efd601ad1d1189884f37ed075fadb5bbd17f1f5acf5862827247c6da56d125ba"
@@ -96,20 +96,20 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:0f96ec4151a24d7bfd4298fc13cc320a000e31b4e5431cf88e3ffc961db846fd"
+  digest = "1:2fa7b0155cd54479a755c629de26f888a918e13f8857a2c442205d825368e084"
   name = "github.com/mattn/go-colorable"
   packages = ["."]
   pruneopts = "UT"
-  revision = "efa589957cd060542a26d2dd7832fd6a6c6c3ade"
-  version = "v0.1.0"
+  revision = "3a70a971f94a22f2fa562ffcc7a0eb45f5daf045"
+  version = "v0.1.1"
 
 [[projects]]
-  digest = "1:0981502f9816113c9c8c4ac301583841855c8cf4da8c72f696b3ebedf6d0e4e5"
+  digest = "1:3bb9c8451d199650bfd303e0068d86f135952fead374ad87c09a9b8a2cc4bd7c"
   name = "github.com/mattn/go-isatty"
   packages = ["."]
   pruneopts = "UT"
-  revision = "6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c"
-  version = "v0.0.4"
+  revision = "369ecd8cea9851e459abb67eb171853e3986591e"
+  version = "v0.0.6"
 
 [[projects]]
   digest = "1:87c2e02fb01c27060ccc5ba7c5a407cc91147726f8f40b70cceeedbc52b1f3a8"
@@ -137,7 +137,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:4078ffacb97ad7cd3968cc7acd20552234a8eb70cf5c84a7bc9d85bdcfc9ff3e"
+  digest = "1:94500f8d26a25e96c151343f47cb054787a61e8a58b29b7156ae7a4ab65cac18"
   name = "golang.org/x/crypto"
   packages = [
     "acme",
@@ -145,18 +145,18 @@
     "ssh/terminal",
   ]
   pruneopts = "UT"
-  revision = "74369b46fc6756741c016591724fd1cb8e26845f"
+  revision = "8dd112bcdc25174059e45e07517d9fc663123347"
 
 [[projects]]
   branch = "master"
-  digest = "1:0d703f14f9bbbe1070ff0ce86d749dcbc9d68fb0ae554252c09bd4bb37a072e7"
+  digest = "1:4331a1ccaa56cb90dba6ddd13797c221205af5ba719cbdbd701f44532dde19ea"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "e77772198cdc3dbfcf7f2de96630204df9fd3a0b"
+  revision = "c2f5717e611cf8e89a852a41081355194d80c943"
 
 [[projects]]
   digest = "1:bcf7a85791e7f2a7d3099085f4ccddd7105fd449a322599114c3701e0d7a510d"
