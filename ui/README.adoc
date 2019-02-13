@@ -1,0 +1,34 @@
+ifdef::env-github[]
+:status:
+:outfilesuffix: .adoc
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+:table-caption!:
+endif::[]
+
+= Mobile Security Service UI
+
+== Getting Started
+
+=== Run the Server
+
+To run the app in the development mode on localhost:3000 run:
+
+[source,shell]
+----
+npm start
+----
+
+=== Run in VSCode debug mode
+
+The following steps are specific to VSCode, however you can run the project in any editor:
+
+. Open the project in VSCode
+. Run in debug mode
+
+TIP: Read how to configure VSCode chrome debugger https://code.visualstudio.com/docs/nodejs/reactjs-tutorial#_debugging-react[here].
+
+NOTE: This project was bootstrapped with https://github.com/facebook/create-react-app[Create React App].
