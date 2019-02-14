@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
 import './index.css';
-import App from './App';
+import App from './components/App';
 import configureStore from './configureStore';
 
 const preloadedState = {

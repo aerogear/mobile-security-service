@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import NavHeader from '../components/common/Header';
+import NavHeader from '../components/common/NavHeader';
 
 class Header extends Component {
-
-  render() {
-    const { user } = "Username"
+  render () {
+    console.log('navheader called');
+    const { user } = 'Username';
     const userDropdowns = [
       {
-        text: 'Logout',
+        text: 'Some Shit',
         // the sign in endpoint will perform the sign out action, and return the login page
         href: '/oauth/sign_in'
       }

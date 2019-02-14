@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
-import Header from '../containers/Header';
+import Header from '../../containers/Header';
 
-class AppDetailedView extends Component {
+class LandingPage extends Component {
   constructor () {
     super();
     this.state = {};
   }
-
   render () {
     return (
-      <div className="appdetialedview">
+      <div className="landingPage">
         <Header />
       </div>
     );
   }
 }
 
-export default AppDetailedView;
+export default LandingPage;
