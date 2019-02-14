@@ -1,25 +1,24 @@
 import React, { Component } from 'react';
+import { Table } from 'patternfly-react';
+import * as resolve from 'table-resolver';
+import { connect } from 'react-redux';
 
 class AppGridHeader extends Component {
-  constructor() {
-    super();
-    this.state = {};
-  }
-
   render() {
-    return (
-      <>
-        <thead className="appGridHeader">
-          <tr>
-            <th>App</th>
-            <th>No. Deployed Versions</th>
-            <th>No. Clients</th>
-            <th>No. App Startups</th>
-          </tr>
-        </thead>
-      </>
-    );
+    const columns = this.props.appGrid.columns;
+    console.log('columns', columns);
+    return <Table.Header headerRows={resolve.headerRows({ columns })} />;
   }
 }
 
-export default AppGridHeader;
+const mapStateToProps = (state) => {
+  return {
+    appGrid: state.appGrid
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppGridHeader);

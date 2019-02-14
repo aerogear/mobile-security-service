@@ -55,7 +55,7 @@ class AppGrid extends Component {
             }
           }}
         >
-          <Table.Header headerRows={resolve.headerRows({ columns })} />
+          <AppGridHeader />
           <Table.Body
             rows={sortedRows}
             rowKey="id"
