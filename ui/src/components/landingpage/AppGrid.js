@@ -14,7 +14,7 @@ class AppGrid extends Component {
   }
 
   render() {
-    const { rows, sortingColumns, columns } = this.props.appGrid;
+    const { sortingColumns, columns } = this.props.appGrid;
 
     return (
       <div>
