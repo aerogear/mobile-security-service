@@ -1,32 +1,46 @@
 import React, { Component } from 'react';
-import AppGridRow from './AppGridRow';
+import { connect } from 'react-redux';
+
+import { Table } from 'patternfly-react';
+import { compose } from 'recompose';
+import * as sort from 'sortabular';
+import { orderBy } from 'lodash';
 
 class AppGridRows extends Component {
-  constructor() {
-    super();
-    this.state = {};
-  }
-
   render() {
+    const { rows, sortingColumns, columns } = this.props.appGrid;
+
+    const sortedRows = compose(
+      sort.sorter({
+        columns: columns,
+        sortingColumns,
+        sort: orderBy,
+        strategy: sort.strategies.byProperty
+      })
+    )(rows);
+
     return (
-      <>
-        <tbody className="appGridRows">
-          <tr>
-            <td data-label="Repository Name">Repository 1</td>
-            <td data-label="Branches">10</td>
-            <td data-label="Pull Requests">25</td>
-            <td data-label="Workspaces">5</td>
-          </tr>
-          <tr>
-            <td data-label="Repository Name">Repository 2</td>
-            <td data-label="Branches">10</td>
-            <td data-label="Pull Requests">25</td>
-            <td data-label="Workspaces">5</td>
-          </tr>
-        </tbody>
-      </>
+      <Table.Body
+        rows={sortedRows}
+        rowKey="id"
+        onRow={() => {
+          return {
+            role: 'row'
+          };
+        }}
+      />
     );
   }
 }
 
-export default AppGridRows;
+const mapStateToProps = (state) => {
+  return {
+    appGrid: state.appGrid
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppGridRows);

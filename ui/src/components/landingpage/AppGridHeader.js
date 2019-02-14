@@ -5,15 +5,14 @@ import { connect } from 'react-redux';
 
 class AppGridHeader extends Component {
   render() {
-    const columns = this.props.appGrid.columns;
-    console.log('columns', columns);
+    const columns = this.props.columns;
     return <Table.Header headerRows={resolve.headerRows({ columns })} />;
   }
 }
 
 const mapStateToProps = (state) => {
   return {
-    appGrid: state.appGrid
+    columns: state.appGrid.columns
   };
 };
 

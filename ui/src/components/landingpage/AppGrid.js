@@ -3,16 +3,7 @@ import { connect } from 'react-redux';
 
 import AppGridHeader from './AppGridHeader';
 import AppGridRows from './AppGridRows';
-import { orderBy } from 'lodash';
-import * as resolve from 'table-resolver';
-import * as sort from 'sortabular';
-import {
-  actionHeaderCellFormatter,
-  customHeaderFormattersDefinition,
-  Table,
-  TABLE_SORT_DIRECTION
-} from 'patternfly-react';
-import { compose } from 'recompose';
+import { customHeaderFormattersDefinition, Table } from 'patternfly-react';
 
 class AppGrid extends Component {
   constructor(props) {
@@ -24,16 +15,6 @@ class AppGrid extends Component {
 
   render() {
     const { rows, sortingColumns, columns } = this.props.appGrid;
-    console.log('this.state', this.state);
-
-    const sortedRows = compose(
-      sort.sorter({
-        columns: columns,
-        sortingColumns,
-        sort: orderBy,
-        strategy: sort.strategies.byProperty
-      })
-    )(rows);
 
     return (
       <div>
@@ -56,15 +37,7 @@ class AppGrid extends Component {
           }}
         >
           <AppGridHeader />
-          <Table.Body
-            rows={sortedRows}
-            rowKey="id"
-            onRow={() => {
-              return {
-                role: 'row'
-              };
-            }}
-          />
+          <AppGridRows />
         </Table.PfProvider>
       </div>
     );
