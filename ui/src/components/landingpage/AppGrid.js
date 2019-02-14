@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import AppGridHeader from './AppGridHeader';
 import AppGridRows from './AppGridRows';
 import { orderBy } from 'lodash';
@@ -14,14 +16,6 @@ import {
   TABLE_SORT_DIRECTION
 } from 'patternfly-react';
 import { compose } from 'recompose';
-
-const mockRows = [
-  { id: 1000, app: 'App-A', versions: 3, clients: 1245, startups: 'male', birth_year: '1979', actions: null },
-  { id: 1001, app: 'App-B', versions: 4, clients: 655, startups: 'male', birth_year: '1974', actions: null },
-  { id: 1002, app: 'App-C', versions: 1, clients: 970, startups: 'female', birth_year: '1989', actions: null },
-  { id: 1003, app: 'App-D', versions: 6, clients: 255, startups: 'male', birth_year: '1990', actions: null },
-  { id: 1004, app: 'App-E', versions: 5, clients: 120, startups: 'female', birth_year: '1999', actions: null }
-];
 
 class AppGrid extends Component {
   constructor(props) {
@@ -149,7 +143,7 @@ class AppGrid extends Component {
           }
         }
       ],
-      rows: mockRows.slice(0, 6)
+      rows: this.props.apps.slice(0, 6)
     };
   }
   render() {
@@ -201,4 +195,14 @@ class AppGrid extends Component {
   }
 }
 
-export default AppGrid;
+const mapStateToProps = (state) => {
+  return {
+    apps: state.apps
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppGrid);
