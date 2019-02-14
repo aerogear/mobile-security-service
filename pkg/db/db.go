@@ -40,22 +40,31 @@ func Setup(db *sql.DB) error {
 
 	if _, err := db.Exec(`
 		CREATE TABLE IF NOT EXISTS app (
-	    	id uuid NOT NULL UNIQUE,
-	    	app_id character varying NOT NULL PRIMARY KEY,
-	    	app_name character varying,
+			id uuid NOT NULL PRIMARY KEY,
+			app_id character varying NOT NULL UNIQUE,
+			app_name character varying,
 			deleted_at timestamp without time zone
 		);
 
 		CREATE TABLE IF NOT EXISTS version (
-			id serial NOT NULL PRIMARY KEY,
-  		  	version character varying NOT NULL,
-  		  	app_id character varying NOT NULL REFERENCES app(app_id),
-  		  	disabled boolean DEFAULT false NOT NULL,
-  		  	disabled_message character varying,
-  		  	num_of_clients integer DEFAULT 0 NOT NULL,
-  		  	num_of_app_launches integer DEFAULT 0 NOT NULL,
-  		  	unique (app_id, version)
+			id uuid NOT NULL PRIMARY KEY,
+			version character varying NOT NULL,
+			app_id character varying NOT NULL REFERENCES app(app_id),
+			disabled boolean DEFAULT false NOT NULL,
+			disabled_message character varying,
+			num_of_app_launches integer DEFAULT 0 NOT NULL,
+			num_of_clients integer DEFAULT 0 NOT NULL,
+			unique (app_id, version)
 		);
+
+		CREATE TABLE IF NOT EXISTS device (
+			id uuid NOT NULL PRIMARY KEY,
+			version_id uuid NOT NULL REFERENCES version(id),
+			device_id character varying NOT NULL,
+			device_type character varying NOT NULL,
+			device_version character varying NOT NULL
+		);
+
 	`); err != nil {
 		return err
 	}

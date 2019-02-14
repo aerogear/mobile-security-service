@@ -146,7 +146,7 @@ The database connection is configured using the table of environment variables b
 
 === Database Entity Relationship Diagram
 
-image::https://user-images.githubusercontent.com/1596014/52293332-7229e380-296e-11e9-9bc4-5322f0fbe0ab.png[Diagram]
+image::https://user-images.githubusercontent.com/1596014/52791402-c44ec100-3060-11e9-99df-5ba9d0fb9527.png[Diagram]
 
 https://www.lucidchart.com/documents/edit/6293d791-8f70-47bb-8136-438128c27129/0[Lucid Chart Link]
 
