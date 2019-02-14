@@ -1,7 +1,6 @@
 package apps
 
 import (
-	"database/sql"
 	"testing"
 
 	"github.com/aerogear/mobile-security-service/pkg/models"
@@ -29,10 +28,9 @@ func Test_appsPostgreSQLRepository_GetApps_WillReturnTwoApps(t *testing.T) {
 
 	mockApps := []models.App{
 		models.App{
-			ID:        "7f89ce49-a736-459e-9110-e52d049fc025",
-			AppID:     "com.aerogear.mobile_app_one",
-			AppName:   "Mobile App One",
-			DeletedAt: sql.NullString{String: "2011-01-01 00:00:00", Valid: true},
+			ID:      "7f89ce49-a736-459e-9110-e52d049fc025",
+			AppID:   "com.aerogear.mobile_app_one",
+			AppName: "Mobile App One",
 		},
 		models.App{
 			ID:      "7f89ce49-a736-459e-9110-e52d049fc026",
@@ -48,11 +46,13 @@ func Test_appsPostgreSQLRepository_GetApps_WillReturnTwoApps(t *testing.T) {
 
 	cols := []string{"id", "app_id", "app_name", "deleted_at"}
 
+	timestamp := "2019-02-15T09:38:33+00:00"
+
 	// Insert an app where the deleted_at column is set
-	sqlmock.NewRows(cols).AddRow(mockApps[0].ID, mockApps[0].AppID, mockApps[0].AppName, mockApps[0].DeletedAt)
+	sqlmock.NewRows(cols).AddRow(mockApps[0].ID, mockApps[0].AppID, mockApps[0].AppName, timestamp)
 
 	// Insert 2 apps which are not soft deleted
-	rows := sqlmock.NewRows(cols).AddRow(mockApps[1].ID, mockApps[1].AppID, mockApps[1].AppName, mockApps[1].DeletedAt).AddRow(mockApps[2].ID, mockApps[2].AppID, mockApps[2].AppName, mockApps[2].DeletedAt)
+	rows := sqlmock.NewRows(cols).AddRow(mockApps[1].ID, mockApps[1].AppID, mockApps[1].AppName, "").AddRow(mockApps[2].ID, mockApps[2].AppID, mockApps[2].AppName, "")
 
 	// We should expected to get back only the apps which are not soft deleted
 	mock.ExpectQuery(getAppsQueryString).WillReturnRows(rows)
@@ -79,27 +79,26 @@ func Test_appsPostgreSQLRepository_GetApps_WillReturnNoApps(t *testing.T) {
 
 	mockApps := []models.App{
 		models.App{
-			ID:        "7f89ce49-a736-459e-9110-e52d049fc025",
-			AppID:     "com.aerogear.mobile_app_one",
-			AppName:   "Mobile App One",
-			DeletedAt: sql.NullString{String: "2011-01-01 00:00:00", Valid: true},
+			ID:      "7f89ce49-a736-459e-9110-e52d049fc025",
+			AppID:   "com.aerogear.mobile_app_one",
+			AppName: "Mobile App One",
 		},
 		models.App{
-			ID:        "7f89ce49-a736-459e-9110-e52d049fc026",
-			AppID:     "com.aerogear.mobile_app_three",
-			AppName:   "Mobile App Two",
-			DeletedAt: sql.NullString{String: "2011-01-01 00:00:00", Valid: true},
+			ID:      "7f89ce49-a736-459e-9110-e52d049fc026",
+			AppID:   "com.aerogear.mobile_app_three",
+			AppName: "Mobile App Two",
 		},
 		models.App{
-			ID:        "7f89ce49-a736-459e-9110-e52d049fc027",
-			AppID:     "com.aerogear.mobile_app_three",
-			AppName:   "Mobile App Three",
-			DeletedAt: sql.NullString{String: "2011-01-01 00:00:00", Valid: true},
+			ID:      "7f89ce49-a736-459e-9110-e52d049fc027",
+			AppID:   "com.aerogear.mobile_app_three",
+			AppName: "Mobile App Three",
 		},
 	}
 
+	timestamp := "2019-02-15T09:38:33+00:00"
+
 	// Insert 3 apps which are soft deleted
-	sqlmock.NewRows([]string{"id", "app_id", "app_name", "deleted_at"}).AddRow(mockApps[0].ID, mockApps[0].AppID, mockApps[0].AppName, mockApps[0].DeletedAt).AddRow(mockApps[1].ID, mockApps[1].AppID, mockApps[1].AppName, mockApps[1].DeletedAt).AddRow(mockApps[2].ID, mockApps[2].AppID, mockApps[2].AppName, mockApps[2].DeletedAt)
+	sqlmock.NewRows([]string{"id", "app_id", "app_name", "deleted_at"}).AddRow(mockApps[0].ID, mockApps[0].AppID, mockApps[0].AppName, timestamp).AddRow(mockApps[1].ID, mockApps[1].AppID, mockApps[1].AppName, timestamp).AddRow(mockApps[2].ID, mockApps[2].AppID, mockApps[2].AppName, timestamp)
 
 	// We should expected 0 apps
 	mock.ExpectQuery(getAppsQueryString).WillReturnRows(&sqlmock.Rows{})
