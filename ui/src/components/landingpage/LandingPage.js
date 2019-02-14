@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import Header from './Header'
-import AppGrid from "./AppGrid";
+import Header from '../../containers/Header'
+import AppGrid from "../../containers/AppGrid";
 
 class LandingPage extends Component {
   constructor() {
