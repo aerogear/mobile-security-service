@@ -18,7 +18,8 @@ jobs:
     
     steps:
       - checkout
-      - run: ./scripts/commit-filter-check.sh 
+      - run: ./scripts/commit-filter-check.sh
+      - run: ./scripts/check-if-swagger-api-file-is-update.sh
       - run: go get github.com/mattn/goveralls
       - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       - run: make build
