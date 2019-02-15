@@ -18,6 +18,7 @@ ui/.pnp.js
 
 # testing
 ui/coverage
+api/original.yaml
 
 # production
 ui/build
