@@ -59,6 +59,10 @@ docker_build_release:
 docker_build_master:
 	docker build -t $(DOCKER_MASTER_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
 
+.PHONY: test-all
+test-all: test-unit
+	make test-integration
+
 .PHONY: test
 test: test-unit
 

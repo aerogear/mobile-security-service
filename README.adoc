@@ -203,6 +203,7 @@ go get -u github.com/kisielk/errcheck
 | `make docker_build_release`   | Compile a binary and create a Docker image with a release tag
 | `make docker_build_master`    | Compile a binary and create a Docker image tagged `master`
 | `make test`                   | Runs unit tests
+| `make test-all`               | Runs all tests
 | `make test-integration`       | Runs integration tests
 | `make test-integration-cover` | Runs integration tests and outputs results to a log file
 | `make errcheck`               | Checks for unchecked errors using https://github.com/kisielk/errcheck[errcheck]
