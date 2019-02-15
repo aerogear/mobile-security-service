@@ -1,12 +1,12 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 class Header extends Component {
-  constructor() {
+  constructor () {
     super();
     this.state = {};
   }
 
-  render() {
+  render () {
     return (
       <div className="header">
         <h1>Mobile Apps</h1>

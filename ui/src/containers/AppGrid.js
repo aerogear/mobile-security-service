@@ -6,14 +6,14 @@ import AppGridRows from './AppGridRows';
 import { customHeaderFormattersDefinition, Table } from 'patternfly-react';
 
 class AppGrid extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     // enables our custom header formatters extensions to reactabular
     this.customHeaderFormatters = customHeaderFormattersDefinition;
   }
 
-  render() {
+  render () {
     const { sortingColumns, columns } = this.props.appGrid;
 
     return (

@@ -7,7 +7,7 @@ import * as sort from 'sortabular';
 import { orderBy } from 'lodash';
 
 class AppGridRows extends Component {
-  render() {
+  render () {
     const { rows, sortingColumns, columns } = this.props.appGrid;
 
     const sortedRows = compose(

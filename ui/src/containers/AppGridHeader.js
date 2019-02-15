@@ -4,7 +4,7 @@ import * as resolve from 'table-resolver';
 import { connect } from 'react-redux';
 
 class AppGridHeader extends Component {
-  render() {
+  render () {
     const columns = this.props.columns;
     return <Table.Header headerRows={resolve.headerRows({ columns })} />;
   }

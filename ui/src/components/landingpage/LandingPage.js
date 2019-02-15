@@ -1,14 +1,14 @@
-import React, { Component } from "react";
-import Header from '../../containers/Header'
-import AppGrid from "../../containers/AppGrid";
+import React, { Component } from 'react';
+import Header from '../../containers/Header';
+import AppGrid from '../../containers/AppGrid';
 
 class LandingPage extends Component {
-  constructor() {
+  constructor () {
     super();
     this.state = {};
   }
 
-  render() {
+  render () {
     return (
       <div className="landingPage">
         <Header />

@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import LandingPage from './landingpage/LandingPage'
-import '../../node_modules/patternfly-react/dist/css/patternfly-react.css'
+import React from 'react';
+import LandingPage from './landingpage/LandingPage';
+import '../../node_modules/patternfly-react/dist/css/patternfly-react.css';
 
 class App extends React.Component {
   render () {
