@@ -28,7 +28,7 @@ func (a *appsPostgreSQLRepository) GetApps() (*[]models.App, error) {
 		NumOfAppLaunches:      1,
 	}
 
-	apps := []models.App{app1}
+	apps := []models.App{app}
 
 	return &apps
 }
