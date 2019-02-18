@@ -59,7 +59,7 @@ commit_message_check (){
             echo $gitmessage
             echo " "
             rm shafile.txt >/dev/null 2>&1
-            set -o errexit
+            exit 1
       else
             echo "$messagecheck"
             echo "'$i' commit message passed"
