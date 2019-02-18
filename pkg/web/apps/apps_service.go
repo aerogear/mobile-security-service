@@ -5,8 +5,8 @@ import (
 )
 
 type (
-	// Service defines the interface methods to be used
-	Service interface {
+	// AppService defines the interface methods to be used
+	AppService interface {
 		GetApps() (*[]models.App, error)
 	}
 
@@ -16,7 +16,7 @@ type (
 )
 
 // NewService instantiates this service
-func NewService(repository Repository) Service {
+func NewService(repository Repository) AppService {
 	return &appsService{
 		repository: repository,
 	}

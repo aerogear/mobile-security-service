@@ -12,12 +12,12 @@ import (
 type (
 	// HTTPHandler instance
 	HTTPHandler struct {
-		Service Service
+		Service AppService
 	}
 )
 
 // NewHTTPHandler returns a new instance of app.Handler
-func NewHTTPHandler(e *echo.Echo, s Service) *HTTPHandler {
+func NewHTTPHandler(e *echo.Echo, s AppService) *HTTPHandler {
 	handler := &HTTPHandler{
 		Service: s,
 	}
