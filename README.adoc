@@ -180,6 +180,38 @@ The `Makefile` provides commands for building and testing the code. Some depende
 
 Dependencies may be required to run some of the `Make` commands. Below are instructions on how to install them.
 
+== Creating mock for Interfaces
+This project is using teh dependency https://github.com/matryer/moq[moq]. Follow the steps below to use it.
+
+=== Install the required dependencies
+
+Run the following command.
+
+[source,shell]
+----
+$ go get -u github.com/matryer/moq
+----
+
+=== Creating mocks
+
+Execute the following command to generate the mock file.
+
+[source,shell]
+----
+$ moq -out <name_of_mock_file> . <name of interface>
+----
+
+Following an example.
+
+[source,shell]
+----
+moq -out app_service_mock.go . Service
+----
+
+IMPORTANT: This command need to be executed from the same directory where the interface is or it need to be called as, for example, `$ moq -out ./pkg/web/apps/app_service_mock.go ./pkg/web/apps Service`
+
+NOTE: See more over it in the Readme of https://github.com/matryer/moq[moq]
+
 == Developing Helpers
 === Errcheck
 
