@@ -129,7 +129,7 @@ func TestGetHTTPResponseFromErr(t *testing.T) {
 			b := []byte(rec.Body.String())
 
 			if err := json.Unmarshal(b, &responseBody); err != nil {
-				t.Errorf("BadRequest() could not unmarshal response body into errResponse struct")
+				t.Errorf("GetHTTPResponseFromErr() could not unmarshal response body into errResponse struct")
 			}
 		})
 	}

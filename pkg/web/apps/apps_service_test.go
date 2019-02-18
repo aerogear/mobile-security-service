@@ -8,14 +8,17 @@ import (
 
 func Test_appsService_GetApps(t *testing.T) {
 
+	numOfDeployedVersions := 5
+	numOfAppLaunches := 1000
+	numOfClients := 9000
 	// mock data
 	app := models.App{
 		ID:                    "a0874c82-2b7f-11e9-b210-d663bd873d93",
 		AppID:                 "com.aerogear.app1",
 		AppName:               "app1",
-		NumOfDeployedVersions: 1,
-		NumOfAppLaunches:      1,
-		NumOfClients:          1,
+		NumOfDeployedVersions: &numOfDeployedVersions,
+		NumOfAppLaunches:      &numOfAppLaunches,
+		NumOfClients:          &numOfClients,
 	}
 
 	// make and configure a mocked Service

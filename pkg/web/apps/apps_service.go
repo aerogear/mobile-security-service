@@ -32,15 +32,5 @@ func (a *appsService) GetApps() (*[]models.App, error) {
 		return nil, err
 	}
 
-	// iterate over the list of apps and get the deployed versions for each
-	for i, app := range *apps {
-		deployedVersions, err := a.repository.GetAppVersionsByAppID(app.AppID)
-
-		if err == nil {
-			app.DeployedVersions = deployedVersions
-			(*apps)[i] = app
-		}
-	}
-
 	return apps, nil
 }

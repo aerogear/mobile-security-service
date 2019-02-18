@@ -80,10 +80,12 @@ func (a *appsPostgreSQLRepository) GetAppVersionsByAppID(id string) (*[]models.V
 	// iterate over the rows and add the data to the array of versions
 	for rows.Next() {
 		var v models.Version
-		if err = rows.Scan(&v.ID, &v.Version, &v.AppID, &v.Disabled, &v.DisabledMessage, &v.NumOfClients, &v.NumOfAppLaunches); err != nil {
+		var disabledMessage sql.NullString
+		if err = rows.Scan(&v.ID, &v.Version, &v.AppID, &v.Disabled, &disabledMessage, &v.NumOfClients, &v.NumOfAppLaunches); err != nil {
 			log.Error(err)
 		}
 
+		v.DisabledMessage = disabledMessage.String
 		versions = append(versions, v)
 	}
 
