@@ -161,6 +161,8 @@ A https://swagger.io/[Swagger] UI can be used for testing the mobile-security-se
 docker run -p 8080:8080 -e API_URL=https://raw.githubusercontent.com/aerogear/mobile-security-service/master/api/swagger.yaml swaggerapi/swagger-ui
 ----
 
+Or you can run the container with `docker-compose up -d swagger`.
+
 The Swagger UI is available at http://localhost:8080[localhost:8080].
 
 === Method 2
@@ -168,6 +170,7 @@ The Swagger UI is available at http://localhost:8080[localhost:8080].
 There is also a https://chrome.google.com/webstore/detail/swagger-ui-console/ljlmonadebogfjabhkppkoohjkjclfai?hl=en[Chrome extension] you can use instead of running a Docker container.
 
 Paste https://raw.githubusercontent.com/aerogear/mobile-security-service/master/api/swagger.yaml[https://raw.githubusercontent.com/aerogear/mobile-security-service/master/api/swagger.yaml] and press **Explore**.
+
 
 == Building & Testing
 
