@@ -18,7 +18,9 @@ jobs:
     
     steps:
       - checkout
-      - run: ./scripts/commit-filter-check.sh 
+      - run: ./scripts/commit-filter-check.sh
+      - run: ./scripts/code-check-install-dep.sh
+      - run: ./scripts/code-check.sh
       - run: go get github.com/mattn/goveralls
       - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       - run: make build
