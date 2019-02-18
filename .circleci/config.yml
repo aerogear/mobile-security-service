@@ -20,9 +20,12 @@ jobs:
       - checkout
       - run: ./scripts/commit-filter-check.sh
       - run: ./scripts/check-if-swagger-api-file-is-update.sh
+      - run: ./scripts/code-check-install-dep.sh
+      - run: ./scripts/code-check.sh
       - run: go get github.com/mattn/goveralls
       - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       - run: make build
+      - run: make test-unit
       - run: make test-integration-cover
       - run: /go/bin/goveralls -coverprofile=coverage-all.out -service=circle-ci -repotoken=IccwXNeC1niB17Du1tCWu8LA0wd7uBbCh
 
