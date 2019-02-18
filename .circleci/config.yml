@@ -19,6 +19,7 @@ jobs:
     steps:
       - checkout
       - run: ./scripts/commit-filter-check.sh
+      - run: ./scripts/check-if-swagger-api-file-is-update.sh
       - run: ./scripts/code-check-install-dep.sh
       - run: ./scripts/code-check.sh
       - run: go get github.com/mattn/goveralls

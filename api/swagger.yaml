@@ -33,12 +33,36 @@ definitions:
         x-go-name: NumOfDeployedVersions
     type: object
     x-go-package: github.com/aerogear/mobile-security-service/pkg/models
+  Device:
+    properties:
+      deviceId:
+        type: string
+        x-go-name: DeviceID
+      deviceType:
+        type: string
+        x-go-name: DeviceType
+      deviceVersion:
+        type: string
+        x-go-name: DeviceVersion
+      id:
+        type: string
+        x-go-name: ID
+      versionId:
+        type: string
+        x-go-name: VersionID
+    type: object
+    x-go-package: github.com/aerogear/mobile-security-service/pkg/models
   Version:
-    description: Version is the model struct for Version
+    description: Version model
     properties:
       appId:
         type: string
         x-go-name: AppID
+      devices:
+        items:
+          $ref: '#/definitions/Device'
+        type: array
+        x-go-name: Devices
       disabled:
         type: boolean
         x-go-name: Disabled
@@ -46,13 +70,12 @@ definitions:
         type: string
         x-go-name: DisabledMessage
       id:
-        format: int64
-        type: integer
+        type: string
         x-go-name: ID
-      numOfAppStartups:
+      numOfAppLaunches:
         format: int64
         type: integer
-        x-go-name: NumOfAppStartups
+        x-go-name: NumOfAppLaunches
       numOfClients:
         format: int64
         type: integer
