@@ -30,5 +30,5 @@ func (a *appsPostgreSQLRepository) GetApps() (*[]models.App, error) {
 
 	apps := []models.App{app1}
 
-	return &apps, nil
+	return &apps
 }
