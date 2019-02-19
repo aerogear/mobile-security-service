@@ -92,7 +92,7 @@ func Conflict(c echo.Context, message string) (e error) {
 	return HTTPError(c, 409, message)
 }
 
-// Gone response code (404) indicates that access
+// Gone response code (410) indicates that access
 // to the target resource is no longer available
 // at the origin server and that this condition
 // is likely to be permanent.
@@ -100,7 +100,7 @@ func Gone(c echo.Context, message string) (e error) {
 	return HTTPError(c, 410, message)
 }
 
-// UnsupportedMediaType response code (404) indicates that
+// UnsupportedMediaType response code (415) indicates that
 // the server refuses to accept the request because the
 // payload format is in an unsupported format.
 func UnsupportedMediaType(c echo.Context, message string) (e error) {
@@ -141,7 +141,7 @@ func HTTPError(c echo.Context, statusCode int, message string) (e error) {
 	_, err := json.Marshal(resBody)
 
 	if err != nil {
-		return
+		return err
 	}
 
 	return c.JSON(statusCode, resBody)
