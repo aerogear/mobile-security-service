@@ -9,7 +9,7 @@ import (
 	"github.com/aerogear/mobile-security-service/pkg/config"
 	"github.com/aerogear/mobile-security-service/pkg/db"
 
-	"github.com/aerogear/mobile-security-service/pkg/models"
+	"github.com/aerogear/mobile-security-service/models"
 )
 
 func Test_appsPostgreSQLRepository_GetApps(t *testing.T) {

@@ -1,7 +1,7 @@
 package apps
 
 import (
-	"github.com/aerogear/mobile-security-service/pkg/models"
+	"github.com/aerogear/mobile-security-service/models"
 	"reflect"
 	"testing"
 )

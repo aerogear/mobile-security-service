@@ -2,7 +2,7 @@ package apps
 
 import (
 	"database/sql"
-	"github.com/aerogear/mobile-security-service/pkg/models"
+	"github.com/aerogear/mobile-security-service/models"
 )
 
 type (

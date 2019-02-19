@@ -3,7 +3,7 @@ package apps
 import (
 	"net/http"
 
-	"github.com/aerogear/mobile-security-service/pkg/models"
+	"github.com/aerogear/mobile-security-service/models"
 
 	"github.com/aerogear/mobile-security-service/pkg/httperrors"
 	"github.com/labstack/echo"

@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/aerogear/mobile-security-service/pkg/models"
+	"github.com/aerogear/mobile-security-service/models"
 	"github.com/labstack/echo"
 )
 

@@ -32,7 +32,7 @@ definitions:
         type: integer
         x-go-name: NumOfDeployedVersions
     type: object
-    x-go-package: github.com/aerogear/mobile-security-service/pkg/models
+    x-go-package: github.com/aerogear/mobile-security-service/models
   Device:
     properties:
       deviceId:
@@ -51,7 +51,7 @@ definitions:
         type: string
         x-go-name: VersionID
     type: object
-    x-go-package: github.com/aerogear/mobile-security-service/pkg/models
+    x-go-package: github.com/aerogear/mobile-security-service/models
   Version:
     description: Version model
     properties:
@@ -84,10 +84,10 @@ definitions:
         type: string
         x-go-name: Version
     type: object
-    x-go-package: github.com/aerogear/mobile-security-service/pkg/models
+    x-go-package: github.com/aerogear/mobile-security-service/models
 info:
   description: This is a sample mobile security service server.
-  title: API for Mobile Security Service
+  title: API for Mobile Security AppService
   version: 0.1.0
 paths:
   /apps:
