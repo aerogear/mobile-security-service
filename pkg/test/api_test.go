@@ -53,7 +53,7 @@ func TestHTTPHandler_GetAppsEndpoint(t *testing.T) {
 				t.Errorf("Got an unexpected error during GET request to /apps")
 			}
 			if res.StatusCode != tt.wantStatus {
-				t.Errorf("HTTPHandler.GetApps() statusCode = %v, wantStatus %v", res.StatusCode, tt.wantStatus)
+				t.Errorf("AppsHTTPHandler.GetApps() statusCode = %v, wantStatus %v", res.StatusCode, tt.wantStatus)
 			}
 		})
 	}

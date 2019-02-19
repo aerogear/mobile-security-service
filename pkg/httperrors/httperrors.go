@@ -39,7 +39,7 @@ var codes = map[int]string{
 	500: "Internal Server Error",
 	501: "Not Implemented",
 	502: "Bad Gateway",
-	503: "Service Unavailable",
+	503: "AppService Unavailable",
 	504: "Gateway Time-out",
 	505: "HTTP Version Not Supported",
 	506: "Variant Also Negotiates",

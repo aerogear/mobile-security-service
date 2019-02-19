@@ -25,7 +25,7 @@ func NewRouter(config config.Config) *echo.Echo {
 	return router
 }
 
-func SetAppRoutes(r *echo.Group, appsHandler *apps.HTTPHandler) {
+func SetAppRoutes(r *echo.Group, appsHandler *apps.AppsHTTPHandler) {
 	// swagger:operation GET /apps App
 	//
 	// Returns root level information for all apps

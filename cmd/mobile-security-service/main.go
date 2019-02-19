@@ -1,4 +1,4 @@
-// API for Mobile Security Service
+// API for Mobile Security AppService
 //
 // This is a sample mobile security service server.
 //
