@@ -3,7 +3,7 @@ package router
 import (
 	"github.com/aerogear/mobile-security-service/pkg/config"
 	"github.com/aerogear/mobile-security-service/pkg/web/apps"
-	"github.com/aerogear/mobile-security-service/pkg/web/middleware"
+	"github.com/aerogear/mobile-security-service/middleware"
 	"github.com/labstack/echo"
 	"gopkg.in/go-playground/validator.v9"
 )
