@@ -131,15 +131,6 @@ func TestGetHTTPResponseFromErr(t *testing.T) {
 			if err := json.Unmarshal(b, &responseBody); err != nil {
 				t.Errorf("BadRequest() could not unmarshal response body into errResponse struct")
 			}
-
-			// // if the message arg is empty, use the default for this status code
-			// if tt.args.message == "" {
-			// 	tt.args.message = codes[tt.wantCode]
-			// }
-
-			// if tt.args.message != responseBody.Message {
-			// 	t.Errorf("BadRequest() wantMessage = %v, got = %v", tt.args.message, responseBody.Message)
-			// }
 		})
 	}
 }
