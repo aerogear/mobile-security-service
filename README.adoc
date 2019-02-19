@@ -138,10 +138,10 @@ The database connection is configured using the table of environment variables b
 | PGPORT            | 5432                    | The database port to connect to                                                                                                              
 | PGSSLMODE         | disable                 | The SSL mode                                                                                                                                 
 | PGCONNECT_TIMEOUT | 5                       | The default connection timeout (seconds)                                                                                                     
-| PGAPPNAME         |                         | The [application_name](https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNECT-APPLICATION-NAME) connection parameter
-| PGSSLCERT         |                         | The [sslcert](https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNECT-SSLCERT) connection parameter.                 
-| PGSSLKEY          |                         | The [sslkey](https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNECT-SSLKEY) connection parameter.                   
-| PGSSLROOTCERT     |                         | The [sslrootcert](https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNECT-SSLROOTCERT) connection parameter
+| PGAPPNAME         |                         | The https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNECT-APPLICATION-NAME[application_name] connection parameter
+| PGSSLCERT         |                         | The https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNECT-SSLCERT[sslcert] connection parameter.
+| PGSSLKEY          |                         | The https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNECT-SSLKEY[sslkey] connection parameter.
+| PGSSLROOTCERT     |                         | The https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNECT-SSLROOTCERT[sslrootcert] connection parameter
 |===         
 
 === Database Entity Relationship Diagram
