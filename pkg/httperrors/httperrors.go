@@ -54,46 +54,69 @@ type errResponse struct {
 	StatusCode int    `json:"statusCode"`
 }
 
+// BadRequest response code (400) indicates that the
+// server could not understand the request due to invalid syntax.
 func BadRequest(c echo.Context, message string) (e error) {
 	return HTTPError(c, 400, message)
 }
 
+// Unauthorized response code (401) indicates that the
+// request has not been applied because it lacks valid
+// authentication credentials for the target resource.
 func Unauthorized(c echo.Context, message string) (e error) {
 	return HTTPError(c, 401, message)
 }
 
+// Forbidden response code (403) indicates that the
+// server understood the request but refuses to authorize it.
 func Forbidden(c echo.Context, message string) (e error) {
 	return HTTPError(c, 403, message)
 }
 
+// NotFound response code (404) indicates that
+// the server can't find the requested resource
 func NotFound(c echo.Context, message string) (e error) {
 	return HTTPError(c, 404, message)
 }
 
+// MethodNotAllowed response code (405) indicates
+// that the request method is known by the server
+// but is not supported by the target resource.
 func MethodNotAllowed(c echo.Context, message string) (e error) {
 	return HTTPError(c, 405, message)
 }
 
-func NotAcceptable(c echo.Context, message string) (e error) {
-	return HTTPError(c, 406, message)
-}
-
+// Conflict response code (409) indicates a
+// request conflict with current state of the server.
 func Conflict(c echo.Context, message string) (e error) {
 	return HTTPError(c, 409, message)
 }
 
+// Gone response code (410) indicates that access
+// to the target resource is no longer available
+// at the origin server and that this condition
+// is likely to be permanent.
 func Gone(c echo.Context, message string) (e error) {
 	return HTTPError(c, 410, message)
 }
 
+// UnsupportedMediaType response code (415) indicates that
+// the server refuses to accept the request because the
+// payload format is in an unsupported format.
 func UnsupportedMediaType(c echo.Context, message string) (e error) {
-	return HTTPError(c, 404, message)
+	return HTTPError(c, 415, message)
 }
 
+// InternalServerError response code (500) indicates that
+// the server encountered an unexpected condition that
+// prevented it from fulfilling the request.
 func InternalServerError(c echo.Context, message string) (e error) {
 	return HTTPError(c, 500, message)
 }
 
+// NotImplemented response code (501) indicates that the
+// server does not support the functionality required
+// to fulfill the request.
 func NotImplemented(c echo.Context, message string) (e error) {
 	return HTTPError(c, 501, message)
 }
@@ -118,7 +141,7 @@ func HTTPError(c echo.Context, statusCode int, message string) (e error) {
 	_, err := json.Marshal(resBody)
 
 	if err != nil {
-		return
+		return err
 	}
 
 	return c.JSON(statusCode, resBody)
