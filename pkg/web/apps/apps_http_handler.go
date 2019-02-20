@@ -10,23 +10,27 @@ import (
 )
 
 type (
-	// HTTPHandler instance
-	HTTPHandler struct {
+	HTTPHandler interface {
+		GetApps(c echo.Context) error
+		GetAppByID(c echo.Context) error
+		UpdateApp(c echo.Context) error
+	}
+
+	// httpHandler instance
+	httpHandler struct {
 		Service Service
 	}
 )
 
 // NewHTTPHandler returns a new instance of app.Handler
-func NewHTTPHandler(e *echo.Echo, s Service) *HTTPHandler {
-	handler := &HTTPHandler{
+func NewHTTPHandler(e *echo.Echo, s Service) HTTPHandler {
+	return &httpHandler{
 		Service: s,
 	}
-
-	return handler
 }
 
 // GetApps returns all apps as JSON from the AppService
-func (a *HTTPHandler) GetApps(c echo.Context) error {
+func (a *httpHandler) GetApps(c echo.Context) error {
 	apps, err := a.Service.GetApps()
 
 	// If no apps have been found, return a HTTP Status code of 204 with no response body
@@ -43,7 +47,8 @@ func (a *HTTPHandler) GetApps(c echo.Context) error {
 
 // GetAppByID returns an app with the ID in JSON format from the AppService
 // TODO: Implement
-func (a *HTTPHandler) GetAppByID(c echo.Context) error {
+//GetAppById returns a app with the ID in JSON format from the AppService
+func (a *httpHandler) GetAppByID(c echo.Context) error {
 	apps, err := a.Service.GetApps()
 
 	if err != nil {
@@ -55,7 +60,8 @@ func (a *HTTPHandler) GetAppByID(c echo.Context) error {
 
 // UpdateApp returns an app updated with the ID in JSON format from the AppService
 // TODO: Implement
-func (a *HTTPHandler) UpdateApp(c echo.Context) error {
+//UpdateApp returns a app updated with the ID in JSON format from the AppService
+func (a *httpHandler) UpdateApp(c echo.Context) error {
 	apps, err := a.Service.GetApps()
 
 	if err != nil {

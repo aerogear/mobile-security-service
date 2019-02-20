@@ -28,7 +28,7 @@ func NewRouter(config config.Config) *echo.Echo {
 }
 
 // SetAppRoutes binds the route address to their handler functions
-func SetAppRoutes(r *echo.Group, appsHandler *apps.HTTPHandler) {
+func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	// swagger:operation GET /apps App
 	//
 	// Returns root level information for all apps
