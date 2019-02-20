@@ -106,6 +106,11 @@ func TestGetHTTPResponseFromErr(t *testing.T) {
 			wantCode: http.StatusUnauthorized,
 		},
 		{
+			name:     "GetHTTPResponseFromErr() should return a HTTP error with a 500 status code when ErrDatabaseError supplied",
+			args:     models.ErrDatabaseError,
+			wantCode: http.StatusInternalServerError,
+		},
+		{
 			name:     "GetHTTPResponseFromErr() should return a default HTTP error with a 500 status code",
 			args:     errors.New(""),
 			wantCode: http.StatusInternalServerError,
