@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class AppDetailedView extends Component {
+class AppDetailedView extends React.Component {
   constructor () {
     super();
     this.state = {};
@@ -8,8 +8,8 @@ class AppDetailedView extends Component {
 
   render () {
     return (
-      <div>
-        <p>App Detailed View</p>
+      <div className="app-detailed-view">
+        <p>App Detailed View 2</p>
       </div>
     );
   };
