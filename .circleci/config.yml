@@ -19,15 +19,17 @@ jobs:
     steps:
       - checkout
       - run: ./scripts/commit-filter-check.sh
-      - run: ./scripts/check-if-swagger-api-file-is-update.sh
       - run: ./scripts/code-check-install-dep.sh
       - run: ./scripts/code-check.sh
       - run: go get github.com/mattn/goveralls
       - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+      # The script need to be called after the dep be installed and before the make build command
+      - run: ./scripts/check-if-swagger-api-file-is-update.sh  # Do not move it for after the make build
       - run: make build
       - run: make test-unit
       - run: make test-integration-cover
       - run: /go/bin/goveralls -coverprofile=coverage-all.out -service=circle-ci -repotoken=IccwXNeC1niB17Du1tCWu8LA0wd7uBbCh
+
 
   docker_push_master:
     working_directory: /go/src/github.com/aerogear/mobile-security-service
