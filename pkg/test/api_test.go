@@ -3,19 +3,28 @@
 package test
 
 import (
-	"github.com/aerogear/mobile-security-service/pkg/web/apps"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/aerogear/mobile-security-service/pkg/web/apps"
 
 	"github.com/aerogear/mobile-security-service/pkg/config"
 	"github.com/aerogear/mobile-security-service/pkg/db"
 	"github.com/aerogear/mobile-security-service/pkg/web/router"
 )
 
-func setUpTestServer() *httptest.Server {
+// Sets up a test server so we can connect to the endpoints through HTTP calls
+func setupTestServer() *httptest.Server {
 	config := config.Get()
+
 	dbConn, _ := db.Connect(config.DB.ConnectionString, config.DB.MaxConnections)
+	// set up tables
+	db.Setup(dbConn)
+
+	// seed the database with some sample data
+	seedDatabase(dbConn)
+
 	e := router.NewRouter(config)
 
 	apiRoutePrefix := config.ApiRoutePrefix
@@ -33,7 +42,7 @@ func setUpTestServer() *httptest.Server {
 }
 
 func TestHTTPHandler_GetAppsEndpoint(t *testing.T) {
-	server := setUpTestServer()
+	server := setupTestServer()
 
 	tests := []struct {
 		name       string
@@ -41,7 +50,7 @@ func TestHTTPHandler_GetAppsEndpoint(t *testing.T) {
 	}{
 		{
 			name:       "GetApps() should return a 200 status code with an array of data",
-			wantStatus: http.StatusOK,
+			wantStatus: 200,
 		},
 	}
 	for _, tt := range tests {

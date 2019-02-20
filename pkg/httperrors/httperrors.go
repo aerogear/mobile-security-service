@@ -161,6 +161,8 @@ func GetHTTPResponseFromErr(c echo.Context, err error) (e error) {
 		return BadRequest(c, err.Error())
 	case models.ErrUnauthorized:
 		return Unauthorized(c, err.Error())
+	case models.ErrDatabaseError:
+		return InternalServerError(c, err.Error())
 	default:
 		return InternalServerError(c, "")
 	}
