@@ -19,7 +19,7 @@ func Init(e *echo.Echo, c config.Config) {
 		Index: "index.html",
 		Skipper: func(context echo.Context) bool {
 			// We don't want to return the SPA if any api/* is called, it should act like a normal API.
-			return strings.HasPrefix(context.Request().URL.Path, c.ApiRoutePrefix)
+			return strings.HasPrefix(context.Request().URL.Path, c.APIRoutePrefix)
 		},
 		Browse: false,
 	}))

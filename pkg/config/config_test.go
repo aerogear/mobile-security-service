@@ -16,7 +16,7 @@ func TestGet(t *testing.T) {
 			AllowCredentials: false,
 		},
 		StaticFilesDir: "",
-		ApiRoutePrefix: "/api",
+		APIRoutePrefix: "/api",
 		DB: DBConfig{
 			ConnectionString: "connect_timeout=5 dbname=mobile_security_service host=localhost password=postgres port=5432 sslmode=disable user=postgresql",
 			MaxConnections:   100,
@@ -43,7 +43,7 @@ func TestGet(t *testing.T) {
 					AllowCredentials: false,
 				},
 				StaticFilesDir: "static",
-				ApiRoutePrefix: "/api",
+				APIRoutePrefix: "/api",
 				DB: DBConfig{
 					ConnectionString: "connect_timeout=5 dbname=mobile_security_service host=localhost password=postgres port=5432 sslmode=disable user=postgresql",
 					MaxConnections:   100,

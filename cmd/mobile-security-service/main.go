@@ -91,8 +91,8 @@ func connectDatabase(c config.Config) *sql.DB {
 // Invoke handlers, services and repositories here
 func setupServer(e *echo.Echo, c config.Config, dbConn *sql.DB) {
 	// Prefix api routes
-	apiRoutePrefix := c.ApiRoutePrefix
-	apiGroup := e.Group(apiRoutePrefix)
+	APIRoutePrefix := c.APIRoutePrefix
+	apiGroup := e.Group(APIRoutePrefix)
 
 	// App handler setup
 	appsPostgreSQLRepository := apps.NewPostgreSQLRepository(dbConn)

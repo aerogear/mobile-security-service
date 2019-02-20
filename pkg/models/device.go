@@ -1,7 +1,6 @@
 package models
 
 // Device model
-
 // swagger:model Device
 type Device struct {
 	ID            string `json:"id"`

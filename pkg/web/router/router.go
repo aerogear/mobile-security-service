@@ -8,23 +8,26 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
-type RequestValidator struct {
+type requestValidator struct {
 	validator *validator.Validate
 }
 
-func (v *RequestValidator) Validate(i interface{}) error {
+// Validate validates structs and individual fields based on tags.
+func (v *requestValidator) Validate(i interface{}) error {
 	return v.validator.Struct(i)
 }
 
+// NewRouter creates and returns a new instance of the Echo framework
 func NewRouter(config config.Config) *echo.Echo {
 	router := echo.New()
 
 	middleware.Init(router, config)
 
-	router.Validator = &RequestValidator{validator: validator.New()}
+	router.Validator = &requestValidator{validator: validator.New()}
 	return router
 }
 
+// SetAppRoutes binds the route address to their handler functions
 func SetAppRoutes(r *echo.Group, appsHandler *apps.HTTPHandler) {
 	// swagger:operation GET /apps App
 	//
@@ -65,7 +68,7 @@ func SetAppRoutes(r *echo.Group, appsHandler *apps.HTTPHandler) {
 	//     description: Invalid id supplied
 	//   404:
 	//     description: App not found
-	r.GET("/apps/{id}", appsHandler.GetAppById) // TODO: Implement correctly the call of the method passing the parameters
+	r.GET("/apps/{id}", appsHandler.GetAppByID) // TODO: Implement correctly the call of the method passing the parameters
 
 	// swagger:operation PUT /apps/{id} App
 	//
