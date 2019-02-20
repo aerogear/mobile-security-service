@@ -27,8 +27,8 @@ func setupTestServer() *httptest.Server {
 
 	e := router.NewRouter(config)
 
-	apiRoutePrefix := config.ApiRoutePrefix
-	apiGroup := e.Group(apiRoutePrefix)
+	APIRoutePrefix := config.APIRoutePrefix
+	apiGroup := e.Group(APIRoutePrefix)
 
 	// App handler setup
 	appsPostgreSQLRepository := apps.NewPostgreSQLRepository(dbConn)

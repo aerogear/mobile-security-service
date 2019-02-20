@@ -8,26 +8,30 @@ import (
 	"strings"
 )
 
+// Config defines the top level server configuration properties
 type Config struct {
 	ListenAddress  string
 	LogLevel       string
 	LogFormat      string
 	CORS           CORSConfig
 	StaticFilesDir string
-	ApiRoutePrefix string
+	APIRoutePrefix string
 	DB             DBConfig
 }
 
+// CORSConfig defines the CORS (Cross Origin Resouce Sharing) configuration properties
 type CORSConfig struct {
 	AllowOrigins     []string
 	AllowCredentials bool
 }
 
+// DBConfig defines the database configuration properties
 type DBConfig struct {
 	ConnectionString string
 	MaxConnections   int
 }
 
+// Get the Config struct
 func Get() Config {
 	return Config{
 		ListenAddress: fmt.Sprintf(":%v", getEnvInt("PORT", 3000)),
@@ -38,7 +42,7 @@ func Get() Config {
 			AllowCredentials: getEnvBool("ACCESS_CONTROL_ALLOW_CREDENTIALS", false),
 		},
 		StaticFilesDir: getEnv("STATIC_FILES_DIR", ""),
-		ApiRoutePrefix: "/api", //should start with a "/",
+		APIRoutePrefix: "/api", //should start with a "/",
 		DB: DBConfig{
 			ConnectionString: getDBConnectionString(),
 			MaxConnections:   getEnvInt("DB_MAX_CONNECTIONS", 100),

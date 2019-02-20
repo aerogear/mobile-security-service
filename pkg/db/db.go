@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	// Import the PostgreSQL driver which is used in the background
 	_ "github.com/lib/pq"
 )
 
