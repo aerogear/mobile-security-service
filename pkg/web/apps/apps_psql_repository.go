@@ -9,6 +9,11 @@ import (
 )
 
 type (
+	// Service defines the interface methods to be used
+	AppPostgreSQLRepository interface {
+		GetApps() (*[]models.App, error)
+	}
+
 	// PostgreSQLRepository interface defines the methods to be implemented
 	appsPostgreSQLRepository struct {
 		db *sql.DB
