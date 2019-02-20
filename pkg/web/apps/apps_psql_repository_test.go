@@ -13,12 +13,17 @@ var (
 	getAppsQueryString = `SELECT a.id,a.app_id,a.app_name,
 	COALESCE\(COUNT\(DISTINCT v.id\),0\) as num_of_deployed_versions,
 	COALESCE\(SUM\(DISTINCT v.num_of_app_launches\),0\) as num_of_app_launches,
-	COALESCE\(SUM\(DISTINCT v.num_of_clients\),0\) as num_of_clients
+	COALESCE\(COUNT\(DISTINCT d.id\),0\) as num_of_current_installs
 	FROM app as a LEFT JOIN version as v on a.app_id = v.app_id 
+	LEFT JOIN device as d on v.id = d.version_id 
 	WHERE a.deleted_at IS NULL 
 	GROUP BY a.id;`
 
-	getAppVersionsQueryString = `SELECT id,version,app_id,disabled,disabled_message,num_of_clients,num_of_app_launches FROM version WHERE app_id = \$1`
+	getAppVersionsQueryString = `SELECT v.id,v.version,v.id, v.disabled, v.disabled_message, v.num_of_app_launches,
+	COALESCE\(COUNT\(DISTINCT d.id\),0\) as num_of_current_installs
+	FROM version as v LEFT JOIN device as d on v.id = d.version_id
+	WHERE v.app_id = \$1 
+	GROUP BY v.id;`
 )
 
 func Test_appsPostgreSQLRepository_GetApps_WillReturnTwoApps(t *testing.T) {
@@ -94,7 +99,7 @@ func Test_appsPostgreSQLRepository_GetAppVersionsByAppID(t *testing.T) {
 
 	defer db.Close()
 
-	cols := []string{"id", "version", "app_id", "disabled", "disabled_message", "num_of_clients", "num_of_app_launches"}
+	cols := []string{"id", "version", "app_id", "disabled", "disabled_message", "num_of_app_launches"}
 
 	// App ID which we expect to return the versions for
 	appID := "com.aerogear.mobile_app_one"
@@ -103,12 +108,12 @@ func Test_appsPostgreSQLRepository_GetAppVersionsByAppID(t *testing.T) {
 
 	// Add the expected return data to the mock database
 	rows := sqlmock.NewRows(cols).
-		AddRow(mockVersions[0].ID, mockVersions[0].Version, mockVersions[0].AppID, mockVersions[0].Disabled, mockVersions[0].DisabledMessage, mockVersions[0].NumOfClients, mockVersions[0].NumOfAppLaunches).
-		AddRow(mockVersions[1].ID, mockVersions[1].Version, mockVersions[1].AppID, mockVersions[1].Disabled, mockVersions[1].DisabledMessage, mockVersions[1].NumOfClients, mockVersions[1].NumOfAppLaunches)
+		AddRow(mockVersions[0].ID, mockVersions[0].Version, mockVersions[0].AppID, mockVersions[0].Disabled, mockVersions[0].DisabledMessage, mockVersions[0].NumOfAppLaunches).
+		AddRow(mockVersions[1].ID, mockVersions[1].Version, mockVersions[1].AppID, mockVersions[1].Disabled, mockVersions[1].DisabledMessage, mockVersions[1].NumOfAppLaunches)
 
 	// Add some extra rows
 	sqlmock.NewRows(cols).
-		AddRow(mockVersions[2].ID, mockVersions[0].Version, mockVersions[2].AppID, mockVersions[2].Disabled, mockVersions[2].DisabledMessage, mockVersions[2].NumOfClients, mockVersions[2].NumOfAppLaunches)
+		AddRow(mockVersions[2].ID, mockVersions[0].Version, mockVersions[2].AppID, mockVersions[2].Disabled, mockVersions[2].DisabledMessage, mockVersions[2].NumOfAppLaunches)
 
 	mock.ExpectQuery(``).WithArgs(appID).WillReturnRows(rows)
 
@@ -135,15 +140,15 @@ func Test_appsPostgreSQLRepository_GetAppVersions_WillReturnNoAppVersions(t *tes
 
 	mockVersions := test.GetMockAppVersionList()
 
-	cols := []string{"id", "version", "app_id", "disabled", "disabled_message", "num_of_clients", "num_of_app_launches"}
+	cols := []string{"id", "version", "app_id", "disabled", "disabled_message", "num_of_app_launches"}
 
 	// App ID which we expect to return the versions for
 	appID := "com.aerogear.mobile_app_ten"
 
 	// Add the expected return data to the mock database
 	sqlmock.NewRows(cols).
-		AddRow(mockVersions[0].ID, mockVersions[0].Version, mockVersions[0].AppID, mockVersions[0].Disabled, mockVersions[0].DisabledMessage, mockVersions[0].NumOfClients, mockVersions[0].NumOfAppLaunches).
-		AddRow(mockVersions[1].ID, mockVersions[1].Version, mockVersions[1].AppID, mockVersions[1].Disabled, mockVersions[1].DisabledMessage, mockVersions[1].NumOfClients, mockVersions[1].NumOfAppLaunches)
+		AddRow(mockVersions[0].ID, mockVersions[0].Version, mockVersions[0].AppID, mockVersions[0].Disabled, mockVersions[0].DisabledMessage, mockVersions[0].NumOfAppLaunches).
+		AddRow(mockVersions[1].ID, mockVersions[1].Version, mockVersions[1].AppID, mockVersions[1].Disabled, mockVersions[1].DisabledMessage, mockVersions[1].NumOfAppLaunches)
 
 	mock.ExpectQuery(getAppVersionsQueryString).WithArgs(appID).WillReturnRows(&sqlmock.Rows{})
 
