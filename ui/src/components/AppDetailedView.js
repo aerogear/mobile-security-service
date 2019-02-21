@@ -1,4 +1,5 @@
 import React from 'react';
+import Header from './common/Header';
 
 class AppDetailedView extends React.Component {
   constructor () {
@@ -9,7 +10,7 @@ class AppDetailedView extends React.Component {
   render () {
     return (
       <div className="app-detailed-view">
-        <p>App Detailed View 2</p>
+        <Header />
       </div>
     );
   };

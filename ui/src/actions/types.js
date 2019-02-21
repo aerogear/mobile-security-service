@@ -3,3 +3,4 @@ export const GET_APPS = 'GET_APPS';
 export const APPS_REQUEST = 'APPS_REQUEST';
 export const APPS_SUCCESS = 'APPS_SUCCESS';
 export const APPS_FAILURE = 'APPS_FAILURE';
+export const TOGGLE_HEADER_DROPDOWN = 'TOGGLE_HEADER_DROPDOWN';
