@@ -31,4 +31,26 @@ The following steps are specific to VSCode, however you can run the project in a
 
 TIP: Read how to configure VSCode chrome debugger https://code.visualstudio.com/docs/nodejs/reactjs-tutorial#_debugging-react[here].
 
+=== Testing
+
+To run tests locally run:
+[source,shell]
+----
+npm test
+----
+
+Follow the output in order to run the desired test
+
+== A note on testing packages
+
+Tests are written using two packages
+
+* https://jestjs.io[Jest]
+* Enzyme
+
+Enzyme is used to https://airbnb.io/enzyme/docs/api/shallow.html#shallow-rendering-api[shallow render] components in order to unit test
+Jest is used for running the tests. e.g. [expect|https://jestjs.io/docs/en/expect].
+
+TIP: Read more on testing using react-scripts https://facebook.github.io/create-react-app/docs/running-tests[here].
+
 NOTE: This project was bootstrapped with https://github.com/facebook/create-react-app[Create React App].
