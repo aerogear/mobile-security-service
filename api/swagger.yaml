@@ -34,6 +34,7 @@ definitions:
     type: object
     x-go-package: github.com/aerogear/mobile-security-service/pkg/models
   Device:
+    description: Device model
     properties:
       deviceId:
         type: string
@@ -52,27 +53,6 @@ definitions:
         x-go-name: VersionID
     type: object
     x-go-package: github.com/aerogear/mobile-security-service/pkg/models
-  NullString:
-    description: |-
-      var s NullString
-      err := db.QueryRow("SELECT name FROM foo WHERE id=?", id).Scan(&s)
-      ...
-      if s.Valid {
-      use s.String
-      } else {
-      NULL value
-      }
-    properties:
-      String:
-        type: string
-      Valid:
-        type: boolean
-    title: |-
-      NullString represents a string that may be null.
-      NullString implements the Scanner interface so
-      it can be used as a scan destination:
-    type: object
-    x-go-package: database/sql
   Version:
     description: Version model
     properties:
@@ -88,7 +68,8 @@ definitions:
         type: boolean
         x-go-name: Disabled
       disabledMessage:
-        $ref: '#/definitions/NullString'
+        type: string
+        x-go-name: DisabledMessage
       id:
         type: string
         x-go-name: ID
