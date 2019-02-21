@@ -54,13 +54,13 @@ func Setup(db *sql.DB) error {
 			disabled boolean DEFAULT false NOT NULL,
 			disabled_message character varying,
 			num_of_app_launches integer DEFAULT 0 NOT NULL,
-			num_of_clients integer DEFAULT 0 NOT NULL,
 			unique (app_id, version)
 		);
 
 		CREATE TABLE IF NOT EXISTS device (
 			id uuid NOT NULL PRIMARY KEY,
 			version_id uuid NOT NULL REFERENCES version(id),
+			app_id character varying NOT NULL,
 			device_id character varying NOT NULL,
 			device_type character varying NOT NULL,
 			device_version character varying NOT NULL

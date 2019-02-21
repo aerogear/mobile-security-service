@@ -26,8 +26,9 @@ func (a *appsPostgreSQLRepository) GetApps() (*[]models.App, error) {
 	SELECT a.id,a.app_id,a.app_name,
 	COALESCE(COUNT(DISTINCT v.id),0) as num_of_deployed_versions,
 	COALESCE(SUM(DISTINCT v.num_of_app_launches),0) as num_of_app_launches,
-	COALESCE(SUM(DISTINCT v.num_of_clients),0) as num_of_clients
+	COALESCE(COUNT(DISTINCT d.id),0) as num_of_current_installs
 	FROM app as a LEFT JOIN version as v on a.app_id = v.app_id 
+	LEFT JOIN device as d on v.id = d.version_id 
 	WHERE a.deleted_at IS NULL 
 	GROUP BY a.id;`)
 
@@ -46,7 +47,7 @@ func (a *appsPostgreSQLRepository) GetApps() (*[]models.App, error) {
 	apps := []models.App{}
 	for rows.Next() {
 		var a models.App
-		if err = rows.Scan(&a.ID, &a.AppID, &a.AppName, &a.NumOfDeployedVersions, &a.NumOfAppLaunches, &a.NumOfClients); err != nil {
+		if err = rows.Scan(&a.ID, &a.AppID, &a.AppName, &a.NumOfDeployedVersions, &a.NumOfAppLaunches, &a.NumOfCurrentInstalls); err != nil {
 			log.Error(err)
 		}
 
@@ -61,7 +62,12 @@ func (a *appsPostgreSQLRepository) GetApps() (*[]models.App, error) {
 }
 
 func (a *appsPostgreSQLRepository) GetAppVersionsByAppID(id string) (*[]models.Version, error) {
-	rows, err := a.db.Query(`SELECT id,version,app_id,disabled,disabled_message,num_of_clients,num_of_app_launches FROM version WHERE app_id = $1`, id)
+	rows, err := a.db.Query(`
+	SELECT v.id,v.version,v.id, v.disabled, v.disabled_message, v.num_of_app_launches,
+	COALESCE(COUNT(DISTINCT d.id),0) as num_of_current_installs
+	FROM version as v LEFT JOIN device as d on v.id = d.version_id
+	WHERE v.app_id = $1 
+	GROUP BY v.id;`, id)
 
 	if err != nil {
 		log.Error(err)
@@ -81,7 +87,7 @@ func (a *appsPostgreSQLRepository) GetAppVersionsByAppID(id string) (*[]models.V
 	for rows.Next() {
 		var v models.Version
 		var disabledMessage sql.NullString
-		if err = rows.Scan(&v.ID, &v.Version, &v.AppID, &v.Disabled, &disabledMessage, &v.NumOfClients, &v.NumOfAppLaunches); err != nil {
+		if err = rows.Scan(&v.ID, &v.Version, &v.AppID, &v.Disabled, &disabledMessage, &v.NumOfCurrentInstalls, &v.NumOfAppLaunches); err != nil {
 			log.Error(err)
 		}
 

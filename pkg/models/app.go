@@ -7,7 +7,7 @@ type App struct {
 	AppID                 string     `json:"appId"`
 	AppName               string     `json:"appName"`
 	NumOfDeployedVersions *int       `json:"numOfDeployedVersions,omitempty"`
-	NumOfClients          *int       `json:"numOfClients"`
+	NumOfCurrentInstalls  *int       `json:"numOfCurrentInstalls"`
 	NumOfAppLaunches      *int       `json:"numOfAppLaunches"`
 	DeployedVersions      *[]Version `json:"deployedVersions,omitempty"`
 }

@@ -23,10 +23,10 @@ definitions:
         format: int64
         type: integer
         x-go-name: NumOfAppLaunches
-      numOfClients:
+      numOfCurrentInstalls:
         format: int64
         type: integer
-        x-go-name: NumOfClients
+        x-go-name: NumOfCurrentInstalls
       numOfDeployedVersions:
         format: int64
         type: integer
@@ -77,10 +77,10 @@ definitions:
         format: int64
         type: integer
         x-go-name: NumOfAppLaunches
-      numOfClients:
+      numOfCurrentInstalls:
         format: int64
         type: integer
-        x-go-name: NumOfClients
+        x-go-name: NumOfCurrentInstalls
       version:
         type: string
         x-go-name: Version
