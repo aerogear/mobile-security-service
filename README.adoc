@@ -286,11 +286,13 @@ Execute the following command to generate the mock file.
 $ moq -out <name_of_mock_file> . <name of interface>
 ----
 
+IMPORTANT: The name of the mock file must be <name of interface file> + _mock_test.go. Otherwise, the cover report will count the mock files.
+
 Following an example.
 
 [source,shell]
 ----
-moq -out app_service_mock.go . Service
+moq -out app_service_mock_test.go . Service
 ----
 
 IMPORTANT: This command need to be executed from the same directory where the interface is or it need to be called as, for example, `$ moq -out ./pkg/web/apps/app_service_mock.go ./pkg/web/apps Service`
