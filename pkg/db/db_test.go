@@ -3,133 +3,68 @@
 package db
 
 import (
-	"database/sql"
+	"github.com/stretchr/testify/assert"
 	"testing"
 
 	"github.com/aerogear/mobile-security-service/pkg/config"
 	_ "github.com/lib/pq"
 )
 
+// Connect() should successfully make a connection to the database and return the connection
 func TestConnect(t *testing.T) {
 	config := config.Get()
+	s := config.DB.ConnectionString
+	i := config.DB.MaxConnections
 
-	type args struct {
-		connString     string
-		maxConnections int
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *sql.DB
-		wantErr bool
-	}{
-		{
-			name: "Connect() should successfully make a connection to the database and return the connection",
-			args: args{
-				config.DB.ConnectionString,
-				config.DB.MaxConnections,
-			},
-			wantErr: false,
-		},
-		{
-			name: "Connect() should return an error when invalid database connection string is supplied",
-			args: args{
-				"connect_timeout=5 dbname=mobile_security_service_test host=localhost password=postgres port=5432 sslmode=disable user=postgresql",
-				config.DB.MaxConnections,
-			},
-			wantErr: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			dbConn, err := Connect(tt.args.connString, tt.args.maxConnections)
+	// Assertions
+	got, err := Connect(s, i)
+	assert.NotNil(t, got)
+	assert.Nil(t, err)
+}
 
-			if dbConn == nil && !tt.wantErr {
-				t.Errorf("Connect() expected database connection to be returned")
-			}
+//Connect() should return an error when invalid database connection string is supplied
+func TestConnectError(t *testing.T) {
+	config := config.Get()
+	invalidConnectionString := "connect_timeout=5 dbname=mobile_security_service_test host=localhost password=postgres port=5432 sslmode=disable user=postgresql"
+	i := config.DB.MaxConnections
 
-			if dbConn != nil && !tt.wantErr {
-				err = dbConn.Ping()
-
-				if err != nil {
-					t.Errorf("Could not ping database after successfully connecting: %v", err)
-				}
-			}
-
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Connect() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
+	// Assertions
+	got, err := Connect(invalidConnectionString, i)
+	assert.Nil(t, got)
+	assert.NotNil(t, err)
 }
 
 func TestSetup(t *testing.T) {
 	config := config.Get()
+	s := config.DB.ConnectionString
+	i := config.DB.MaxConnections
+	db, err := Connect(s, i)
+	assert.NoError(t, Setup(db))
 
-	type args struct {
-		connString     string
-		maxConnections int
+	// Assertions
+	assert.NotNil(t, db)
+	assert.Nil(t, err)
+
+	// These tests only need to be checked if we have a valid database connection
+	if db != nil {
+		var exists bool
+		assert.NoError(t, db.QueryRow("SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'app');").Scan(&exists))
+		assert.True(t, exists)
+		assert.NoError(t, db.QueryRow("SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'version');").Scan(&exists))
+		assert.True(t, exists)
+		assert.NoError(t, db.QueryRow("SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'device');").Scan(&exists))
+		assert.True(t, exists)
 	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-		wantDB  bool
-	}{
-		{
-			name: "Setup() should return an error when using invalid database connection",
-			args: args{
-				connString:     "connect_timeout=5 dbname=mobile_security_service_test host=localhost password=postgres port=5432 sslmode=disable user=postgresql",
-				maxConnections: 10,
-			},
-			wantErr: true,
-		},
-		{
-			name: "Setup() should be return a valid database connection",
-			args: args{
-				connString:     config.DB.ConnectionString,
-				maxConnections: config.DB.MaxConnections,
-			},
-			wantErr: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+}
 
-			db, err := Connect(tt.args.connString, tt.args.maxConnections)
+//Setup() should return an error when using invalid database connection
+func TestSetupError(t *testing.T) {
+	config := config.Get()
+	invalidConnectionString := "connect_timeout=5 dbname=mobile_security_service_test host=localhost password=postgres port=5432 sslmode=disable user=postgresql"
+	i := config.DB.MaxConnections
+	db, err := Connect(invalidConnectionString, i)
 
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Connect() error = %v, wantErr %v", err, tt.wantErr)
-			}
-
-			if err := Setup(db); (err != nil) != tt.wantErr {
-				t.Errorf("Setup() error = %v, wantErr %v", err, tt.wantErr)
-			}
-
-			// These tests only need to be checked if we have a valid database connection
-			if db != nil {
-				var exists bool
-
-				err = db.QueryRow("SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'app');").Scan(&exists)
-
-				if err != nil {
-					t.Errorf("Database returned an error while checking if table exists: %v", err.Error())
-				}
-
-				if !exists {
-					t.Error("Expected table app does not exist")
-				}
-
-				err = db.QueryRow("SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'version');").Scan(&exists)
-
-				if err != nil {
-					t.Errorf("Database returned an error while checking if table exists: %v", err.Error())
-				}
-
-				if !exists {
-					t.Error("Expected table version does not exist")
-				}
-			}
-		})
-	}
+	assert.NotNil(t, err);
+	errS := Setup(db)
+	assert.NotNil(t, errS)
 }
