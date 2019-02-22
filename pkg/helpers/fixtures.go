@@ -58,3 +58,12 @@ func GetMockAppVersionList() []models.Version {
 
 	return versions
 }
+
+// GetMockAppL returns some dummy app
+func GetMockApp() *models.App {
+	return &models.App{
+		ID:      "7f89ce49-a736-459e-9110-e52d049fc025",
+		AppID:   "com.aerogear.mobile_app_one",
+		AppName: "Mobile App One",
+	}
+}
