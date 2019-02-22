@@ -1,17 +1,15 @@
 // +build integration
 
-package test
+package router
 
 import (
+	"github.com/aerogear/mobile-security-service/pkg/config"
+	"github.com/aerogear/mobile-security-service/pkg/db"
+	"github.com/aerogear/mobile-security-service/pkg/helpers"
+	"github.com/aerogear/mobile-security-service/pkg/web/apps"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/aerogear/mobile-security-service/pkg/web/apps"
-
-	"github.com/aerogear/mobile-security-service/pkg/config"
-	"github.com/aerogear/mobile-security-service/pkg/db"
-	"github.com/aerogear/mobile-security-service/pkg/web/router"
 )
 
 // Sets up a test server so we can connect to the endpoints through HTTP calls
@@ -23,9 +21,9 @@ func setupTestServer() *httptest.Server {
 	db.Setup(dbConn)
 
 	// seed the database with some sample data
-	seedDatabase(dbConn)
+	helpers.SeedDatabase(dbConn)
 
-	e := router.NewRouter(config)
+	e := NewRouter(config)
 
 	APIRoutePrefix := config.APIRoutePrefix
 	apiGroup := e.Group(APIRoutePrefix)
@@ -36,7 +34,7 @@ func setupTestServer() *httptest.Server {
 	appsHandler := apps.NewHTTPHandler(e, appsService)
 
 	// Setup routes
-	router.SetAppRoutes(apiGroup, appsHandler)
+	SetAppRoutes(apiGroup, appsHandler)
 
 	return httptest.NewServer(e)
 }

@@ -3,7 +3,7 @@ package apps
 import (
 	"testing"
 
-	"github.com/aerogear/mobile-security-service/pkg/test"
+	"github.com/aerogear/mobile-security-service/pkg/helpers"
 
 	"github.com/aerogear/mobile-security-service/pkg/models"
 	sqlmock "gopkg.in/DATA-DOG/go-sqlmock.v1"
@@ -34,7 +34,7 @@ func Test_appsPostgreSQLRepository_GetApps_WillReturnTwoApps(t *testing.T) {
 
 	defer db.Close()
 
-	mockApps := test.GetMockAppList()
+	mockApps := helpers.GetMockAppList()
 
 	cols := []string{"id", "app_id", "app_name", "deleted_at"}
 
@@ -71,7 +71,7 @@ func Test_appsPostgreSQLRepository_GetApps_WillReturnNoApps(t *testing.T) {
 
 	timestamp := "2019-02-15T09:38:33+00:00"
 
-	mockApps := test.GetMockAppList()
+	mockApps := helpers.GetMockAppList()
 
 	// Insert 3 apps which are soft deleted
 	sqlmock.NewRows([]string{"id", "app_id", "app_name", "deleted_at"}).AddRow(mockApps[0].ID, mockApps[0].AppID, mockApps[0].AppName, timestamp).AddRow(mockApps[1].ID, mockApps[1].AppID, mockApps[1].AppName, timestamp).AddRow(mockApps[2].ID, mockApps[2].AppID, mockApps[2].AppName, timestamp)
@@ -104,7 +104,7 @@ func Test_appsPostgreSQLRepository_GetAppVersionsByAppID(t *testing.T) {
 	// App ID which we expect to return the versions for
 	appID := "com.aerogear.mobile_app_one"
 
-	mockVersions := test.GetMockAppVersionList()
+	mockVersions := helpers.GetMockAppVersionList()
 
 	// Add the expected return data to the mock database
 	rows := sqlmock.NewRows(cols).
@@ -138,7 +138,7 @@ func Test_appsPostgreSQLRepository_GetAppVersions_WillReturnNoAppVersions(t *tes
 
 	defer db.Close()
 
-	mockVersions := test.GetMockAppVersionList()
+	mockVersions := helpers.GetMockAppVersionList()
 
 	cols := []string{"id", "version", "app_id", "disabled", "disabled_message", "num_of_app_launches"}
 
