@@ -9,3 +9,8 @@ func IsValidUUID(id string) bool {
 	_, err := uuid.Parse(id)
 	return err == nil
 }
+
+func GetUUID() string {
+	value := uuid.New().String()
+	return value
+}

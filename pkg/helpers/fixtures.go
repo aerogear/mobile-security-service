@@ -70,3 +70,10 @@ func GetMockAppVersionList() []models.Version {
 
 	return versions
 }
+
+//Get version strut for the disable all.
+func GetMockAppVersionForDisableAll() models.Version {
+	return models.Version{
+		DisabledMessage: "Please contact an administrator",
+	}
+}

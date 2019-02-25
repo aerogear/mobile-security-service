@@ -9,8 +9,11 @@ import (
 )
 
 var (
-	lockServiceMockGetAppByID sync.RWMutex
-	lockServiceMockGetApps    sync.RWMutex
+	lockServiceMockDisableAllAppVersionsByAppID sync.RWMutex
+	lockServiceMockGetAppByID                   sync.RWMutex
+	lockServiceMockGetApps                      sync.RWMutex
+	lockServiceMockUnbindingAppByAppID          sync.RWMutex
+	lockServiceMockUpdateAppVersions            sync.RWMutex
 )
 
 // Ensure, that ServiceMock does implement Service.
@@ -23,11 +26,20 @@ var _ Service = &ServiceMock{}
 //
 //         // make and configure a mocked Service
 //         mockedService := &ServiceMock{
+//             DisableAllAppVersionsByAppIDFunc: func(id string, message string) error {
+// 	               panic("mock out the DisableAllAppVersionsByAppID method")
+//             },
 //             GetAppByIDFunc: func(ID string) (*models.App, error) {
 // 	               panic("mock out the GetAppByID method")
 //             },
 //             GetAppsFunc: func() (*[]models.App, error) {
 // 	               panic("mock out the GetApps method")
+//             },
+//             UnbindingAppByAppIDFunc: func(appID string) error {
+// 	               panic("mock out the UnbindingAppByAppID method")
+//             },
+//             UpdateAppVersionsFunc: func(versions []models.Version) error {
+// 	               panic("mock out the UpdateAppVersions method")
 //             },
 //         }
 //
@@ -36,14 +48,30 @@ var _ Service = &ServiceMock{}
 //
 //     }
 type ServiceMock struct {
+	// DisableAllAppVersionsByAppIDFunc mocks the DisableAllAppVersionsByAppID method.
+	DisableAllAppVersionsByAppIDFunc func(id string, message string) error
+
 	// GetAppByIDFunc mocks the GetAppByID method.
 	GetAppByIDFunc func(ID string) (*models.App, error)
 
 	// GetAppsFunc mocks the GetApps method.
 	GetAppsFunc func() (*[]models.App, error)
 
+	// UnbindingAppByAppIDFunc mocks the UnbindingAppByAppID method.
+	UnbindingAppByAppIDFunc func(appID string) error
+
+	// UpdateAppVersionsFunc mocks the UpdateAppVersions method.
+	UpdateAppVersionsFunc func(versions []models.Version) error
+
 	// calls tracks calls to the methods.
 	calls struct {
+		// DisableAllAppVersionsByAppID holds details about calls to the DisableAllAppVersionsByAppID method.
+		DisableAllAppVersionsByAppID []struct {
+			// ID is the id argument value.
+			ID string
+			// Message is the message argument value.
+			Message string
+		}
 		// GetAppByID holds details about calls to the GetAppByID method.
 		GetAppByID []struct {
 			// ID is the ID argument value.
@@ -52,7 +80,52 @@ type ServiceMock struct {
 		// GetApps holds details about calls to the GetApps method.
 		GetApps []struct {
 		}
+		// UnbindingAppByAppID holds details about calls to the UnbindingAppByAppID method.
+		UnbindingAppByAppID []struct {
+			// AppID is the appID argument value.
+			AppID string
+		}
+		// UpdateAppVersions holds details about calls to the UpdateAppVersions method.
+		UpdateAppVersions []struct {
+			// Versions is the versions argument value.
+			Versions []models.Version
+		}
 	}
+}
+
+// DisableAllAppVersionsByAppID calls DisableAllAppVersionsByAppIDFunc.
+func (mock *ServiceMock) DisableAllAppVersionsByAppID(id string, message string) error {
+	if mock.DisableAllAppVersionsByAppIDFunc == nil {
+		panic("ServiceMock.DisableAllAppVersionsByAppIDFunc: method is nil but Service.DisableAllAppVersionsByAppID was just called")
+	}
+	callInfo := struct {
+		ID      string
+		Message string
+	}{
+		ID:      id,
+		Message: message,
+	}
+	lockServiceMockDisableAllAppVersionsByAppID.Lock()
+	mock.calls.DisableAllAppVersionsByAppID = append(mock.calls.DisableAllAppVersionsByAppID, callInfo)
+	lockServiceMockDisableAllAppVersionsByAppID.Unlock()
+	return mock.DisableAllAppVersionsByAppIDFunc(id, message)
+}
+
+// DisableAllAppVersionsByAppIDCalls gets all the calls that were made to DisableAllAppVersionsByAppID.
+// Check the length with:
+//     len(mockedService.DisableAllAppVersionsByAppIDCalls())
+func (mock *ServiceMock) DisableAllAppVersionsByAppIDCalls() []struct {
+	ID      string
+	Message string
+} {
+	var calls []struct {
+		ID      string
+		Message string
+	}
+	lockServiceMockDisableAllAppVersionsByAppID.RLock()
+	calls = mock.calls.DisableAllAppVersionsByAppID
+	lockServiceMockDisableAllAppVersionsByAppID.RUnlock()
+	return calls
 }
 
 // GetAppByID calls GetAppByIDFunc.
@@ -109,5 +182,67 @@ func (mock *ServiceMock) GetAppsCalls() []struct {
 	lockServiceMockGetApps.RLock()
 	calls = mock.calls.GetApps
 	lockServiceMockGetApps.RUnlock()
+	return calls
+}
+
+// UnbindingAppByAppID calls UnbindingAppByAppIDFunc.
+func (mock *ServiceMock) UnbindingAppByAppID(appID string) error {
+	if mock.UnbindingAppByAppIDFunc == nil {
+		panic("ServiceMock.UnbindingAppByAppIDFunc: method is nil but Service.UnbindingAppByAppID was just called")
+	}
+	callInfo := struct {
+		AppID string
+	}{
+		AppID: appID,
+	}
+	lockServiceMockUnbindingAppByAppID.Lock()
+	mock.calls.UnbindingAppByAppID = append(mock.calls.UnbindingAppByAppID, callInfo)
+	lockServiceMockUnbindingAppByAppID.Unlock()
+	return mock.UnbindingAppByAppIDFunc(appID)
+}
+
+// UnbindingAppByAppIDCalls gets all the calls that were made to UnbindingAppByAppID.
+// Check the length with:
+//     len(mockedService.UnbindingAppByAppIDCalls())
+func (mock *ServiceMock) UnbindingAppByAppIDCalls() []struct {
+	AppID string
+} {
+	var calls []struct {
+		AppID string
+	}
+	lockServiceMockUnbindingAppByAppID.RLock()
+	calls = mock.calls.UnbindingAppByAppID
+	lockServiceMockUnbindingAppByAppID.RUnlock()
+	return calls
+}
+
+// UpdateAppVersions calls UpdateAppVersionsFunc.
+func (mock *ServiceMock) UpdateAppVersions(versions []models.Version) error {
+	if mock.UpdateAppVersionsFunc == nil {
+		panic("ServiceMock.UpdateAppVersionsFunc: method is nil but Service.UpdateAppVersions was just called")
+	}
+	callInfo := struct {
+		Versions []models.Version
+	}{
+		Versions: versions,
+	}
+	lockServiceMockUpdateAppVersions.Lock()
+	mock.calls.UpdateAppVersions = append(mock.calls.UpdateAppVersions, callInfo)
+	lockServiceMockUpdateAppVersions.Unlock()
+	return mock.UpdateAppVersionsFunc(versions)
+}
+
+// UpdateAppVersionsCalls gets all the calls that were made to UpdateAppVersions.
+// Check the length with:
+//     len(mockedService.UpdateAppVersionsCalls())
+func (mock *ServiceMock) UpdateAppVersionsCalls() []struct {
+	Versions []models.Version
+} {
+	var calls []struct {
+		Versions []models.Version
+	}
+	lockServiceMockUpdateAppVersions.RLock()
+	calls = mock.calls.UpdateAppVersions
+	lockServiceMockUpdateAppVersions.RUnlock()
 	return calls
 }

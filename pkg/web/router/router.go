@@ -70,38 +70,65 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	//     description: App not found
 	r.GET("/apps/:id", appsHandler.GetAppByID) // TODO: Implement correctly the call of the method passing the parameters
 
-	// swagger:operation PUT /apps/{id} App
+	// swagger:operation PUT /apps/:id/versions Version
 	//
-	// Update a single app using the app id, including updating version information
+	// Update all versions informed of an app using the app id, including updating version information
 	// ---
-	// summary: Update app by id
+	// summary: Update 1 or more versions of an app
+	// operationId: UpdateAppVersions
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: id
+	//   in: path
+	//   description: The id for the app that will have its versions updated
+	//   required: true
+	//   type: string
+	// - name: body
+	//   in: body
+	//   description: Updated 1 or more versions of an app
+	//   required: true
+	//   schema:
+	//     $ref: '#/definitions/Version'
+	// responses:
+	//   200:
+	//     description: successful update
+	//   400:
+	//     description: Invalid app and/or versions supplied
+	//   404:
+	//     description: App not found
+	r.PUT("/apps/:id/versions", appsHandler.UpdateAppVersions)
+
+	// swagger:operation POST /apps/:id/versions/batch-disable Version
+	//
+	// Disable all versions of an app
+	// ---
+	// summary: Disable all versions of an app
 	// operationId: updateApp
 	// produces:
 	// - application/json
 	// parameters:
 	// - name: id
 	//   in: path
-	//   description: The id for the app that needs to be updated.
+	//   description: The id for the app that will have all its versions updated
 	//   required: true
 	//   type: string
 	// - name: body
 	//   in: body
-	//   description: Updated app object
+	//   description:
 	//   required: true
 	//   schema:
-	//     $ref: '#/definitions/App'
+	//     $ref: '#/definitions/Version'
 	// responses:
 	//   200:
-	//     description: successful operation
-	//     schema:
-	//       $ref: '#/definitions/App'
+	//     description: successful update
 	//   400:
 	//     description: Invalid app supplied
 	//   404:
 	//     description: App not found
-	r.PUT("/apps/:id", appsHandler.UpdateApp) // TODO: Implement correctly the call of the method passing the parameters
+	r.POST("/apps/:id/versions/disable", appsHandler.DisableAllAppVersionsByAppID)
 
-	// swagger:operation POST /init appInitResponse
+	// swagger:operation POST /init AppInitRes
 	//
 	// Capture metrics from device and return if the app version they are using is disabled and has a set disabled message
 	// ---
@@ -115,12 +142,10 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	//   description: Updated app object
 	//   required: true
 	//   schema:
-	//     $ref: '#/definitions/AppInit'
+	//     $ref: '#/definitions/AppInitRes'
 	// responses:
 	//   200:
 	//     description: successful operation
-	//     schema:
-	//       $ref: '#/definitions/AppInitResponse'
 	//   400:
 	//     description: Invalid appId supplied
 	//   404:

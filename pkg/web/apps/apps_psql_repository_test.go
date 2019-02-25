@@ -1,12 +1,12 @@
 package apps
 
 import (
-	"testing"
-
 	"github.com/aerogear/mobile-security-service/pkg/helpers"
+	"testing"
+	"time"
 
 	"github.com/aerogear/mobile-security-service/pkg/models"
-	sqlmock "gopkg.in/DATA-DOG/go-sqlmock.v1"
+	"gopkg.in/DATA-DOG/go-sqlmock.v1"
 )
 
 var (
@@ -24,7 +24,22 @@ var (
 	FROM version as v LEFT JOIN device as d on v.id = d.version_id
 	WHERE v.app_id = \$1 
 	GROUP BY v.id;`
+
 	getAppByIDQueryString = `SELECT id,app_id,app_name FROM app WHERE id=\$1;`
+
+	getAppByAppIDQueryString = `SELECT id,app_id,app_name FROM app WHERE app_id=\$1;`
+
+	getUpdateAppVersionsQueryString = `UPDATE version
+		SET disabled_message=\$1,disabled=\$2
+		WHERE ID=\$3`
+
+	getDisableAllAppVersionsByAppIDQueryString = `UPDATE version
+		SET disabled_message=\$1,disabled=True
+		WHERE app_id=\$2;`
+
+	getUpdateDeleteAtAppByAppIDQueryString = `UPDATE app
+		SET delete_at=\$1
+		WHERE app_id=\$2;`
 )
 
 func Test_appsPostgreSQLRepository_GetApps_WillReturnTwoApps(t *testing.T) {
@@ -209,4 +224,164 @@ func Test_appsPostgreSQLRepository_GetAppByID(t *testing.T) {
 			t.Fatalf("Expected an app to be returned from the database,want %v, got %v", &mockApp[0], app)
 		}
 	}
+}
+
+func Test_appsPostgreSQLRepository_DisableAllAppVersionsByAppID(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	mockVersions := helpers.GetMockAppVersionList()
+
+	// App ID which we expect to return the versions for
+	appID := "com.aerogear.mobile_app_one"
+	msg := "disable"
+
+	cols := []string{"id", "version", "app_id", "disabled", "disabled_message", "num_of_app_launches"}
+
+	for i := 0; i < len(mockVersions); i++ {
+		sqlmock.NewRows(cols).
+			AddRow(mockVersions[i].ID, mockVersions[i].Version, mockVersions[i].AppID, true, mockVersions[i].DisabledMessage, mockVersions[i].NumOfAppLaunches)
+
+	}
+
+	mock.ExpectExec(getDisableAllAppVersionsByAppIDQueryString).WithArgs(msg, appID).WillReturnResult(sqlmock.NewResult(0, 3))
+
+	a := NewPostgreSQLRepository(db)
+
+	if err = a.DisableAllAppVersionsByAppID(appID, msg); err != nil {
+		t.Errorf("error was not expected while updating all versions: %s", err)
+	}
+}
+
+// Error is expected when an invalid APP_ID is send
+func Test_appsPostgreSQLRepository_DisableAllAppVersionsByAppID_ReturnError(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	mockVersions := helpers.GetMockAppVersionList()
+
+	// App ID which we expect to return the versions for
+	appID := "com.aerogear.mobile_app_one"
+	msg := "disable"
+
+	cols := []string{"id", "version", "app_id", "disabled", "disabled_message", "num_of_app_launches"}
+
+	for i := 0; i < len(mockVersions); i++ {
+		sqlmock.NewRows(cols).
+			AddRow(mockVersions[i].ID, mockVersions[i].Version, mockVersions[i].AppID, true, mockVersions[i].DisabledMessage, mockVersions[i].NumOfAppLaunches)
+
+	}
+
+	mock.ExpectExec(getDisableAllAppVersionsByAppIDQueryString).WithArgs(msg, "").WillReturnResult(sqlmock.NewResult(0, 3))
+
+	a := NewPostgreSQLRepository(db)
+
+	if err = a.DisableAllAppVersionsByAppID(appID, msg); err == nil {
+		t.Errorf("error was expected while updating all versions: %s", err)
+	}
+}
+
+func Test_appsPostgreSQLRepository_UpdateVersions(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	mockVersions := helpers.GetMockAppVersionList()
+
+	cols := []string{"id", "version", "app_id", "disabled", "disabled_message", "num_of_app_launches"}
+
+	sqlmock.NewRows(cols).
+		AddRow(mockVersions[0].ID, mockVersions[0].Version, mockVersions[0].AppID, true, mockVersions[0].DisabledMessage, mockVersions[0].NumOfAppLaunches)
+
+	// App ID which we expect to return the versions for
+	id := "55ebd387-9c68-4137-a367-a12025cc2cdb"
+	msg := "Please contact an administrator"
+	status := true
+
+	mock.ExpectExec(getUpdateAppVersionsQueryString).WithArgs(msg, status, id).WillReturnResult(sqlmock.NewResult(0, 3))
+
+	a := NewPostgreSQLRepository(db)
+
+	input := []models.Version{mockVersions[0]}
+	input[0].Disabled = true
+	if err = a.UpdateAppVersions(input); err != nil {
+		t.Errorf("error was not expected while updating stats: %s", err)
+	}
+}
+
+func Test_appsPostgreSQLRepository_UpdateVersions_ReturnError(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	mockVersions := helpers.GetMockAppVersionList()
+
+	cols := []string{"id", "version", "app_id", "disabled", "disabled_message", "num_of_app_launches"}
+
+	sqlmock.NewRows(cols).
+		AddRow(mockVersions[0].ID, mockVersions[0].Version, mockVersions[0].AppID, true, mockVersions[0].DisabledMessage, mockVersions[0].NumOfAppLaunches)
+
+	// App ID which we expect to return the versions for
+	id := "invalid"
+	msg := "Please contact an administrator"
+	status := true
+
+	mock.ExpectExec(getUpdateAppVersionsQueryString).WithArgs(msg, status, id).WillReturnResult(sqlmock.NewResult(0, 3))
+
+	a := NewPostgreSQLRepository(db)
+
+	input := []models.Version{mockVersions[0]}
+	input[0].Disabled = true
+	if err = a.UpdateAppVersions(input); err == nil {
+		t.Errorf("error was expected while updating stats: %s", err)
+	}
+}
+
+func Test_appsPostgreSQLRepository_UpdateDeleteAtAppByAppID(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("Unexpected error opening a stub database connection: %v", err)
+	}
+
+	defer db.Close()
+
+	mockApps := helpers.GetMockAppList()
+
+	cols := []string{"id", "app_id", "app_name", "deleted_at"}
+	time := time.Now().String()
+	// Insert an app where the deleted_at column is set
+	sqlmock.NewRows(cols).AddRow(mockApps[0].ID, mockApps[0].AppID, mockApps[0].AppName, time)
+
+	// We should expected to get back only the apps which are not soft deleted
+	mock.ExpectExec(getUpdateDeleteAtAppByAppIDQueryString).WithArgs(time, mockApps[0].AppID).WillReturnResult(sqlmock.NewResult(0, 1))
+	a := NewPostgreSQLRepository(db)
+
+	tests := []struct {
+		name    string
+		appId   string
+		time 	string
+		wantErr bool
+	}{
+		{
+			name: "Should return success to update delete at of an app",
+			time: time,
+			appId:   helpers.GetMockApp().AppID,
+		},
+	}
+	for _, tt := range tests {
+		if err = a.UpdateDeleteAtAppByAppID(mockApps[0].AppID, tt.time); err != nil {
+			t.Errorf("Got error trying to unbinding an app from database: %s", err)
+		}
+	}
+
 }
