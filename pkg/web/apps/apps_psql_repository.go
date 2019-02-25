@@ -115,13 +115,16 @@ func (a *appsPostgreSQLRepository) GetAppVersionsByAppID(id string) (*[]models.V
 // GetAppByID retrieves an app by id from the database
 func (a *appsPostgreSQLRepository) GetAppByID(ID string) (*models.App, error) {
 	var app models.App
-	//var v models.Version
 
-	sqlStatment := `SELECT id,app_id,app_name FROM app WHERE id=$1;`
-	row := a.db.QueryRow(sqlStatment, ID)
+	sqlStatement := `SELECT id,app_id,app_name FROM app WHERE id=$1;`
+	row := a.db.QueryRow(sqlStatement, ID)
 	err := row.Scan(&app.ID, &app.AppID, &app.AppName)
 	if err != nil {
-		return nil, err
+		log.Error(err)
+		if err == sql.ErrNoRows {
+			return nil, models.ErrNotFound
+		}
+		return nil, models.ErrInternalServerError
 	}
 
 	return &app, nil

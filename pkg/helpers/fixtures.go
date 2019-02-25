@@ -26,7 +26,7 @@ func GetMockAppList() []models.App {
 	return apps
 }
 
-//GetMockApp returns an dummy app
+//GetMockApp returns a dummy app
 func GetMockApp() *models.App {
 	app := &models.App{
 		ID:      "7f89ce49-a736-459e-9110-e52d049fc025",

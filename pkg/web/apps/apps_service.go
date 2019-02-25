@@ -1,7 +1,7 @@
 package apps
 
 import (
-	// "github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/aerogear/mobile-security-service/pkg/models"
 )
 
@@ -44,11 +44,11 @@ func (a *appsService) GetAppByID(id string) (*models.App, error) {
 	if err != nil {
 		return nil, err
 	}
-	if app == nil {
-		return nil, models.ErrNotFound
-	}
 
-	deployedVersions, _ := a.repository.GetAppVersionsByAppID(app.AppID)
+	deployedVersions, err := a.repository.GetAppVersionsByAppID(app.AppID)
+	if err != nil {
+		log.Error(err)
+	}
 	app.DeployedVersions = deployedVersions
 
 	return app, nil

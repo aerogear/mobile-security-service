@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/aerogear/mobile-security-service/pkg/models"
-
+	helper "github.com/aerogear/mobile-security-service/pkg/helpers"
 	"github.com/aerogear/mobile-security-service/pkg/httperrors"
-	"github.com/google/uuid"
+
 	"github.com/labstack/echo"
 )
 
@@ -51,7 +51,7 @@ func (a *httpHandler) GetApps(c echo.Context) error {
 func (a *httpHandler) UpdateApp(c echo.Context) error {
 
 	id := c.Param("id")
-	if !isValidUUID(id) {
+	if !helper.IsValidUUID(id) {
 		return httperrors.BadRequest(c, "Invalid id supplied")
 	}
 	// TODO create AppUpdate route
@@ -68,7 +68,7 @@ func (a *httpHandler) UpdateApp(c echo.Context) error {
 func (a *httpHandler) GetAppByID(c echo.Context) error {
 
 	id := c.Param("id")
-	if !isValidUUID(id) {
+	if !helper.IsValidUUID(id) {
 		return httperrors.BadRequest(c, "Invalid id supplied")
 	}
 
@@ -81,8 +81,3 @@ func (a *httpHandler) GetAppByID(c echo.Context) error {
 
 }
 
-// IsValidUUID helper function takes in a string and confirms is a UUID and returns bool
-func isValidUUID(id string) bool {
-	_, err := uuid.Parse(id)
-	return err == nil
-}
