@@ -31,19 +31,16 @@ This is the server component of the AeroGear Mobile Security Service. It is a RE
 
 == Prerequisites
 
-.Prerequisites
 |===
 |https://golang.org/doc/install[Install Golang]
 |https://github.com/golang/go/wiki/SettingGOPATH[Ensure the $GOPATH environment variable is set]
-|https://docs.docker.com/compose/install/[Install the dep package manager]
+|https://golang.github.io/dep/docs/installation.html/[Install the dep package manager]
 |https://docs.docker.com/compose/install/[Install Docker and Docker Compose]
 |===
 
-See the https://aerogear.org/community/#guides[Contributing Guide] for more information.
-
 == Getting Started
 
-If you'd like to simply run the entire application in `docker-compose`, follow link:#Run-Entire-Application-with-Docker-Compose[these instructions].
+If you'd like to simply run the entire application in `docker-compose`, follow link:#16-running-entire-application-with-docker-compose[these instructions].
 
 Golang projects are kept in a https://golang.org/doc/code.html#Workspaces[workspace] that follows a very specific architecture. Before cloning this repo, be sure you have a `$GOPATH` environment variable set up.
 
@@ -67,7 +64,7 @@ NOTE: This is using the `dep` package manager under the hood. You will see the d
 === Configuring the Database
 
 This REST Service is using a https://www.postgresql.org/[PostgreSQL] database. The server will not start without a https://www.postgresql.org/[PostgreSQL] available.
-In order to attend this need has two options; install the database locally or use a docker container with it. Below following the steps.
+There are two ways to install the database:
 
 ==== By using the docker image of this project
 
@@ -86,26 +83,25 @@ $ docker-compose up -d db
 ----
 
 NOTE: When the database is started the link:./pkg/db/db.go[db.go] routine will be executed and the database model will be created.
-TIP: You can use the https://www.pgadmin.org/[pgadmin] to work with the database. See link:#installing-and-configuring-client-tool-for-the-database[Installing and configuring client tool for the database] how to setup it in your development environment.
+
+TIP: You can use https://www.pgadmin.org/[pgadmin] to work with the database. See link:#installing-and-configuring-client-tool-for-the-database[Installing and configuring client tool for the database]
 
 * Checking the database
 
-Following the commands to access the database in the container and check if the tables were created successfully.
-
 . Run `$ docker ps` to get the `container id`
-. Run `$docker exec -it <postgres-container-id> bash` to access the container via shell
+. Run `$ docker exec -it <postgres-container-id> bash` to access the container via shell
 . Run `psql -U postgres` to login with the user `postgres` in the database
-. Run `\c mobile_security_service` to connect in the database created for this project
+. Run `\c mobile_security_service` to connect to the database created for this project
 . Run `\dt` to lists all tables in the current database
 
-==== By using a local Postgre DB
+==== By using a local Postgres DB
 
-The default values to connect in the database can be found in the file link:./pkg/config/config.go[config.go].
+In the link:#database[Database] section you can see the default values which will be used by the link:./pkg/config/config.go[config.go] routine.
 
-. Setup your local database and/or change the configuration defined.
+. Set up your local database and/or change the configuration defined.
 . Create the database and tables in your local PostgreSQL installation. See the file link:./pkg/db/db.go[db.go] to get the scripts to create the tables.
 
-NOTE: The link:./pkg/config/config.go[config.go] will use the default values, however, if would like to change them it should be made by link:#environment-variables[Environment Variables], see the topic link:#adding-your-own-.env-file[Adding your own .env file]
+NOTE: The file link:./pkg/config/config.go[config.go] will use the default values, however, if would like to change them it should be made by link:#environment-variables[Environment Variables], see the topic link:#adding-your-own-.env-file[Adding your own .env file]
 
 === Starting the Server
 
@@ -116,7 +112,7 @@ go run cmd/mobile-security-service/main.go
 
 === Checking REST Service
 
-Following a curl call to check if the service is running as should be.
+Run the following curl command and check the output is as shown.
 
 [source,shell]
 ----
@@ -124,7 +120,10 @@ $ curl localhost:3000/api/apps
 [{"id":"0890506c-3dd1-43ad-8a09-21a4111a65a6","appId":"com.aerogear.testapp","appName":"Test App","numOfDeployedVersions":2,"numOfCurrentInstalls":3,"numOfAppLaunches":6000},{"id":"1b9e7a5f-af7c-4055-b488-72f2b5f72266","appId":"com.aerogear.foobar","appName":"Foobar","numOfDeployedVersions":0,"numOfCurrentInstalls":0,"numOfAppLaunches":0}]
 ----
 
-NOTE: This endpoint will return all apps saved in the database. If you do not have data saved locally it will return success but an empty collection.
+NOTE: This endpoint will return all apps saved in the database. If you do not have data saved locally it will return no data with a `204 No Content` response code.
+
+TIP: You can install the https://www.getpostman.com/[Postman] tool which will be useful to call and test the REST API endpoints of this server.
+Following an image to show how it works.
 
 === Running Entire Application with Docker Compose
 
@@ -168,7 +167,6 @@ Now the application will use the values defined in `.env`.
 
 === Server Configuration
 
-.Server Configuration
 |===
 | *Variable* | *Default* | *Description*
 | PORT                             | 3000    | The port the server will listen on
@@ -183,7 +181,6 @@ Now the application will use the values defined in `.env`.
 
 The database connection is configured using the table of environment variables below. These environment variables correspond to the PostgreSQL https://www.postgresql.org/docs/current/static/libpq-envars.html[libpq environment variables]. The table below shows all of the environment variables supported by the `pq` driver used in this server.
 
-.Database Configuration
 |===
 | *Variable*        | *Default*               | *Description*                                                                                                                                  
 | PGDATABASE        | mobile_security_service | The database to connect to                                                                                                                   
@@ -203,11 +200,14 @@ The database connection is configured using the table of environment variables b
 
 image::https://user-images.githubusercontent.com/1596014/53108499-0d09ec80-352f-11e9-8e7c-1943e1984986.png[Diagram]
 
-https://www.lucidchart.com/documents/edit/6293d791-8f70-47bb-8136-438128c27129/0[Lucid Chart Link]
-
 == Development information for contributors
 
 === Using Swagger UI
+
+==== By browser
+
+The swagger api doc is generated in link:./api/swagger.yaml[/api/swagger.yaml] and you can check the REST API definition with this file by using the https://petstore.swagger.io/[Demo] tool online for swaggerUI or https://chrome.google.com/webstore/detail/swagger-ui-console/ljlmonadebogfjabhkppkoohjkjclfai?hl=en[Chrome extension].
+Paste https://raw.githubusercontent.com/aerogear/mobile-security-service/master/api/swagger.yaml[https://raw.githubusercontent.com/aerogear/mobile-security-service/master/api/swagger.yaml] and press **Explore**.
 
 ==== By docker
 
@@ -221,14 +221,6 @@ docker run -p 8080:8080 -e API_URL=https://raw.githubusercontent.com/aerogear/mo
 Or you can run the container with `docker-compose up -d swagger`.
 
 The Swagger UI is available at http://localhost:8080[localhost:8080].
-
-==== By browser
-
-There is also a https://chrome.google.com/webstore/detail/swagger-ui-console/ljlmonadebogfjabhkppkoohjkjclfai?hl=en[Chrome extension] you can use instead of running a Docker container.
-
-Paste https://raw.githubusercontent.com/aerogear/mobile-security-service/master/api/swagger.yaml[https://raw.githubusercontent.com/aerogear/mobile-security-service/master/api/swagger.yaml] and press **Explore**.
-
-TIP: Also, you can use the https://petstore.swagger.io/[Demo] tool online for swaggerUI. 
 
 === Building & Testing
 
@@ -249,7 +241,7 @@ NOTE : See all commands available in link:#using-make-commands[Using make comman
 
 === Installing and configuring client tool for the database
 
-You can use the https://www.pgadmin.org/[pgadmin] which is the client tool for PostgreSQL to work with the database.
+You can use https://www.pgadmin.org/[pgadmin] which is the client tool for PostgreSQL to work with the database.
 
 * Download and install the client tool
 
@@ -271,7 +263,7 @@ image::https://user-images.githubusercontent.com/7708031/53172136-857ab700-35dc-
 
 === Adding data to test the Service
 
-Use the scripts from the file link:./pkg/test/fixtures.go[fixtures.go]. It will allow you have data to check this service. 
+Use the scripts from the file link:./pkg/helpers/db_seed.go[db_seed.go]. It will allow you have data to check this service.
 
 === Creating mock files for the interfaces
 
@@ -322,7 +314,7 @@ In the created file you will see an implementation commented as in the following
 //     }
 ----
 
-* Adding data to the mock function
+* Mocking interfaces
 
 The `panic` statement needs to be replaced for the mock data. Following an example.
 
@@ -358,23 +350,34 @@ You will call the mock instead of use the interface. It will return the data moc
 
 [source,go]
 ----
-got, err := mockedAppService.GetApps()
-if (err != nil) != tt.wantErr {
-    t.Errorf("appsService.GetApps() error = %v, wantErr %v", err, tt.wantErr)
-    return
-}
-if !reflect.DeepEqual(got, tt.want) {
-    t.Errorf("appsService.GetApps() = %v, want %v", got, tt.want)
+func Test_HttpHandler_GetApps(t *testing.T) {
+	// make and configure a mocked Service
+	mockedAppService := &AppServiceMock{
+		GetAppsFunc: func() (*[]models.App, error) {
+			return &[]models.App{
+				*helpers.GetMockApp(),
+			}, nil
+		},
+	}
+
+	// Setup
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/api/apps")
+	h := &httpHandler{mockedAppService}
+	// Assertions
+	if assert.NoError(t, h.GetApps(c)) {
+		assert.Equal(t, http.StatusOK, rec.Code)
+	}
 }
 ----
 
-NOTE: The mock file contains explanations for example over how to check the quantity of results.
+NOTE: The mock file generated by the dep contains comments which will help you to understand how to use it.
 
 === Using make commands
 
-The link:./Makefile[Makefile] is implemented with tasks which you should use to work with.
-
-.Commands
 |===
 | *Command*                       | *Description*
 | `make setup`                  | Downloads dependencies into `vendor`
@@ -397,14 +400,7 @@ The link:./Makefile[Makefile] is implemented with tasks which you should use to 
 | `make docker_push_master`     | Pushes master image to Docker image hosting repository
 |===
 
-
-=== Using Postman to test the REST API
-
-You can install the https://www.getpostman.com/[Postman] tool which will be useful to call and test the REST API endpoints of this server.
-Following an image to show how it works.
-
-image::https://user-images.githubusercontent.com/7708031/53174794-8878a600-35e2-11e9-889d-79973d9e16db.png[Postman]
-
+NOTE: The link:./Makefile[Makefile] is implemented with tasks which you should use to work with.
 
 == Built With
 

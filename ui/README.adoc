@@ -1,13 +1,13 @@
 ifdef::env-github[]
 :status:
-:outfilesuffix: .adoc
-:caution-caption: :fire:
-:important-caption: :exclamation:
-:note-caption: :paperclip:
 :tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
 :warning-caption: :warning:
 :table-caption!:
 endif::[]
+
 
 = Mobile Security Service UI
 
