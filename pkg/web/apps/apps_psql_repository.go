@@ -2,24 +2,13 @@ package apps
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/aerogear/mobile-security-service/pkg/models"
 	_ "github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
 )
 
 type (
-	// Service defines the interface methods to be used
-	AppPostgreSQLRepository interface {
-		GetApps() (*[]models.App, error)
-	}
-
-	// PostgreSQLRepository interface defines the methods to be implemented
-	PostgreSQLRepository interface {
-		GetApps() (*[]models.App, error)
-		GetAppByID(ID string) (*models.App, error)
-		GetAppVersionsByAppID(ID string) (*[]models.Version, error)
-	}
-
 	appsPostgreSQLRepository struct {
 		db *sql.DB
 	}
@@ -129,4 +118,42 @@ func (a *appsPostgreSQLRepository) GetAppByID(ID string) (*models.App, error) {
 
 	return &app, nil
 
+}
+
+// UpdateAppVersions all versions sent
+func (a *appsPostgreSQLRepository) UpdateAppVersions(versions []models.Version) error {
+
+	for i := 0; i < len(versions); i++ {
+
+		// Update Version
+		_, err := a.db.Exec(`
+		UPDATE version
+		SET disabled_message=$1,disabled=$2
+		WHERE ID=$3;`, versions[i].DisabledMessage, versions[i].Disabled, versions[i].ID)
+
+		if err != nil {
+			fmt.Print(err)
+			log.Error(err)
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (a *appsPostgreSQLRepository) DisableAllAppVersionsByAppID(appID string, message string) error {
+
+	// Update Version
+	_, err := a.db.Exec(`
+		UPDATE version
+		SET disabled_message=$1,disabled=True
+		WHERE app_id=$2;`, message, appID )
+
+
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+
+	return nil
 }

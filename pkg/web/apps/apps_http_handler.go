@@ -1,12 +1,12 @@
 package apps
 
 import (
+	"encoding/json"
 	"net/http"
 
-	helper "github.com/aerogear/mobile-security-service/pkg/helpers"
+	"github.com/aerogear/mobile-security-service/pkg/helpers"
 	"github.com/aerogear/mobile-security-service/pkg/httperrors"
 	"github.com/aerogear/mobile-security-service/pkg/models"
-
 	"github.com/labstack/echo"
 )
 
@@ -14,7 +14,8 @@ type (
 	HTTPHandler interface {
 		GetApps(c echo.Context) error
 		GetAppByID(c echo.Context) error
-		UpdateApp(c echo.Context) error
+		UpdateAppVersions(c echo.Context) error
+		DisableAllAppVersionsByAppID(c echo.Context) error
 	}
 
 	// httpHandler instance
@@ -46,15 +47,14 @@ func (a *httpHandler) GetApps(c echo.Context) error {
 	return c.JSON(http.StatusOK, apps)
 }
 
-// TODO update app endpoint
-//UpdateApp returns apps by id as JSON from the AppService
-func (a *httpHandler) UpdateApp(c echo.Context) error {
+// GetAppByID returns apps by id as JSON from the AppService
+func (a *httpHandler) GetAppByID(c echo.Context) error {
 
 	id := c.Param("id")
-	if !helper.IsValidUUID(id) {
+	if !helpers.IsValidUUID(id) {
 		return httperrors.BadRequest(c, "Invalid id supplied")
 	}
-	// TODO create AppUpdate route
+
 	apps, err := a.Service.GetAppByID(id)
 
 	if err != nil {
@@ -64,19 +64,59 @@ func (a *httpHandler) UpdateApp(c echo.Context) error {
 
 }
 
-// GetAppByID returns apps by id as JSON from the AppService
-func (a *httpHandler) GetAppByID(c echo.Context) error {
-
+//UpdateApp returns a app updated with the ID in JSON format from the AppService
+func (a *httpHandler) UpdateAppVersions(c echo.Context) error {
+	// Validations
 	id := c.Param("id")
-	if !helper.IsValidUUID(id) {
+	if !helpers.IsValidUUID(id) {
 		return httperrors.BadRequest(c, "Invalid id supplied")
 	}
 
-	apps, err := a.Service.GetAppByID(id)
+	versions := []models.Version{}
+	errV := json.NewDecoder(c.Request().Body).Decode(&versions)
+
+	// check if the data sent is in the correct format
+	if errV != nil {
+		return httperrors.BadRequest(c, "Invalid data")
+	}
+
+	// Check if versions were sent all the body is empty
+	if len(versions) == 0 {
+		return httperrors.BadRequest(c, "No version(s) was sent.")
+	}
+
+	// Call service
+	errUpdate := a.Service.UpdateAppVersions(versions)
+	if errUpdate != nil {
+		return httperrors.GetHTTPResponseFromErr(c, errUpdate)
+	}
+
+	return c.JSON(http.StatusOK, "")
+}
+
+//UpdateApp returns a app updated with the ID in JSON format from the AppService
+func (a *httpHandler) DisableAllAppVersionsByAppID(c echo.Context) error {
+	id := c.Param("id")
+	if !helpers.IsValidUUID(id) {
+		return httperrors.BadRequest(c, "Invalid id supplied")
+	}
+
+	// Transform the body request in the version struct
+	ver := models.Version{}
+	errV := json.NewDecoder(c.Request().Body).Decode(&ver)
+
+	// check if the data sent is in the correct format
+	if errV != nil {
+		return httperrors.BadRequest(c, "Invalid data")
+	}
+
+
+	err := a.Service.DisableAllAppVersionsByAppID(id, ver.DisabledMessage)
 
 	if err != nil {
 		return httperrors.GetHTTPResponseFromErr(c, err)
 	}
-	return c.JSON(http.StatusOK, apps)
+
+	return c.JSON(http.StatusOK, "")
 
 }

@@ -6,49 +6,95 @@ import (
 
 	"github.com/aerogear/mobile-security-service/pkg/helpers"
 	"github.com/aerogear/mobile-security-service/pkg/models"
-	"github.com/stretchr/testify/assert"
+)
+
+var (
+	mockRepositoryWithSuccessResults = &RepositoryMock{
+		GetAppByIDFunc: func(ID string) (*models.App, error) {
+			return helpers.GetMockApp(), nil
+		},
+		GetAppVersionsByAppIDFunc: func(ID string) (*[]models.Version, error) {
+			res := helpers.GetMockAppVersionList()
+			return &res, nil
+		},
+		GetAppsFunc: func() (*[]models.App, error) {
+			apps := helpers.GetMockAppList()
+			return &apps, nil
+		},
+		UpdateAppVersionsFunc: func(versions []models.Version) error {
+			return nil
+		},
+		DisableAllAppVersionsByAppIDFunc: func(id string, message string) error {
+			return nil
+		},
+	}
+
+	mockRepositoryError = &RepositoryMock{
+		GetAppByIDFunc: func(ID string) (*models.App, error) {
+			return nil, models.ErrNotFound
+		},
+		GetAppVersionsByAppIDFunc: func(ID string) (*[]models.Version, error) {
+			return nil, models.ErrNotFound
+		},
+		GetAppsFunc: func() (*[]models.App, error) {
+			return nil, models.ErrNotFound
+		},
+		UpdateAppVersionsFunc: func(versions []models.Version) error {
+			return models.ErrNotFound
+		},
+		DisableAllAppVersionsByAppIDFunc: func(id string, message string) error {
+			return models.ErrNotFound
+		},
+	}
 )
 
 func Test_appsService_GetApps(t *testing.T) {
-	apps := helpers.GetMockAppList()
 	// make and configure a mocked Repository
-	mockedRepository := &RepositoryMock{
-		GetAppVersionsByAppIDFunc: func(id string) (*[]models.Version, error) {
-			panic("mock out the GetAppVersionsByAppID method")
+	apps := helpers.GetMockAppList()
+
+	type fields struct {
+		repository Repository
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		id      string
+		want    *[]models.App
+		wantErr error
+		mockRepo RepositoryMock
+	}{
+		{
+			name: "Get all apps should return success",
+			want: &apps,
+			mockRepo: *mockRepositoryWithSuccessResults,
 		},
-		GetAppsFunc: func() (*[]models.App, error) {
-			return &apps, nil
+		{
+			name: "Get all apps should return error when apps are not found",
+			want: &apps,
+			wantErr: models.ErrNotFound,
+			mockRepo: *mockRepositoryError,
 		},
 	}
-
-	s := &appsService{mockedRepository}
-
-	// Assertions
-	got, err := s.GetApps()
-	assert.Nil(t, err)
-	assert.NotNil(t, got)
-	assert.Equal(t, &apps, got)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			a := NewService(&tt.mockRepo)
+			got, err := a.GetApps()
+			if (err != nil) && tt.wantErr == nil {
+				t.Errorf("appsService.GetApps() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if  (err == nil) && (!reflect.DeepEqual(got, tt.want)) {
+				t.Errorf("appsService.GetApps() = %v, want %v", got, tt.want)
+			}
+			if (err != nil) && (tt.wantErr != err || tt.wantErr == nil) {
+				t.Errorf("appsService.GetApps() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
 }
 
 func Test_appsService_GetAppByID(t *testing.T) {
-	// make and configure a mocked Repository
-	app := helpers.GetMockApp()
-	versions := helpers.GetMockAppVersionList()
-	apps := helpers.GetMockAppList()
-	mockedRepository := &RepositoryMock{
-		GetAppByIDFunc: func(ID string) (*models.App, error) {
-			if ID == app.ID {
-				return app, nil
-			}
-			return nil, models.ErrNotFound
-		},
-		GetAppVersionsByAppIDFunc: func(id string) (*[]models.Version, error) {
-			return &versions, nil
-		},
-		GetAppsFunc: func() (*[]models.App, error) {
-			return &apps, nil
-		},
-	}
 	type fields struct {
 		repository Repository
 	}
@@ -58,22 +104,25 @@ func Test_appsService_GetAppByID(t *testing.T) {
 		id      string
 		want    *models.App
 		wantErr error
+		mockRepo RepositoryMock
 	}{
 		{
 			name: "Get app by id",
 			id:   "7f89ce49-a736-459e-9110-e52d049fc025",
-			want: app,
+			want: helpers.GetMockApp(),
+			mockRepo: *mockRepositoryWithSuccessResults,
 		},
 		{
 			name:    "Return an error as no file app found",
 			id:      "7f89ce49-a736-459e-9110-e52d049fcerr",
 			want:    nil,
 			wantErr: models.ErrNotFound,
+			mockRepo: *mockRepositoryError,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			a := NewService(mockedRepository)
+			a := NewService(&tt.mockRepo)
 			got, err := a.GetAppByID(tt.id)
 			if (err != nil) && tt.wantErr == nil {
 				t.Errorf("appsService.GetAppByID() error = %v, wantErr %v", err, tt.wantErr)
@@ -81,6 +130,83 @@ func Test_appsService_GetAppByID(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("appsService.GetAppByID() = %v, want %v", got, tt.want)
+			}
+			if (err != nil) && (tt.wantErr != err || tt.wantErr == nil) {
+				t.Errorf("appsService.GetAppByID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+func Test_appsService_DisableAllAppVersionsByAppID(t *testing.T) {
+	// make and configure a mocked Repository
+	type fields struct {
+		repository Repository
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		id      string
+		msg     string
+		wantErr error
+		repo    RepositoryMock
+	}{
+		{
+			name: "Disable all app versions",
+			id:   "7f89ce49-a736-459e-9110-e52d049fc025",
+			msg:  "disable",
+			repo: *mockRepositoryWithSuccessResults,
+		},
+		{
+			name:    "Return error to update the version",
+			id:      "invalid",
+			repo:    *mockRepositoryError,
+			wantErr: models.ErrNotFound,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			a := NewService(mockRepositoryWithSuccessResults)
+			err := a.DisableAllAppVersionsByAppID(tt.id, tt.msg)
+			if (err != nil) && (tt.wantErr != err || tt.wantErr == nil) {
+				t.Errorf("appsService.DisableAllAppVersionsByAppID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+func Test_appsService_UpdateAppVersions(t *testing.T) {
+	// make and configure a mocked Repository
+	type fields struct {
+		repository Repository
+	}
+	tests := []struct {
+		name     string
+		fields   fields
+		versions []models.Version
+		wantErr  error
+		repo     RepositoryMock
+	}{
+		{
+			name:     "Update versions",
+			versions: helpers.GetMockAppVersionList(),
+			repo:     *mockRepositoryWithSuccessResults,
+		},
+		{
+			name:    "Return error to update the version",
+			repo:    *mockRepositoryError,
+			wantErr: models.ErrNotFound,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			a := NewService(&tt.repo)
+			err := a.UpdateAppVersions(tt.versions)
+			if (err != nil) && (tt.wantErr != err || tt.wantErr == nil) {
+				t.Errorf("appsService.DisableAllAppVersionsByAppID() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
 		})
 	}
