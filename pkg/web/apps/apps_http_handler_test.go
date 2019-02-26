@@ -39,8 +39,7 @@ func Test_HttpHandler_GetApps(t *testing.T) {
 
 func Test_HttpHandler_GetAppsByID_mock(t *testing.T) {
 	config := config.Get()
-  APIRoutePrefix := config.APIRoutePrefix
-
+	APIRoutePrefix := config.APIRoutePrefix
 
 	// make and configure a mocked Service
 	app := helpers.GetMockApp()
@@ -108,56 +107,66 @@ func Test_HttpHandler_UpdateApp(t *testing.T) {
 
 func Test_httpHandler_GetAppByID(t *testing.T) {
 	config := config.Get()
-  APIRoutePrefix := config.APIRoutePrefix
+	APIRoutePrefix := config.APIRoutePrefix
 	// make and configure a mocked Service
 	app := helpers.GetMockApp()
 	mockedAppService := &ServiceMock{
 		GetAppByIDFunc: func(ID string) (*models.App, error) {
-			if app != nil { 
+			if app.ID == ID {
 				return app, nil
 			}
 			return nil, models.ErrNotFound
 		},
 	}
 	// Setup
-	e := echo.New()
-	req := httptest.NewRequest(http.MethodGet, "/", nil)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
-	c.SetPath(APIRoutePrefix + "/apps/:id")
-	c.SetParamNames("id")
-	h := NewHTTPHandler(e, mockedAppService)
+	
 	type fields struct {
 		Service Service
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		id      string
-		wantErr bool
-		want    *models.App
+		name     string
+		fields   fields
+		id       string
+		wantErr  bool
+		wantCode int
+		want     string 
 	}{
 		{
+			name: "Get app by id valid format but id not found",
+			id:   "cb1becdd-7726-4902-9014-6fb2296b9ae6",
+			want: `{"message":"Your requested Item is not found","statusCode":404}`,
+			wantCode: 404,
+		},
+		{
 			name: "Get app by id should return an app",
-			id: app.ID,
-			want: app,
+			id:   app.ID,
+			want: `{"id":"7f89ce49-a736-459e-9110-e52d049fc025","appId":"com.aerogear.mobile_app_one","appName":"Mobile App One","deployedVersions":[{"id":"55ebd387-9c68-4137-a367-a12025cc2cdb","version":"1.0","appId":"com.aerogear.mobile_app_one","disabled":false,"disabledMessage":"Please contact an administrator","numOfCurrentInstalls":1,"numOfAppLaunches":2},{"id":"59ebd387-9c68-4137-a367-a12025cc1cdb","version":"1.1","appId":"com.aerogear.mobile_app_one","disabled":false,"numOfCurrentInstalls":0,"numOfAppLaunches":0},{"id":"59dbd387-9c68-4137-a367-a12025cc2cdb","version":"1.0","appId":"com.aerogear.mobile_app_two","disabled":false,"numOfCurrentInstalls":0,"numOfAppLaunches":0}]}`,
+			wantCode: 200,
 		},
 		{
 			name: "Get app by id using an invalid id format should return an error",
-			id: "some string that should fail",
-			want: nil,
+			id:   "some string that should fail",
+			want: `{"message":"Invalid id supplied","statusCode":400}`,
+			wantCode: 400,
 		},
-		{
-			name:"Get app by id valid format but id not found",
-			id: "cb1becdd-7726-4902-9014-6fb2296b9ae6",
-			want: nil,
-		},
+
 	}
 	for _, tt := range tests {
+		e := echo.New()
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath(APIRoutePrefix + "/apps/:id")
+		c.SetParamNames("id")
+		h := NewHTTPHandler(e, mockedAppService)
 		c.SetParamValues(tt.id)
 		t.Run(tt.name, func(t *testing.T) {
-			if err := h.GetAppByID(c); (err != nil) != tt.wantErr {
-				t.Errorf("httpHandler.GetAppByID() error = %v, wantErr %v", err, tt.wantErr)
+			_ = h.GetAppByID(c)
+			if rec.Code != tt.wantCode {
+				t.Errorf("HTTPHandler.GetAppByID() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
+		  }
+			if strings.TrimSpace(rec.Body.String()) != tt.want {
+				t.Errorf("httpHandler.GetAppByID() got %v, want %v", strings.TrimSpace(rec.Body.String()), tt.want)
 			}
 		})
 	}
