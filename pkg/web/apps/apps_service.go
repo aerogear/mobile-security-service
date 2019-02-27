@@ -1,14 +1,15 @@
 package apps
 
 import (
-	// "github.com/sirupsen/logrus"
 	"github.com/aerogear/mobile-security-service/pkg/models"
+	log "github.com/sirupsen/logrus"
 )
 
 type (
 	// Service defines the interface methods to be used
 	Service interface {
 		GetApps() (*[]models.App, error)
+		GetAppByID(ID string) (*models.App, error)
 	}
 
 	appsService struct {
@@ -33,4 +34,22 @@ func (a *appsService) GetApps() (*[]models.App, error) {
 	}
 
 	return apps, nil
+}
+
+// GetAppByID retrieves app by id from the repository
+func (a *appsService) GetAppByID(id string) (*models.App, error) {
+
+	app, err := a.repository.GetAppByID(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	deployedVersions, err := a.repository.GetAppVersionsByAppID(app.AppID)
+	if err != nil {
+		log.Error(err)
+	}
+	app.DeployedVersions = deployedVersions
+
+	return app, nil
 }

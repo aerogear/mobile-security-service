@@ -3,9 +3,10 @@ package apps
 import (
 	"net/http"
 
+	helper "github.com/aerogear/mobile-security-service/pkg/helpers"
+	"github.com/aerogear/mobile-security-service/pkg/httperrors"
 	"github.com/aerogear/mobile-security-service/pkg/models"
 
-	"github.com/aerogear/mobile-security-service/pkg/httperrors"
 	"github.com/labstack/echo"
 )
 
@@ -45,28 +46,37 @@ func (a *httpHandler) GetApps(c echo.Context) error {
 	return c.JSON(http.StatusOK, apps)
 }
 
-// GetAppByID returns an app with the ID in JSON format from the AppService
-// TODO: Implement
-//GetAppById returns a app with the ID in JSON format from the AppService
-func (a *httpHandler) GetAppByID(c echo.Context) error {
-	apps, err := a.Service.GetApps()
+// TODO update app endpoint
+//UpdateApp returns apps by id as JSON from the AppService
+func (a *httpHandler) UpdateApp(c echo.Context) error {
+
+	id := c.Param("id")
+	if !helper.IsValidUUID(id) {
+		return httperrors.BadRequest(c, "Invalid id supplied")
+	}
+	// TODO create AppUpdate route
+	apps, err := a.Service.GetAppByID(id)
 
 	if err != nil {
-		return err
+		return httperrors.GetHTTPResponseFromErr(c, err)
 	}
-
 	return c.JSON(http.StatusOK, apps)
+
 }
 
-// UpdateApp returns an app updated with the ID in JSON format from the AppService
-// TODO: Implement
-//UpdateApp returns a app updated with the ID in JSON format from the AppService
-func (a *httpHandler) UpdateApp(c echo.Context) error {
-	apps, err := a.Service.GetApps()
+// GetAppByID returns apps by id as JSON from the AppService
+func (a *httpHandler) GetAppByID(c echo.Context) error {
 
-	if err != nil {
-		return err
+	id := c.Param("id")
+	if !helper.IsValidUUID(id) {
+		return httperrors.BadRequest(c, "Invalid id supplied")
 	}
 
+	apps, err := a.Service.GetAppByID(id)
+
+	if err != nil {
+		return httperrors.GetHTTPResponseFromErr(c, err)
+	}
 	return c.JSON(http.StatusOK, apps)
+
 }

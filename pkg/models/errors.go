@@ -2,6 +2,7 @@ package models
 
 import "errors"
 
+//var error model to map to http errors
 var (
 	// ErrInternalServerError returns a new Internal Server Error
 	ErrInternalServerError = errors.New("Internal Server Error")
