@@ -178,22 +178,22 @@ func Test_appsPostgreSQLRepository_GetAppByID(t *testing.T) {
 	// Insert app
 	row := sqlmock.NewRows(cols).AddRow(mockApp[0].ID, mockApp[0].AppID, mockApp[0].AppName)
 
-	tests := []struct{
+	tests := []struct {
 		name    string
 		ID      string
 		wantErr bool
 	}{
-   {
-		  name: "Get app by id should return an app",
-	  	ID : "7f89ce49-a736-459e-9110-e52d049fc025",
-	 },
-	 {
-			name: "Get app by id using an valid id format should return an error",
-			ID : "3489ce49-a736-459e-9110-e52d049fc025",
+		{
+			name: "Get app by id should return an app",
+			ID:   "7f89ce49-a736-459e-9110-e52d049fc025",
+		},
+		{
+			name:    "Get app by id using an valid id format should return an error",
+			ID:      "3489ce49-a736-459e-9110-e52d049fc025",
 			wantErr: true,
-	 },
+		},
 	}
-	for _, tt := range tests{
+	for _, tt := range tests {
 		var app *models.App
 		// We should expected to get back only the app with matching id
 		mock.ExpectQuery(getAppByIDQueryString).WithArgs(tt.ID).WillReturnRows(row)
