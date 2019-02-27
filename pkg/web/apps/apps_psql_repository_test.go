@@ -173,25 +173,40 @@ func Test_appsPostgreSQLRepository_GetAppByID(t *testing.T) {
 	}
 
 	defer db.Close()
-
 	mockApp := helpers.GetMockAppList()
 	cols := []string{"id", "app_id", "app_name"}
-	ID := "7f89ce49-a736-459e-9110-e52d049fc025"
-
 	// Insert app
 	row := sqlmock.NewRows(cols).AddRow(mockApp[0].ID, mockApp[0].AppID, mockApp[0].AppName)
 
-	// We should expected to get back only the app with matching id
-	mock.ExpectQuery(getAppByIDQueryString).WithArgs(ID).WillReturnRows(row)
-	a := NewPostgreSQLRepository(db)
-
-	app, err := a.GetAppByID(ID)
-
-	if err != nil {
-		t.Fatalf("Got error trying to get apps from database: %v", err)
+	tests := []struct{
+		name    string
+		ID      string
+		wantErr bool
+	}{
+   {
+		  name: "Get app by id should return an app",
+	  	ID : "7f89ce49-a736-459e-9110-e52d049fc025",
+	 },
+	 {
+			name: "Get app by id using an valid id format should return an error",
+			ID : "3489ce49-a736-459e-9110-e52d049fc025",
+			wantErr: true,
+	 },
 	}
+	for _, tt := range tests{
+		var app *models.App
+		// We should expected to get back only the app with matching id
+		mock.ExpectQuery(getAppByIDQueryString).WithArgs(tt.ID).WillReturnRows(row)
+		a := NewPostgreSQLRepository(db)
 
-	if app == &mockApp[0] {
-		t.Fatalf("Expected an app to be returned from the database,want %v, got %v", &mockApp[0], app)
+		app, err = a.GetAppByID(tt.ID)
+
+		if err != nil && !tt.wantErr {
+			t.Fatalf("Got error trying to get app from database: %v", err)
+		}
+
+		if app == &mockApp[0] {
+			t.Fatalf("Expected an app to be returned from the database,want %v, got %v", &mockApp[0], app)
+		}
 	}
 }

@@ -60,9 +60,9 @@ func Test_appsService_GetAppByID(t *testing.T) {
 		wantErr error
 	}{
 		{
-			name:    "Get app by id",
-			id:      "7f89ce49-a736-459e-9110-e52d049fc025",
-			want:    app,
+			name: "Get app by id",
+			id:   "7f89ce49-a736-459e-9110-e52d049fc025",
+			want: app,
 		},
 		{
 			name:    "Return an error as no file app found",

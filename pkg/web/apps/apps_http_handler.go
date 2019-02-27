@@ -3,9 +3,9 @@ package apps
 import (
 	"net/http"
 
-	"github.com/aerogear/mobile-security-service/pkg/models"
 	helper "github.com/aerogear/mobile-security-service/pkg/helpers"
 	"github.com/aerogear/mobile-security-service/pkg/httperrors"
+	"github.com/aerogear/mobile-security-service/pkg/models"
 
 	"github.com/labstack/echo"
 )
@@ -80,4 +80,3 @@ func (a *httpHandler) GetAppByID(c echo.Context) error {
 	return c.JSON(http.StatusOK, apps)
 
 }
-

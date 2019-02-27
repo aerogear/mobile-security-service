@@ -1,8 +1,8 @@
 package apps
 
 import (
-	log "github.com/sirupsen/logrus"
 	"github.com/aerogear/mobile-security-service/pkg/models"
+	log "github.com/sirupsen/logrus"
 )
 
 type (
