@@ -34,7 +34,7 @@ This is the server component of the AeroGear Mobile Security Service. It is a RE
 |===
 |https://golang.org/doc/install[Install Golang]
 |https://github.com/golang/go/wiki/SettingGOPATH[Ensure the $GOPATH environment variable is set]
-|https://golang.github.io/dep/docs/installation.html/[Install the dep package manager]
+|https://golang.github.io/dep/docs/installation.html[Install the dep package manager]
 |https://docs.docker.com/compose/install/[Install Docker and Docker Compose]
 |===
 
