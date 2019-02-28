@@ -1,57 +1,44 @@
 import React from 'react';
-import { sortable, SortByDirection } from '@patternfly/react-table';
 import AppsTable from '../components/AppsTable';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getApps } from '../actions/actions';
+import { reverseAppsTableSort } from '../actions/actions-ui';
 
-class AppsTableContainer extends React.Component {
+export class AppsTableContainer extends React.Component {
   constructor (props) {
     super(props);
-    this.sortBy = {};
     this.onSort = this.onSort.bind(this);
     this.onRowClick = this.onRowClick.bind(this);
   }
-  componentDidMount () {
-    this.props.getApps();
-  }
   onRowClick (event, rowId, props) {
+    console.log('On row click called');
     this.setState({ redirect: true });
   }
-  onSort (_event, index, direction) {
-    const sortedRows = this.props.apps.sort((a, b) => (a[index] < b[index] ? -1 : a[index] > b[index] ? 1 : 0));
-    this.setState({
-      sortBy: {
-        index,
-        direction
-      },
-      apps: direction === SortByDirection.asc ? sortedRows : sortedRows.reverse()
-    });
+  onSort (_event, index) {
+    this.props.reverseAppsTableSort(index);
   }
 
   render () {
-    const columns = [
-      { title: '', transforms: [ sortable ] },
-      { title: 'Deployed Versions', transforms: [ sortable ] },
-      { title: 'Current Installs', transforms: [ sortable ] },
-      { title: 'Launches', transforms: [ sortable ] }
-    ];
-    const rows = this.props.apps;
     return (
-      <AppsTable columns={columns} rows={rows} sortBy={this.sortBy} onSort= {this.onSort} onRowClick={this.onRowClick}/>
+      <div className="apps-table">
+        <AppsTable columns={this.props.columns} rows={this.props.apps} sortBy={this.sortBy} onSort= {this.onSort} onRowClick={this.onRowClick}/>
+      </div>
     );
   }
 }
 
 AppsTableContainer.propTypes = {
-  getApps: PropTypes.func.isRequired,
-  apps: PropTypes.array.isRequired
+  apps: PropTypes.array.isRequired,
+  sortBy: PropTypes.object.isRequired,
+  columns: PropTypes.array.isRequired
 };
 
 function mapStateToProps (state) {
   return {
-    apps: state.apps
+    apps: state.apps,
+    sortBy: state.sortBy,
+    columns: state.columns
   };
 };
 
-export default connect(mapStateToProps, { getApps })(AppsTableContainer);
+export default connect(mapStateToProps, { reverseAppsTableSort })(AppsTableContainer);

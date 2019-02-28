@@ -1,1 +1,1 @@
-export const GET_APPS = 'GET_APPS';
+export const REVERSE_SORT = 'REVERSE_SORT';
