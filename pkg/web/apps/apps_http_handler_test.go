@@ -11,63 +11,314 @@ import (
 	"github.com/aerogear/mobile-security-service/pkg/helpers"
 	"github.com/aerogear/mobile-security-service/pkg/models"
 	"github.com/labstack/echo"
-	"github.com/stretchr/testify/assert"
+)
+
+var (
+	// make and configure a mocked Service which will return the success scenarios
+	mockedService = &ServiceMock{
+		DisableAllAppVersionsByAppIDFunc: func(id string, message string) error {
+			return nil
+		},
+		GetAppByIDFunc: func(ID string) (*models.App, error) {
+			app := helpers.GetMockApp()
+			if app.ID == ID {
+				return app, nil
+			}
+			return nil, models.ErrNotFound
+		},
+		GetAppsFunc: func() (*[]models.App, error) {
+			return &[]models.App{
+				*helpers.GetMockApp(),
+			}, nil
+		},
+		UpdateAppVersionsFunc: func(versions []models.Version) error {
+			return nil
+		},
+	}
+
+	// make and configure a mocked Service which will return the scenarios with errors
+	mockedServiceWithError = &ServiceMock{
+		DisableAllAppVersionsByAppIDFunc: func(id string, message string) error {
+			return models.ErrInternalServerError
+		},
+		GetAppByIDFunc: func(ID string) (*models.App, error) {
+			return nil, models.ErrInternalServerError
+		},
+		GetAppsFunc: func() (*[]models.App, error) {
+			return nil, models.ErrNotFound
+		},
+		UpdateAppVersionsFunc: func(versions []models.Version) error {
+			return models.ErrNotFound
+		},
+	}
 )
 
 func Test_HttpHandler_GetApps(t *testing.T) {
-	// make and configure a mocked Service
-	mockedAppService := &ServiceMock{
+	// make and configure a mocked Service which will return the scenarios with errors
+	mockedServiceWithInternalError := &ServiceMock{
 		GetAppsFunc: func() (*[]models.App, error) {
-			return &[]models.App{
-				*helpers.GetMockApp(),
-			}, nil
+			return nil, models.ErrInternalServerError
 		},
 	}
-
-	// Setup
-	e := echo.New()
-	req := httptest.NewRequest(http.MethodGet, "/", nil)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
-	c.SetPath("/api/apps")
-	h := &httpHandler{mockedAppService}
-	// Assertions
-	if assert.NoError(t, h.GetApps(c)) {
-		assert.Equal(t, http.StatusOK, rec.Code)
+	type fields struct {
+		Service Service
+	}
+	tests := []struct {
+		name     string
+		fields   fields
+		wantErr  bool
+		wantCode int
+		mockService ServiceMock
+	}{
+		{
+			name:     "Should return success to get all",
+			wantErr:  false,
+			mockService: *mockedService,
+			wantCode: 200,
+		},
+		{
+			name:     "Should return when no apps have been found, return a HTTP Status code of 204 with no response body",
+			wantErr:  true,
+			mockService: *mockedServiceWithError,
+			wantCode: 204,
+		},
+		{
+			name:     "Should return error when an error occurs in the database",
+			wantErr:  true,
+			mockService: *mockedServiceWithInternalError,
+			wantCode: 500,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Setup
+			e := echo.New()
+			req := httptest.NewRequest(http.MethodGet, "/", nil)
+			rec := httptest.NewRecorder()
+			c := e.NewContext(req, rec)
+			c.SetPath("/api/apps")
+			h := NewHTTPHandler(e, &tt.mockService)
+			err := h.GetApps(c)
+			if err != nil {
+				t.Errorf("httpHandler.GetApps() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if rec.Code != tt.wantCode {
+				t.Errorf("HTTPHandler.GetApps() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
+			}
+		})
 	}
 }
 
-//TODO when update app endpoint created its hitting get apps by id endpoint at the moment
-func Test_HttpHandler_UpdateApp(t *testing.T) {
-	// make and configure a mocked Service
-	app := helpers.GetMockApp()
-	mockedAppService := &ServiceMock{
-		GetAppByIDFunc: func(ID string) (*models.App, error) {
-			return app, nil
+func Test_httpHandler_UpdateAllAppVersionsByAppID(t *testing.T) {
+	config := config.Get()
+	APIRoutePrefix := config.APIRoutePrefix
+	type fields struct {
+		Service Service
+	}
+	tests := []struct {
+		name        string
+		fields      fields
+		id          string
+		wantErr     bool
+		wantCode    int
+		data        []models.Version
+		mockService ServiceMock
+	}{
+		{
+			name:        "Should update the versions with success",
+			id:          helpers.GetMockApp().ID,
+			data:        helpers.GetMockAppVersionList(),
+			wantErr:     false,
+			mockService: *mockedService,
+			wantCode:    200,
 		},
-		GetAppsFunc: func() (*[]models.App, error) {
-			return &[]models.App{
-				*helpers.GetMockApp(),
-			}, nil
+		{
+			name:        "Should return error since it is an invalid id",
+			id:          "invalid",
+			data:        helpers.GetMockAppVersionList(),
+			wantErr:     true,
+			mockService: *mockedService,
+			wantCode:    400,
+		},
+		{
+			name:        "Update all versions should return return error with an empty collection of data sent",
+			id:          helpers.GetMockApp().ID,
+			data:        []models.Version{},
+			wantErr:     true,
+			mockService: *mockedService,
+			wantCode:    400,
+		},
+		{
+			name:        "Update all versions should return return error in the database",
+			id:          helpers.GetMockApp().ID,
+			data:        helpers.GetMockAppVersionList(),
+			wantErr:     true,
+			mockService: *mockedServiceWithError,
+			wantCode:    404,
 		},
 	}
-	// Setup
-	e := echo.New()
-	appJson, _ := json.Marshal(helpers.GetMockApp())
-	req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(string(appJson)))
-	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
-	c.SetPath("/api/apps/:id")
-	c.SetParamNames("id")
-	c.SetParamValues(app.ID)
-	h := &httpHandler{mockedAppService}
+	for _, tt := range tests {
+		e := echo.New()
+		allVersions, _ := json.Marshal(tt.data)
+		req := httptest.NewRequest(http.MethodPut, "/", strings.NewReader(string(allVersions)))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath(APIRoutePrefix + "/apps/:id/versions")
+		c.SetParamNames("id")
+		h := NewHTTPHandler(e, &tt.mockService)
+		c.SetParamValues(tt.id)
+		t.Run(tt.name, func(t *testing.T) {
+			err := h.UpdateAppVersions(c)
+			if err != nil {
+				t.Errorf("httpHandler.UpdateAppVersions() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if rec.Code != tt.wantCode {
+				t.Errorf("HTTPHandler.UpdateAppVersions() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
+			}
+		})
+	}
+}
 
-	// Assertions
-	if assert.NoError(t, h.UpdateApp(c)) {
-		assert.Equal(t, http.StatusOK, rec.Code)
-		//TODO: It will be fixed when the handler be implemented
-		//assert.Equal(t, string(appJson)+"\n", rec.Body.String())
+func Test_HttpHandler_UpdateAllAppVersionsByAppID_WithInvalidJsonData(t *testing.T) {
+	config := config.Get()
+	APIRoutePrefix := config.APIRoutePrefix
+	type fields struct {
+		Service Service
+	}
+	tests := []struct {
+		name     string
+		fields   fields
+		id       string
+		wantErr  bool
+		want     int
+		wantCode int
+	}{
+		{
+			name:     "Update all versions should return return error with invalid data sent",
+			id:       helpers.GetMockApp().ID,
+			want:     http.StatusBadRequest,
+			wantCode: 400,
+		},
+	}
+	for _, tt := range tests {
+		e := echo.New()
+		req := httptest.NewRequest(http.MethodPut, "/", strings.NewReader(string("")))
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath(APIRoutePrefix + "/apps/:id/versions")
+		c.SetParamNames("id")
+		h := NewHTTPHandler(e, mockedService)
+		c.SetParamValues(tt.id)
+
+		t.Run(tt.name, func(t *testing.T) {
+			h.UpdateAppVersions(c)
+			if rec.Code != tt.wantCode {
+				t.Errorf("HTTPHandler.UpdateAppVersions() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
+			}
+		})
+	}
+}
+
+func Test_HttpHandler_DisableAllAppVersionsByAppID(t *testing.T) {
+	config := config.Get()
+	APIRoutePrefix := config.APIRoutePrefix
+	type fields struct {
+		Service Service
+	}
+	tests := []struct {
+		name        string
+		fields      fields
+		id          string
+		wantErr     bool
+		wantCode    int
+		data        models.Version
+		mockService ServiceMock
+	}{
+		{
+			name:        "Disable all versions should return success",
+			id:          helpers.GetMockApp().ID,
+			data:        helpers.GetMockAppVersionForDisableAll(),
+			mockService: *mockedService,
+			wantErr:     false,
+			wantCode:    200,
+		},
+		{
+			name:        "Disable all versions should return error with invalid ID",
+			id:          "invalid",
+			data:        helpers.GetMockAppVersionForDisableAll(),
+			mockService: *mockedService,
+			wantErr:     true,
+			wantCode:    400,
+		},
+		{
+			name:        "Disable all versions should return error from the database",
+			id:          helpers.GetMockApp().ID,
+			mockService: *mockedServiceWithError,
+			wantErr:     true,
+			wantCode:    500,
+		},
+	}
+	for _, tt := range tests {
+		e := echo.New()
+		version, _ := json.Marshal(tt.data)
+		req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(string(version)))
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath(APIRoutePrefix + "/apps/:id/versions/batch-disable")
+		c.SetParamNames("id")
+		h := NewHTTPHandler(e, &tt.mockService)
+		c.SetParamValues(tt.id)
+
+		t.Run(tt.name, func(t *testing.T) {
+			err := h.DisableAllAppVersionsByAppID(c)
+			if err != nil {
+				t.Errorf("httpHandler.DisableAllAppVersionsByAppID() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if rec.Code != tt.wantCode {
+				t.Errorf("HTTPHandler.DisableAllAppVersionsByAppID() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
+			}
+		})
+	}
+}
+
+func Test_HttpHandler_DisableAllAppVersionsByAppID_WithInvalidJsonData(t *testing.T) {
+	config := config.Get()
+	APIRoutePrefix := config.APIRoutePrefix
+	type fields struct {
+		Service Service
+	}
+	tests := []struct {
+		name     string
+		fields   fields
+		id       string
+		wantErr  bool
+		want     int
+		wantCode int
+	}{
+		{
+			name:     "Disable all versions should return return error with invalid data sent",
+			id:       helpers.GetMockApp().ID,
+			want:     http.StatusBadRequest,
+			wantCode: 400,
+		},
+	}
+	for _, tt := range tests {
+		e := echo.New()
+		req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(string("")))
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath(APIRoutePrefix + "/apps/:id/versions/batch-disable")
+		c.SetParamNames("id")
+		h := NewHTTPHandler(e, mockedService)
+		c.SetParamValues(tt.id)
+
+		t.Run(tt.name, func(t *testing.T) {
+			h.DisableAllAppVersionsByAppID(c)
+			if rec.Code != tt.wantCode {
+				t.Errorf("HTTPHandler.DisableAllAppVersionsByAppID() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
+			}
+		})
 	}
 }
 
@@ -76,15 +327,6 @@ func Test_httpHandler_GetAppByID(t *testing.T) {
 	APIRoutePrefix := config.APIRoutePrefix
 	// make and configure a mocked Service
 	app := helpers.GetMockApp()
-	mockedAppService := &ServiceMock{
-		GetAppByIDFunc: func(ID string) (*models.App, error) {
-			if app.ID == ID {
-				return app, nil
-			}
-			return nil, models.ErrNotFound
-		},
-	}
-	// Setup
 
 	type fields struct {
 		Service Service
@@ -123,7 +365,7 @@ func Test_httpHandler_GetAppByID(t *testing.T) {
 		c := e.NewContext(req, rec)
 		c.SetPath(APIRoutePrefix + "/apps/:id")
 		c.SetParamNames("id")
-		h := NewHTTPHandler(e, mockedAppService)
+		h := NewHTTPHandler(e, mockedService)
 		c.SetParamValues(tt.id)
 		t.Run(tt.name, func(t *testing.T) {
 			_ = h.GetAppByID(c)

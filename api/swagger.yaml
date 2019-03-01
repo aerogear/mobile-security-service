@@ -103,6 +103,58 @@ paths:
           schema:
             $ref: '#/definitions/App'
       summary: Retrieve list of apps
+  /apps/:id/versions:
+    put:
+      description: Update all versions informed of an app using the app id, including
+        updating version information
+      operationId: UpdateAppVersions
+      parameters:
+      - description: The id for the app that will have its versions updated
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated 1 or more versions of an app
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/Version'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: successful update
+        "400":
+          description: Invalid app and/or versions supplied
+        "404":
+          description: App not found
+      summary: Update 1 or more versions of an app
+  /apps/:id/versions/batch-disable:
+    post:
+      description: Disable all versions of an app
+      operationId: updateApp
+      parameters:
+      - description: The id for the app that will have all its versions updated
+        in: path
+        name: id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/Version'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: successful update
+        "400":
+          description: Invalid app supplied
+        "404":
+          description: App not found
+      summary: Disable all versions of an app
   /apps/{id}:
     get:
       description: Retrieve all information for a single app including all child information
@@ -125,34 +177,6 @@ paths:
         "404":
           description: App not found
       summary: Get app by id
-    put:
-      description: Update a single app using the app id, including updating version
-        information
-      operationId: updateApp
-      parameters:
-      - description: The id for the app that needs to be updated.
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Updated app object
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/App'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: successful operation
-          schema:
-            $ref: '#/definitions/App'
-        "400":
-          description: Invalid app supplied
-        "404":
-          description: App not found
-      summary: Update app by id
   /init:
     post:
       description: Capture metrics from device and return if the app version they
@@ -164,14 +188,12 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/AppInit'
+          $ref: '#/definitions/AppInitRes'
       produces:
       - application/json
       responses:
         "200":
           description: successful operation
-          schema:
-            $ref: '#/definitions/AppInitResponse'
         "400":
           description: Invalid appId supplied
         "404":

@@ -6,7 +6,7 @@ import (
 	"github.com/aerogear/mobile-security-service/pkg/helpers"
 
 	"github.com/aerogear/mobile-security-service/pkg/models"
-	sqlmock "gopkg.in/DATA-DOG/go-sqlmock.v1"
+	"gopkg.in/DATA-DOG/go-sqlmock.v1"
 )
 
 var (
@@ -24,7 +24,16 @@ var (
 	FROM version as v LEFT JOIN device as d on v.id = d.version_id
 	WHERE v.app_id = \$1 
 	GROUP BY v.id;`
+
 	getAppByIDQueryString = `SELECT id,app_id,app_name FROM app WHERE id=\$1;`
+
+	getUpdateAppVersionsQueryString = `UPDATE version
+		SET disabled_message=\$1,disabled=\$2
+		WHERE ID=\$3`
+
+	getDisableAllAppVersionsByAppIDQueryString = `UPDATE version
+		SET disabled_message=\$1,disabled=True
+		WHERE app_id=\$2;`
 )
 
 func Test_appsPostgreSQLRepository_GetApps_WillReturnTwoApps(t *testing.T) {
@@ -208,5 +217,126 @@ func Test_appsPostgreSQLRepository_GetAppByID(t *testing.T) {
 		if app == &mockApp[0] {
 			t.Fatalf("Expected an app to be returned from the database,want %v, got %v", &mockApp[0], app)
 		}
+	}
+}
+
+func Test_appsPostgreSQLRepository_DisableAllAppVersionsByAppID(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	mockVersions := helpers.GetMockAppVersionList()
+
+	// App ID which we expect to return the versions for
+	appID := "com.aerogear.mobile_app_one"
+	msg := "disable"
+
+	cols := []string{"id", "version", "app_id", "disabled", "disabled_message", "num_of_app_launches"}
+
+	for i := 0; i < len(mockVersions); i++ {
+		sqlmock.NewRows(cols).
+			AddRow(mockVersions[i].ID, mockVersions[i].Version, mockVersions[i].AppID, true, mockVersions[i].DisabledMessage, mockVersions[i].NumOfAppLaunches)
+
+	}
+
+	mock.ExpectExec(getDisableAllAppVersionsByAppIDQueryString).WithArgs(msg, appID).WillReturnResult(sqlmock.NewResult(0, 3))
+
+	a := NewPostgreSQLRepository(db)
+
+	if err = a.DisableAllAppVersionsByAppID(appID, msg); err != nil {
+		t.Errorf("error was not expected while updating all versions: %s", err)
+	}
+}
+
+// Error is expected when an invalid APP_ID is send
+func Test_appsPostgreSQLRepository_DisableAllAppVersionsByAppID_ReturnError(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	mockVersions := helpers.GetMockAppVersionList()
+
+	// App ID which we expect to return the versions for
+	appID := "com.aerogear.mobile_app_one"
+	msg := "disable"
+
+	cols := []string{"id", "version", "app_id", "disabled", "disabled_message", "num_of_app_launches"}
+
+	for i := 0; i < len(mockVersions); i++ {
+		sqlmock.NewRows(cols).
+			AddRow(mockVersions[i].ID, mockVersions[i].Version, mockVersions[i].AppID, true, mockVersions[i].DisabledMessage, mockVersions[i].NumOfAppLaunches)
+
+	}
+
+	mock.ExpectExec(getDisableAllAppVersionsByAppIDQueryString).WithArgs(msg, "").WillReturnResult(sqlmock.NewResult(0, 3))
+
+	a := NewPostgreSQLRepository(db)
+
+	if err = a.DisableAllAppVersionsByAppID(appID, msg); err == nil {
+		t.Errorf("error was expected while updating all versions: %s", err)
+	}
+}
+
+func Test_appsPostgreSQLRepository_UpdateVersions(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	mockVersions := helpers.GetMockAppVersionList()
+
+	cols := []string{"id", "version", "app_id", "disabled", "disabled_message", "num_of_app_launches"}
+
+	sqlmock.NewRows(cols).
+		AddRow(mockVersions[0].ID, mockVersions[0].Version, mockVersions[0].AppID, true, mockVersions[0].DisabledMessage, mockVersions[0].NumOfAppLaunches)
+
+	// App ID which we expect to return the versions for
+	id := "55ebd387-9c68-4137-a367-a12025cc2cdb"
+	msg := "Please contact an administrator"
+	status := true
+
+	mock.ExpectExec(getUpdateAppVersionsQueryString).WithArgs(msg, status, id).WillReturnResult(sqlmock.NewResult(0, 3))
+
+	a := NewPostgreSQLRepository(db)
+
+	input := []models.Version{mockVersions[0]}
+	input[0].Disabled = true
+	if err = a.UpdateAppVersions(input); err != nil {
+		t.Errorf("error was not expected while updating stats: %s", err)
+	}
+}
+
+func Test_appsPostgreSQLRepository_UpdateVersions_ReturnError(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	mockVersions := helpers.GetMockAppVersionList()
+
+	cols := []string{"id", "version", "app_id", "disabled", "disabled_message", "num_of_app_launches"}
+
+	sqlmock.NewRows(cols).
+		AddRow(mockVersions[0].ID, mockVersions[0].Version, mockVersions[0].AppID, true, mockVersions[0].DisabledMessage, mockVersions[0].NumOfAppLaunches)
+
+	// App ID which we expect to return the versions for
+	id := "invalid"
+	msg := "Please contact an administrator"
+	status := true
+
+	mock.ExpectExec(getUpdateAppVersionsQueryString).WithArgs(msg, status, id).WillReturnResult(sqlmock.NewResult(0, 3))
+
+	a := NewPostgreSQLRepository(db)
+
+	input := []models.Version{mockVersions[0]}
+	input[0].Disabled = true
+	if err = a.UpdateAppVersions(input); err == nil {
+		t.Errorf("error was expected while updating stats: %s", err)
 	}
 }
