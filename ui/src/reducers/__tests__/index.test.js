@@ -1,5 +1,5 @@
 import reducer from '../index';
-import { REVERSE_SORT } from '../../actions/types.js';
+import { APPS_SUCCESS, REVERSE_SORT, APPS_FAILURE } from '../../actions/types.js';
 import { SortByDirection, sortable } from '@patternfly/react-table';
 
 describe('reducer', () => {
@@ -10,36 +10,65 @@ describe('reducer', () => {
     { title: 'Launches', transforms: [sortable] }
   ];
   const apps = [
-    [ 'App-F', 3, 245, 873 ],
-    [ 'App-G', 4, 655, 435 ],
-    [ 'App-H', 1, 970, 98 ],
-    [ 'App-I', 6, 255, 3000 ],
-    [ 'App-J', 5, 120, 765 ]
   ];
 
   const sortedApps = [
-    ['App-J', 5, 120, 765],
-    ['App-I', 6, 255, 3000],
-    ['App-H', 1, 970, 98],
-    ['App-G', 4, 655, 435],
-    ['App-F', 3, 245, 873]
+    ['com.aerogear.testapp', 2, 3, 6000],
+    ['com.aerogear.foobar', 0, 0, 0]
   ];
 
   const sortBy = { direction: SortByDirection.asc, index: 0 };
-  const state = { apps: apps, sortBy: sortBy, columns: columns };
+  const state = { apps: apps, sortBy: sortBy, columns: columns, isAppsRequestFailed: false };
+
+  const resultApps =
+    [
+      {
+        'id': '1b9e7a5f-af7c-4055-b488-72f2b5f72266',
+        'appId': 'com.aerogear.foobar',
+        'appName': 'Foobar',
+        'numOfDeployedVersions': 0,
+        'numOfCurrentInstalls': 0,
+        'numOfAppLaunches': 0
+      },
+      {
+        'id': '0890506c-3dd1-43ad-8a09-21a4111a65a6',
+        'appId': 'com.aerogear.testapp',
+        'appName': 'Test App',
+        'numOfDeployedVersions': 2,
+        'numOfCurrentInstalls': 3,
+        'numOfAppLaunches': 6000
+      }
+    ];
+  const fetchedApps = [
+    [ 'com.aerogear.foobar', 0, 0, 0 ],
+    [ 'com.aerogear.testapp', 2, 3, 6000 ]
+  ];
 
   it('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual(
       {
         apps: apps,
         sortBy: sortBy,
-        columns: columns
+        columns: columns,
+        isAppsRequestFailed: false
       }
     );
   });
 
   it('should handle REVERSE_SORT', () => {
-    const newState = reducer(state, { type: REVERSE_SORT, payload: { index: 0 } });
-    expect(newState).toEqual({ ...state, sortBy: { direction: SortByDirection.desc, index: 0 }, apps: sortedApps });
+    const appsState = reducer(state, { type: APPS_SUCCESS, result: resultApps });
+    const newState = reducer(appsState, { type: REVERSE_SORT, payload: { index: 1 } });
+    expect(newState).toEqual({ ...state, sortBy: { direction: SortByDirection.desc, index: 1 }, apps: sortedApps });
+  });
+
+  it('should handle APPS_SUCCESS', () => {
+    const newState = reducer(state, { type: APPS_SUCCESS, result: resultApps });
+    expect(newState.isAppsRequestFailed).toEqual(false);
+    expect(newState.apps).toEqual(fetchedApps);
+  });
+
+  it('should handle APPS_FAILURE', () => {
+    const newState = reducer(state, { type: APPS_FAILURE });
+    expect(newState.isAppsRequestFailed).toEqual(true);
   });
 });

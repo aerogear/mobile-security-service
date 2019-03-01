@@ -1,4 +1,4 @@
-import { REVERSE_SORT } from '../actions/types.js';
+import { APPS_FAILURE, APPS_SUCCESS, APPS_REQUEST, REVERSE_SORT } from '../actions/types.js';
 import { SortByDirection, sortable } from '@patternfly/react-table';
 
 const columns = [
@@ -8,17 +8,11 @@ const columns = [
   { title: 'Launches', transforms: [sortable] }
 ];
 
-const apps = [
-  [ 'App-F', 3, 245, 873 ],
-  [ 'App-G', 4, 655, 435 ],
-  [ 'App-H', 1, 970, 98 ],
-  [ 'App-I', 6, 255, 3000 ],
-  [ 'App-J', 5, 120, 765 ]
-];
+const apps = [];
 
 const sortBy = { direction: SortByDirection.asc, index: 0 };
 
-const initialState = { apps: apps, sortBy: sortBy, columns: columns };
+const initialState = { apps: apps, sortBy: sortBy, columns: columns, isAppsRequestFailed: false };
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -34,6 +28,30 @@ export default (state = initialState, action) => {
           index: index
         },
         apps: sortedApps
+      };
+    case APPS_REQUEST:
+      return {
+        ...state
+      };
+    case APPS_SUCCESS:
+      var fetchedApps = [];
+      action.result.forEach(app => {
+        var temp = [];
+        temp[0] = app.appId;
+        temp[1] = app.numOfDeployedVersions;
+        temp[2] = app.numOfCurrentInstalls;
+        temp[3] = app.numOfAppLaunches;
+        fetchedApps.push(temp);
+      });
+      return {
+        ...state,
+        apps: fetchedApps,
+        isAppsRequestFailed: false
+      };
+    case APPS_FAILURE:
+      return {
+        ...state,
+        isAppsRequestFailed: true
       };
     default:
       return state;
