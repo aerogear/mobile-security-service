@@ -6,6 +6,7 @@ import (
 	"github.com/aerogear/mobile-security-service/pkg/models"
 	_ "github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
+	"time"
 )
 
 type (
@@ -147,8 +148,7 @@ func (a *appsPostgreSQLRepository) DisableAllAppVersionsByAppID(appID string, me
 	_, err := a.db.Exec(`
 		UPDATE version
 		SET disabled_message=$1,disabled=True
-		WHERE app_id=$2;`, message, appID )
-
+		WHERE app_id=$2;`, message, appID)
 
 	if err != nil {
 		log.Error(err)
@@ -156,4 +156,63 @@ func (a *appsPostgreSQLRepository) DisableAllAppVersionsByAppID(appID string, me
 	}
 
 	return nil
+}
+
+func (a *appsPostgreSQLRepository) UpdateDeleteAtAppByAppID(appID string, isDelete bool) error {
+
+	if isDelete {
+		_, err := a.db.Exec(`
+		UPDATE app
+		SET delete_at=$1
+		WHERE app_id=$2;`, time.Now(), appID)
+
+		if err != nil {
+			log.Error(err)
+			return err
+		}
+
+	} else {
+		_, err := a.db.Exec(`
+		UPDATE app
+		SET delete_at=NULL
+		WHERE app_id=$2;`, appID)
+
+		if err != nil {
+			log.Error(err)
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (a *appsPostgreSQLRepository) CreateApp(id, appId, name string) error {
+
+	// Update Version
+	_, err := a.db.Exec(`INSERT INTO app (id, app_id, app_name) VALUES ($1,$2,$3)`, id, appId, name)
+
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+
+	return nil
+}
+
+func (a *appsPostgreSQLRepository) GetAppByAppID(appID string) (*models.App, error) {
+
+	var app models.App
+
+	sqlStatement := `SELECT id,app_id,app_name FROM app WHERE app_id=$1;`
+	row := a.db.QueryRow(sqlStatement, appID)
+	err := row.Scan(&app.ID, &app.AppID, &app.AppName)
+	if err != nil {
+		log.Error(err)
+		if err == sql.ErrNoRows {
+			return nil, models.ErrNotFound
+		}
+		return nil, models.ErrInternalServerError
+	}
+
+	return &app, nil
 }

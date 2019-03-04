@@ -1,7 +1,9 @@
 package apps
 
 import (
+	"github.com/aerogear/mobile-security-service/pkg/helpers"
 	"github.com/aerogear/mobile-security-service/pkg/models"
+	"time"
 )
 
 type (
@@ -11,6 +13,8 @@ type (
 		GetAppByID(ID string) (*models.App, error)
 		UpdateAppVersions(versions []models.Version) error
 		DisableAllAppVersionsByAppID(id string, message string) error
+		UnbindingAppByAppID(appID string) error
+		BindingAppByApp(appId, name string) error
 	}
 
 	appsService struct {
@@ -78,4 +82,37 @@ func (a *appsService) DisableAllAppVersionsByAppID(id string, message string) er
 	}
 
 	return a.repository.DisableAllAppVersionsByAppID(app.AppID, message)
+}
+
+func (a *appsService) UnbindingAppByAppID(appID string) error {
+	// Update app delete at
+	err:= a.repository.UpdateDeleteAtAppByAppID(appID, true)
+	if err != nil {
+		return err
+	}
+
+	//Disable all versions of this app
+	msg := "Unbinding app at " + time.Now().String()
+	a.DisableAllAppVersionsByAppID(appID, msg)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (a *appsService) BindingAppByApp(appId, name string) error {
+
+	app, err := a.repository.GetAppByAppID(appId)
+
+	if err != nil && err == models.ErrNotFound {
+		id := helpers.GetUUID()
+		return a.repository.CreateApp(id, appId, name)
+	} else if err != nil {
+		return err
+	}
+
+	a.repository.UpdateDeleteAtAppByAppID(app.AppID, false)
+
+	return nil
+
 }

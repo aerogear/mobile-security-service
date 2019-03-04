@@ -1,9 +1,10 @@
 package apps
 
 import (
-	"testing"
-
+	"database/sql/driver"
 	"github.com/aerogear/mobile-security-service/pkg/helpers"
+	"testing"
+	"time"
 
 	"github.com/aerogear/mobile-security-service/pkg/models"
 	"gopkg.in/DATA-DOG/go-sqlmock.v1"
@@ -27,12 +28,18 @@ var (
 
 	getAppByIDQueryString = `SELECT id,app_id,app_name FROM app WHERE id=\$1;`
 
+	getAppByAppIDQueryString = `SELECT id,app_id,app_name FROM app WHERE app_id=\$1;`
+
 	getUpdateAppVersionsQueryString = `UPDATE version
 		SET disabled_message=\$1,disabled=\$2
 		WHERE ID=\$3`
 
 	getDisableAllAppVersionsByAppIDQueryString = `UPDATE version
 		SET disabled_message=\$1,disabled=True
+		WHERE app_id=\$2;`
+
+	getUpdateDeleteAtAppByAppIDQueryString = `UPDATE app
+		SET delete_at=\$1
 		WHERE app_id=\$2;`
 )
 
@@ -338,5 +345,104 @@ func Test_appsPostgreSQLRepository_UpdateVersions_ReturnError(t *testing.T) {
 	input[0].Disabled = true
 	if err = a.UpdateAppVersions(input); err == nil {
 		t.Errorf("error was expected while updating stats: %s", err)
+	}
+}
+
+type AnyTimestamp struct{}
+
+func (e AnyTimestamp) Match(v driver.Value) bool {
+	return true
+}
+
+func Test_appsPostgreSQLRepository_UpdateDeleteAtAppByAppID(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("Unexpected error opening a stub database connection: %v", err)
+	}
+
+	defer db.Close()
+
+	mockApps := helpers.GetMockAppList()
+
+	cols := []string{"id", "app_id", "app_name", "deleted_at"}
+	time := time.Now()
+	// Insert an app where the deleted_at column is set
+	sqlmock.NewRows(cols).AddRow(mockApps[0].ID, mockApps[0].AppID, mockApps[0].AppName, time)
+
+	// We should expected to get back only the apps which are not soft deleted
+	mock.ExpectExec(getUpdateDeleteAtAppByAppIDQueryString).WithArgs(AnyTimestamp{}, mockApps[0].AppID).WillReturnResult(sqlmock.NewResult(0, 1))
+	a := NewPostgreSQLRepository(db)
+
+	if err = a.UpdateDeleteAtAppByAppID(mockApps[0].AppID, true); err != nil {
+		t.Errorf("Got error trying to unbinding an app from database: %s", err)
+	}
+}
+
+func Test_appsPostgreSQLRepository_CreateApp(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("Unexpected error opening a stub database connection: %v", err)
+	}
+
+	defer db.Close()
+
+	mockApps := helpers.GetMockApp()
+
+	cols := []string{"id", "app_id", "app_name"}
+
+	// Insert an app where the deleted_at column is set
+	sqlmock.NewRows(cols).AddRow(mockApps.ID, mockApps.AppID, mockApps.AppName)
+
+	// We should expected to get back only the apps which are not soft deleted
+	mock.ExpectExec("INSERT INTO app").WithArgs(mockApps.ID, mockApps.AppID, mockApps.AppName).WillReturnResult(sqlmock.NewResult(1, 1))
+	a := NewPostgreSQLRepository(db)
+
+	if err = a.CreateApp(mockApps.ID, mockApps.AppID, mockApps.AppName); err != nil {
+		t.Errorf("Got error trying to create an app from database: %s", err)
+	}
+}
+
+func Test_appsPostgreSQLRepository_GetAppByAppID(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("Unexpected error opening a stub database connection: %v", err)
+	}
+
+	defer db.Close()
+	mockApp := helpers.GetMockAppList()
+	cols := []string{"id", "app_id", "app_name"}
+	// Insert app
+	row := sqlmock.NewRows(cols).AddRow(mockApp[0].ID, mockApp[0].AppID, mockApp[0].AppName)
+
+	tests := []struct {
+		name    string
+		appId   string
+		wantErr bool
+	}{
+		{
+			name:  "Get app by id should return an app",
+			appId: "7f89ce49-a736-459e-9110-e52d049fc025",
+		},
+		{
+			name:    "Get app by id using an valid id format should return an error",
+			appId:   "3489ce49-a736-459e-9110-e52d049fc025",
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		var app *models.App
+		// We should expected to get back only the app with matching id
+		mock.ExpectQuery(getAppByAppIDQueryString).WithArgs(tt.appId).WillReturnRows(row)
+		a := NewPostgreSQLRepository(db)
+
+		app, err = a.GetAppByID(tt.appId)
+
+		if err != nil && !tt.wantErr {
+			t.Fatalf("Got error trying to get app from database: %v", err)
+		}
+
+		if app == &mockApp[0] {
+			t.Fatalf("Expected an app to be returned from the database,want %v, got %v", &mockApp[0], app)
+		}
 	}
 }
