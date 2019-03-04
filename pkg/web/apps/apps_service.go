@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"github.com/aerogear/mobile-security-service/pkg/helpers"
 	"github.com/aerogear/mobile-security-service/pkg/models"
 )
 
@@ -12,6 +13,7 @@ type (
 		UpdateAppVersions(versions []models.Version) error
 		DisableAllAppVersionsByAppID(id string, message string) error
 		UnbindingAppByAppID(appID string) error
+		BindingAppByApp(appId, name string) error
 	}
 
 	appsService struct {
@@ -87,4 +89,23 @@ func (a *appsService) UnbindingAppByAppID(appID string) error {
 		return err
 	}
 	return nil
+}
+
+func (a *appsService) BindingAppByApp(appId, name string) error {
+
+	// Check if it exist
+	app, err := a.repository.GetAppByAppID(appId)
+
+	// If it is new then create an app
+	if err != nil && err == models.ErrNotFound {
+		id := helpers.GetUUID()
+		return a.repository.CreateApp(id, appId, name)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	// if is deleted so just reactive the existent app
+	return a.repository.UnDeleteAppByAppID(app.AppID)
 }
