@@ -19,6 +19,9 @@ DOCKER_RELEASE_TAG = $(ORG_NAME)/$(APP_NAME):$(RELEASE_TAG)
 
 LDFLAGS=-ldflags "-w -s -X main.Version=${TAG}"
 
+
+# SERVER
+# SERVER setup
 .PHONY: setup
 setup: setup_githooks
 	@echo Installing application dependencies:
@@ -39,6 +42,7 @@ setup_githooks:
 	@echo Setting up Git hooks:
 	ln -sf $$PWD/.githooks/* $$PWD/.git/hooks/
 
+# SERVER build/release
 .PHONY: build
 build: setup
 	go build -o $(BINARY) $(APP_FILE)
@@ -59,6 +63,22 @@ docker_build_release:
 docker_build_master:
 	docker build -t $(DOCKER_MASTER_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
 
+.PHONY: docker_push_release
+docker_push_release:
+	@docker login --username $(DOCKERHUB_USERNAME) --password $(DOCKERHUB_PASSWORD)
+	docker push $(DOCKER_LATEST_TAG)
+	docker push $(DOCKER_RELEASE_TAG)
+
+.PHONY: docker_push_master
+docker_push_master:
+	@docker login --username $(DOCKERHUB_USERNAME) --password $(DOCKERHUB_PASSWORD)
+	docker push $(DOCKER_MASTER_TAG)
+
+.PHONY: release
+release: setup
+	goreleaser --rm-dist
+
+# SERVER test
 .PHONY: test-all
 test-all: test-unit
 	make test-integration
@@ -85,6 +105,11 @@ test-integration-cover:
 		go test -failfast -tags=integration -coverprofile=coverage.out -covermode=count $(addprefix $(PKG)/,$(pkg)) || exit 1;\
 		tail -n +2 coverage.out >> coverage-all.out;)
 
+# SERVER misc
+.PHONY: generate
+generate:
+	go generate $(APP_FILE)
+
 .PHONY: errcheck
 errcheck:
 	@echo errcheck
@@ -104,21 +129,28 @@ fmt:
 clean:
 	-rm -f ${BINARY}
 
-.PHONY: release
-release: setup
-	goreleaser --rm-dist
 
-.PHONY: docker_push_release
-docker_push_release:
-	@docker login --username $(DOCKERHUB_USERNAME) --password $(DOCKERHUB_PASSWORD)
-	docker push $(DOCKER_LATEST_TAG)
-	docker push $(DOCKER_RELEASE_TAG)
+## UI
+.PHONY:
+ui-npm-install:
+	cd ui && npm install
 
-.PHONY: docker_push_master
-docker_push_master:
-	@docker login --username $(DOCKERHUB_USERNAME) --password $(DOCKERHUB_PASSWORD)
-	docker push $(DOCKER_MASTER_TAG)
+.PHONY:
+ui-npm-ci:
+	cd ui && npm ci
 
-.PHONY: generate
-generate:
-	go generate $(APP_FILE)
+.PHONY: ui
+ui: ui-npm-ci
+	cd ui && npm run build
+
+.PHONY: ui-check-code-style
+ui-check-code-style: ui
+	cd ui && npm run eslint
+
+.PHONY: ui-test-cover
+ui-test-cover: ui-npm-ci
+	cd ui && npm run coverage
+
+.PHONY: serve
+serve: build ui
+	export STATIC_FILES_DIR=$(CURDIR)/ui/build; ./mobile-security-service -kubeconfig ~/.kube/config
