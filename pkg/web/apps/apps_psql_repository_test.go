@@ -1,12 +1,12 @@
 package apps
 
 import (
+	"database/sql/driver"
+	"gopkg.in/DATA-DOG/go-sqlmock.v1"
 	"testing"
 
 	"github.com/aerogear/mobile-security-service/pkg/helpers"
-
 	"github.com/aerogear/mobile-security-service/pkg/models"
-	"gopkg.in/DATA-DOG/go-sqlmock.v1"
 )
 
 var (
@@ -30,6 +30,10 @@ var (
 	getUpdateAppVersionsQueryString = `UPDATE version
 		SET disabled_message=\$1,disabled=\$2
 		WHERE ID=\$3`
+
+	getDeleteAppByAppIDQueryString = `UPDATE app
+		SET deleted_at=\$1
+		WHERE app_id=\$2;`
 
 	getDisableAllAppVersionsByAppIDQueryString = `UPDATE version
 		SET disabled_message=\$1,disabled=True
@@ -339,4 +343,58 @@ func Test_appsPostgreSQLRepository_UpdateVersions_ReturnError(t *testing.T) {
 	if err = a.UpdateAppVersions(input); err == nil {
 		t.Errorf("error was expected while updating stats: %s", err)
 	}
+}
+
+type AnyTimestamp struct{}
+
+func (e AnyTimestamp) Match(v driver.Value) bool {
+	return true
+}
+
+func Test_appsPostgreSQLRepository_DeleteAppByAppID(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("Unexpected error opening a stub database connection: %v", err)
+	}
+
+	defer db.Close()
+
+	mockApps := helpers.GetMockAppList()
+
+	cols := []string{"id", "app_id", "app_name"}
+	// Insert an app where the deleted_at column is set
+	sqlmock.NewRows(cols).AddRow(mockApps[0].ID, mockApps[0].AppID, mockApps[0].AppName)
+
+	// We should expected to get back only the apps which are not soft deleted
+	mock.ExpectExec(getDeleteAppByAppIDQueryString).WithArgs(AnyTimestamp{}, mockApps[0].AppID).WillReturnResult(sqlmock.NewResult(0, 1))
+	a := NewPostgreSQLRepository(db)
+
+	tests := []struct {
+		name    string
+		appId   string
+		wantErr bool
+	}{
+		{
+			name:  "Should update the deleted_at of an app with a value with success",
+			appId: helpers.GetMockApp().AppID,
+		},
+		{
+			name:    "Should return an error when try to update the deleted_at of an app with a value",
+			appId:   helpers.GetMockApp().ID,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+
+		err = a.DeleteAppByAppID(tt.appId)
+
+		if err != nil && !tt.wantErr {
+			t.Fatalf("Got error trying to update the deleted_at of an app with an value: %v", err)
+		}
+
+		if err == nil && tt.wantErr {
+			t.Fatalf("Not get expected error when was trying to update the deleted_at of an app with an value")
+		}
+	}
+
 }

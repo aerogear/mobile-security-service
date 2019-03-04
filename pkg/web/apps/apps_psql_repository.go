@@ -6,6 +6,7 @@ import (
 	"github.com/aerogear/mobile-security-service/pkg/models"
 	_ "github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
+	"time"
 )
 
 type (
@@ -148,6 +149,21 @@ func (a *appsPostgreSQLRepository) DisableAllAppVersionsByAppID(appID string, me
 		UPDATE version
 		SET disabled_message=$1,disabled=True
 		WHERE app_id=$2;`, message, appID)
+
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+
+	return nil
+}
+
+func (a *appsPostgreSQLRepository) DeleteAppByAppID(appId string) error {
+
+	_, err := a.db.Exec(`
+		UPDATE app
+		SET deleted_at=$1
+		WHERE app_id=$2;`, time.Now(), appId)
 
 	if err != nil {
 		log.Error(err)

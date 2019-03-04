@@ -27,6 +27,9 @@ var (
 		DisableAllAppVersionsByAppIDFunc: func(id string, message string) error {
 			return nil
 		},
+		DeleteAppByAppIDFunc: func(appId string) error {
+			return nil
+		},
 	}
 
 	mockRepositoryError = &RepositoryMock{
@@ -45,11 +48,13 @@ var (
 		DisableAllAppVersionsByAppIDFunc: func(id string, message string) error {
 			return models.ErrNotFound
 		},
+		DeleteAppByAppIDFunc: func(appId string) error {
+			return models.ErrNotFound
+		},
 	}
 )
 
 func Test_appsService_GetApps(t *testing.T) {
-	// make and configure a mocked Repository
 	apps := helpers.GetMockAppList()
 
 	type fields struct {
@@ -140,7 +145,6 @@ func Test_appsService_GetAppByID(t *testing.T) {
 }
 
 func Test_appsService_DisableAllAppVersionsByAppID(t *testing.T) {
-	// make and configure a mocked Repository
 	type fields struct {
 		repository Repository
 	}
@@ -178,7 +182,6 @@ func Test_appsService_DisableAllAppVersionsByAppID(t *testing.T) {
 }
 
 func Test_appsService_UpdateAppVersions(t *testing.T) {
-	// make and configure a mocked Repository
 	type fields struct {
 		repository Repository
 	}
@@ -206,6 +209,41 @@ func Test_appsService_UpdateAppVersions(t *testing.T) {
 			err := a.UpdateAppVersions(tt.versions)
 			if (err != nil) && (tt.wantErr != err || tt.wantErr == nil) {
 				t.Errorf("appsService.DisableAllAppVersionsByAppID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+func Test_appsService_UnbindingAppByAppID(t *testing.T) {
+	type fields struct {
+		repository Repository
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		appId   string
+		wantErr error
+		repo    RepositoryMock
+	}{
+		{
+			name:  "Should unbinding app by app_id",
+			appId: helpers.GetMockApp().AppID,
+			repo:  *mockRepositoryWithSuccessResults,
+		},
+		{
+			name:    "Should return an error to unbinding app",
+			appId:   helpers.GetMockApp().AppID,
+			repo:    *mockRepositoryError,
+			wantErr: models.ErrNotFound,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			a := NewService(&tt.repo)
+			err := a.UnbindingAppByAppID(tt.appId)
+			if (err != nil) && (tt.wantErr != err || tt.wantErr == nil) {
+				t.Errorf("appsService.DeleteAppByAppID() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})

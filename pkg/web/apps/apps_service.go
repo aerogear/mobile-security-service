@@ -11,6 +11,7 @@ type (
 		GetAppByID(ID string) (*models.App, error)
 		UpdateAppVersions(versions []models.Version) error
 		DisableAllAppVersionsByAppID(id string, message string) error
+		UnbindingAppByAppID(appID string) error
 	}
 
 	appsService struct {
@@ -78,4 +79,12 @@ func (a *appsService) DisableAllAppVersionsByAppID(id string, message string) er
 	}
 
 	return a.repository.DisableAllAppVersionsByAppID(app.AppID, message)
+}
+
+func (a *appsService) UnbindingAppByAppID(appID string) error {
+	err := a.repository.DeleteAppByAppID(appID)
+	if err != nil {
+		return err
+	}
+	return nil
 }
