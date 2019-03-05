@@ -21,11 +21,20 @@ describe('AppsTableContainer', () => {
   ];
   const desc = SortByDirection.asc;
   const sortBy = { direction: desc, index };
-  const props = { apps, sortBy, columns };
+  const getApps = jest.fn();
+  const props = { apps, sortBy, columns, isAppsRequestFailed: false, getApps: getApps };
 
-  it('renders the without crashing', () => {
+  it('renders without crashing', () => {
     const Wrapper = shallow(<AppsTableContainer {...props} />);
     expect(Wrapper.find(AppsTable)).toHaveLength(1);
     expect(Wrapper.find('div.apps-table')).toHaveLength(1);
+  });
+
+  it('renders the expected view on app request', () => {
+    props.isAppsRequestFailed = true;
+    const Wrapper = shallow(<AppsTableContainer {...props} />);
+    expect(Wrapper.find(AppsTable)).toHaveLength(0);
+    expect(Wrapper.find('div.apps-table')).toHaveLength(0);
+    expect(Wrapper.find('div.no-apps')).toHaveLength(1);
   });
 });
