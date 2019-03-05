@@ -110,7 +110,6 @@ func (a *httpHandler) DisableAllAppVersionsByAppID(c echo.Context) error {
 		return httperrors.BadRequest(c, "Invalid data")
 	}
 
-
 	err := a.Service.DisableAllAppVersionsByAppID(id, ver.DisabledMessage)
 
 	if err != nil {
