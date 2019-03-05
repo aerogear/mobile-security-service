@@ -12,4 +12,7 @@ type Repository interface {
 	UpdateAppVersions(versions []models.Version) error
 	DisableAllAppVersionsByAppID(appID string, message string) error
 	DeleteAppByAppID(appId string) error
+	CreateApp(id, appId, name string) error
+	GetAppByAppID(appID string) (*models.App, error)
+	UnDeleteAppByAppID(appID string) error
 }
