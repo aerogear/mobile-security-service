@@ -2,9 +2,16 @@
 
 # Run some pre commit checks on the Go source code. Prevent the commit if any errors are found
 
-# Format the Go code
+# Check if the Go code is formatted
 check_code_format (){
-    go fmt $(go list ./... | grep -v /vendor/)
+    gofmt -l . | grep -v vendor/ >/dev/null 2>&1
+    if [ $? -ne 1 ]; then
+       printf "\nErrors found in your code, please use 'make fmt' to format your code."
+       exit 1
+    else
+       exit 0
+    fi
+
 }
 
 # Check all files for errors
