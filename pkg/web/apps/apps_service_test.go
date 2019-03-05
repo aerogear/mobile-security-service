@@ -56,22 +56,22 @@ func Test_appsService_GetApps(t *testing.T) {
 		repository Repository
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		id      string
-		want    *[]models.App
-		wantErr error
+		name     string
+		fields   fields
+		id       string
+		want     *[]models.App
+		wantErr  error
 		mockRepo RepositoryMock
 	}{
 		{
-			name: "Get all apps should return success",
-			want: &apps,
+			name:     "Get all apps should return success",
+			want:     &apps,
 			mockRepo: *mockRepositoryWithSuccessResults,
 		},
 		{
-			name: "Get all apps should return error when apps are not found",
-			want: &apps,
-			wantErr: models.ErrNotFound,
+			name:     "Get all apps should return error when apps are not found",
+			want:     &apps,
+			wantErr:  models.ErrNotFound,
 			mockRepo: *mockRepositoryError,
 		},
 	}
@@ -83,7 +83,7 @@ func Test_appsService_GetApps(t *testing.T) {
 				t.Errorf("appsService.GetApps() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if  (err == nil) && (!reflect.DeepEqual(got, tt.want)) {
+			if (err == nil) && (!reflect.DeepEqual(got, tt.want)) {
 				t.Errorf("appsService.GetApps() = %v, want %v", got, tt.want)
 			}
 			if (err != nil) && (tt.wantErr != err || tt.wantErr == nil) {
@@ -99,24 +99,24 @@ func Test_appsService_GetAppByID(t *testing.T) {
 		repository Repository
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		id      string
-		want    *models.App
-		wantErr error
+		name     string
+		fields   fields
+		id       string
+		want     *models.App
+		wantErr  error
 		mockRepo RepositoryMock
 	}{
 		{
-			name: "Get app by id",
-			id:   "7f89ce49-a736-459e-9110-e52d049fc025",
-			want: helpers.GetMockApp(),
+			name:     "Get app by id",
+			id:       "7f89ce49-a736-459e-9110-e52d049fc025",
+			want:     helpers.GetMockApp(),
 			mockRepo: *mockRepositoryWithSuccessResults,
 		},
 		{
-			name:    "Return an error as no file app found",
-			id:      "7f89ce49-a736-459e-9110-e52d049fcerr",
-			want:    nil,
-			wantErr: models.ErrNotFound,
+			name:     "Return an error as no file app found",
+			id:       "7f89ce49-a736-459e-9110-e52d049fcerr",
+			want:     nil,
+			wantErr:  models.ErrNotFound,
 			mockRepo: *mockRepositoryError,
 		},
 	}

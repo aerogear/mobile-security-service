@@ -64,29 +64,29 @@ func Test_HttpHandler_GetApps(t *testing.T) {
 		Service Service
 	}
 	tests := []struct {
-		name     string
-		fields   fields
-		wantErr  bool
-		wantCode int
+		name        string
+		fields      fields
+		wantErr     bool
+		wantCode    int
 		mockService ServiceMock
 	}{
 		{
-			name:     "Should return success to get all",
-			wantErr:  false,
+			name:        "Should return success to get all",
+			wantErr:     false,
 			mockService: *mockedService,
-			wantCode: 200,
+			wantCode:    200,
 		},
 		{
-			name:     "Should return when no apps have been found, return a HTTP Status code of 204 with no response body",
-			wantErr:  true,
+			name:        "Should return when no apps have been found, return a HTTP Status code of 204 with no response body",
+			wantErr:     true,
 			mockService: *mockedServiceWithError,
-			wantCode: 204,
+			wantCode:    204,
 		},
 		{
-			name:     "Should return error when an error occurs in the database",
-			wantErr:  true,
+			name:        "Should return error when an error occurs in the database",
+			wantErr:     true,
 			mockService: *mockedServiceWithInternalError,
-			wantCode: 500,
+			wantCode:    500,
 		},
 	}
 	for _, tt := range tests {

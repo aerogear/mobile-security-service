@@ -147,8 +147,7 @@ func (a *appsPostgreSQLRepository) DisableAllAppVersionsByAppID(appID string, me
 	_, err := a.db.Exec(`
 		UPDATE version
 		SET disabled_message=$1,disabled=True
-		WHERE app_id=$2;`, message, appID )
-
+		WHERE app_id=$2;`, message, appID)
 
 	if err != nil {
 		log.Error(err)
