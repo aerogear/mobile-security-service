@@ -11,7 +11,7 @@ import (
 var (
 	lockServiceMockBindingAppByApp              sync.RWMutex
 	lockServiceMockDisableAllAppVersionsByAppID sync.RWMutex
-	lockServiceMockGetAppByID                   sync.RWMutex
+	lockServiceMockGetActiveAppByID             sync.RWMutex
 	lockServiceMockGetApps                      sync.RWMutex
 	lockServiceMockUnbindingAppByAppID          sync.RWMutex
 	lockServiceMockUpdateAppVersions            sync.RWMutex
@@ -33,8 +33,8 @@ var _ Service = &ServiceMock{}
 //             DisableAllAppVersionsByAppIDFunc: func(id string, message string) error {
 // 	               panic("mock out the DisableAllAppVersionsByAppID method")
 //             },
-//             GetAppByIDFunc: func(ID string) (*models.App, error) {
-// 	               panic("mock out the GetAppByID method")
+//             GetActiveAppByIDFunc: func(ID string) (*models.App, error) {
+// 	               panic("mock out the GetActiveAppByID method")
 //             },
 //             GetAppsFunc: func() (*[]models.App, error) {
 // 	               panic("mock out the GetApps method")
@@ -58,8 +58,8 @@ type ServiceMock struct {
 	// DisableAllAppVersionsByAppIDFunc mocks the DisableAllAppVersionsByAppID method.
 	DisableAllAppVersionsByAppIDFunc func(id string, message string) error
 
-	// GetAppByIDFunc mocks the GetAppByID method.
-	GetAppByIDFunc func(ID string) (*models.App, error)
+	// GetActiveAppByIDFunc mocks the GetActiveAppByID method.
+	GetActiveAppByIDFunc func(ID string) (*models.App, error)
 
 	// GetAppsFunc mocks the GetApps method.
 	GetAppsFunc func() (*[]models.App, error)
@@ -86,8 +86,8 @@ type ServiceMock struct {
 			// Message is the message argument value.
 			Message string
 		}
-		// GetAppByID holds details about calls to the GetAppByID method.
-		GetAppByID []struct {
+		// GetActiveAppByID holds details about calls to the GetActiveAppByID method.
+		GetActiveAppByID []struct {
 			// ID is the ID argument value.
 			ID string
 		}
@@ -177,34 +177,34 @@ func (mock *ServiceMock) DisableAllAppVersionsByAppIDCalls() []struct {
 	return calls
 }
 
-// GetAppByID calls GetAppByIDFunc.
-func (mock *ServiceMock) GetAppByID(ID string) (*models.App, error) {
-	if mock.GetAppByIDFunc == nil {
-		panic("ServiceMock.GetAppByIDFunc: method is nil but Service.GetAppByID was just called")
+// GetActiveAppByID calls GetActiveAppByIDFunc.
+func (mock *ServiceMock) GetActiveAppByID(ID string) (*models.App, error) {
+	if mock.GetActiveAppByIDFunc == nil {
+		panic("ServiceMock.GetActiveAppByIDFunc: method is nil but Service.GetActiveAppByID was just called")
 	}
 	callInfo := struct {
 		ID string
 	}{
 		ID: ID,
 	}
-	lockServiceMockGetAppByID.Lock()
-	mock.calls.GetAppByID = append(mock.calls.GetAppByID, callInfo)
-	lockServiceMockGetAppByID.Unlock()
-	return mock.GetAppByIDFunc(ID)
+	lockServiceMockGetActiveAppByID.Lock()
+	mock.calls.GetActiveAppByID = append(mock.calls.GetActiveAppByID, callInfo)
+	lockServiceMockGetActiveAppByID.Unlock()
+	return mock.GetActiveAppByIDFunc(ID)
 }
 
-// GetAppByIDCalls gets all the calls that were made to GetAppByID.
+// GetActiveAppByIDCalls gets all the calls that were made to GetActiveAppByID.
 // Check the length with:
-//     len(mockedService.GetAppByIDCalls())
-func (mock *ServiceMock) GetAppByIDCalls() []struct {
+//     len(mockedService.GetActiveAppByIDCalls())
+func (mock *ServiceMock) GetActiveAppByIDCalls() []struct {
 	ID string
 } {
 	var calls []struct {
 		ID string
 	}
-	lockServiceMockGetAppByID.RLock()
-	calls = mock.calls.GetAppByID
-	lockServiceMockGetAppByID.RUnlock()
+	lockServiceMockGetActiveAppByID.RLock()
+	calls = mock.calls.GetActiveAppByID
+	lockServiceMockGetActiveAppByID.RUnlock()
 	return calls
 }
 

@@ -10,7 +10,7 @@ import (
 
 var (
 	mockRepositoryWithSuccessResults = &RepositoryMock{
-		GetAppByIDFunc: func(ID string) (*models.App, error) {
+		GetActiveAppByIDFunc: func(ID string) (*models.App, error) {
 			return helpers.GetMockApp(), nil
 		},
 		GetAppVersionsByAppIDFunc: func(ID string) (*[]models.Version, error) {
@@ -42,7 +42,7 @@ var (
 	}
 
 	mockRepositoryError = &RepositoryMock{
-		GetAppByIDFunc: func(ID string) (*models.App, error) {
+		GetActiveAppByIDFunc: func(ID string) (*models.App, error) {
 			return nil, models.ErrNotFound
 		},
 		GetAppVersionsByAppIDFunc: func(ID string) (*[]models.Version, error) {
@@ -117,7 +117,7 @@ func Test_appsService_GetApps(t *testing.T) {
 	}
 }
 
-func Test_appsService_GetAppByID(t *testing.T) {
+func Test_appsService_GetActiveAppByID(t *testing.T) {
 	type fields struct {
 		repository Repository
 	}
@@ -146,16 +146,16 @@ func Test_appsService_GetAppByID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			a := NewService(&tt.mockRepo)
-			got, err := a.GetAppByID(tt.id)
+			got, err := a.GetActiveAppByID(tt.id)
 			if (err != nil) && tt.wantErr == nil {
-				t.Errorf("appsService.GetAppByID() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("appsService.GetActiveAppByID() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("appsService.GetAppByID() = %v, want %v", got, tt.want)
+				t.Errorf("appsService.GetActiveAppByID() = %v, want %v", got, tt.want)
 			}
 			if (err != nil) && (tt.wantErr != err || tt.wantErr == nil) {
-				t.Errorf("appsService.GetAppByID() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("appsService.GetActiveAppByID() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})
@@ -287,7 +287,7 @@ func Test_appsService_BindingApp(t *testing.T) {
 		CreateAppFunc: func(id string, appId string, name string) error {
 			return nil
 		},
-		GetAppByIDFunc: func(ID string) (*models.App, error) {
+		GetActiveAppByIDFunc: func(ID string) (*models.App, error) {
 			return helpers.GetMockApp(), nil
 		},
 	}

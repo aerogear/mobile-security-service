@@ -102,11 +102,11 @@ func (a *appsPostgreSQLRepository) GetAppVersionsByAppID(id string) (*[]models.V
 	return &versions, nil
 }
 
-// GetAppByID retrieves an app by id from the database
-func (a *appsPostgreSQLRepository) GetAppByID(ID string) (*models.App, error) {
+// GetActiveAppByID retrieves an app by id from the database
+func (a *appsPostgreSQLRepository) GetActiveAppByID(ID string) (*models.App, error) {
 	var app models.App
 
-	sqlStatement := `SELECT id,app_id,app_name FROM app WHERE id=$1;`
+	sqlStatement := `SELECT id,app_id,app_name FROM app WHERE deleted_at IS NULL AND id=$1;`
 	row := a.db.QueryRow(sqlStatement, ID)
 	err := row.Scan(&app.ID, &app.AppID, &app.AppName)
 	if err != nil {

@@ -19,7 +19,7 @@ var (
 		DisableAllAppVersionsByAppIDFunc: func(id string, message string) error {
 			return nil
 		},
-		GetAppByIDFunc: func(ID string) (*models.App, error) {
+		GetActiveAppByIDFunc: func(ID string) (*models.App, error) {
 			app := helpers.GetMockApp()
 			if app.ID == ID {
 				return app, nil
@@ -41,7 +41,7 @@ var (
 		DisableAllAppVersionsByAppIDFunc: func(id string, message string) error {
 			return models.ErrInternalServerError
 		},
-		GetAppByIDFunc: func(ID string) (*models.App, error) {
+		GetActiveAppByIDFunc: func(ID string) (*models.App, error) {
 			return nil, models.ErrInternalServerError
 		},
 		GetAppsFunc: func() (*[]models.App, error) {
@@ -322,7 +322,7 @@ func Test_HttpHandler_DisableAllAppVersionsByAppID_WithInvalidJsonData(t *testin
 	}
 }
 
-func Test_httpHandler_GetAppByID(t *testing.T) {
+func Test_httpHandler_GetActiveAppByID(t *testing.T) {
 	config := config.Get()
 	APIRoutePrefix := config.APIRoutePrefix
 	// make and configure a mocked Service
@@ -368,12 +368,12 @@ func Test_httpHandler_GetAppByID(t *testing.T) {
 		h := NewHTTPHandler(e, mockedService)
 		c.SetParamValues(tt.id)
 		t.Run(tt.name, func(t *testing.T) {
-			_ = h.GetAppByID(c)
+			_ = h.GetActiveAppByID(c)
 			if rec.Code != tt.wantCode {
-				t.Errorf("HTTPHandler.GetAppByID() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
+				t.Errorf("HTTPHandler.GetActiveAppByID() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
 			}
 			if strings.TrimSpace(rec.Body.String()) != tt.want {
-				t.Errorf("httpHandler.GetAppByID() got %v, want %v", strings.TrimSpace(rec.Body.String()), tt.want)
+				t.Errorf("httpHandler.GetActiveAppByID() got %v, want %v", strings.TrimSpace(rec.Body.String()), tt.want)
 			}
 		})
 	}
