@@ -13,7 +13,7 @@ import (
 type (
 	HTTPHandler interface {
 		GetApps(c echo.Context) error
-		GetAppByID(c echo.Context) error
+		GetActiveAppByID(c echo.Context) error
 		UpdateAppVersions(c echo.Context) error
 		DisableAllAppVersionsByAppID(c echo.Context) error
 	}
@@ -47,15 +47,15 @@ func (a *httpHandler) GetApps(c echo.Context) error {
 	return c.JSON(http.StatusOK, apps)
 }
 
-// GetAppByID returns apps by id as JSON from the AppService
-func (a *httpHandler) GetAppByID(c echo.Context) error {
+// GetActiveAppByID returns apps by id as JSON from the AppService
+func (a *httpHandler) GetActiveAppByID(c echo.Context) error {
 
 	id := c.Param("id")
 	if !helpers.IsValidUUID(id) {
 		return httperrors.BadRequest(c, "Invalid id supplied")
 	}
 
-	apps, err := a.Service.GetAppByID(id)
+	apps, err := a.Service.GetActiveAppByID(id)
 
 	if err != nil {
 		return httperrors.GetHTTPResponseFromErr(c, err)

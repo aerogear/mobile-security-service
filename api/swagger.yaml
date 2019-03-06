@@ -158,7 +158,7 @@ paths:
   /apps/{id}:
     get:
       description: Retrieve all information for a single app including all child information
-      operationId: getAppById
+      operationId: GetActiveAppByID
       parameters:
       - description: The id for the app that needs to be fetched.
         in: path

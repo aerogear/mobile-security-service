@@ -9,7 +9,7 @@ type (
 	// Service defines the interface methods to be used
 	Service interface {
 		GetApps() (*[]models.App, error)
-		GetAppByID(ID string) (*models.App, error)
+		GetActiveAppByID(ID string) (*models.App, error)
 		UpdateAppVersions(versions []models.Version) error
 		DisableAllAppVersionsByAppID(id string, message string) error
 		UnbindingAppByAppID(appID string) error
@@ -40,10 +40,10 @@ func (a *appsService) GetApps() (*[]models.App, error) {
 	return apps, nil
 }
 
-// GetAppByID retrieves app by id from the repository
-func (a *appsService) GetAppByID(id string) (*models.App, error) {
+// GetActiveAppByID retrieves app by id from the repository
+func (a *appsService) GetActiveAppByID(id string) (*models.App, error) {
 
-	app, err := a.repository.GetAppByID(id)
+	app, err := a.repository.GetActiveAppByID(id)
 
 	if err != nil {
 		return nil, err
@@ -74,7 +74,7 @@ func (a *appsService) UpdateAppVersions(versions []models.Version) error {
 func (a *appsService) DisableAllAppVersionsByAppID(id string, message string) error {
 
 	// get the app id to send it to the re
-	app, err := a.repository.GetAppByID(id)
+	app, err := a.repository.GetActiveAppByID(id)
 
 	if err != nil {
 		return err

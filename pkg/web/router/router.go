@@ -50,7 +50,7 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	// Retrieve all information for a single app including all child information
 	// ---
 	// summary: Get app by id
-	// operationId: getAppById
+	// operationId: GetActiveAppByID
 	// produces:
 	// - application/json
 	// parameters:
@@ -68,8 +68,7 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	//     description: Invalid id supplied
 	//   404:
 	//     description: App not found
-	r.GET("/apps/:id", appsHandler.GetAppByID) // TODO: Implement correctly the call of the method passing the parameters
-
+	r.GET("/apps/:id", appsHandler.GetActiveAppByID)
 	// swagger:operation PUT /apps/:id/versions Version
 	//
 	// Update all versions informed of an app using the app id, including updating version information

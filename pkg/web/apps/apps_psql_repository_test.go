@@ -24,7 +24,7 @@ var (
 	WHERE v.app_id = \$1 
 	GROUP BY v.id;`
 
-	getAppByIDQueryString = `SELECT id,app_id,app_name FROM app WHERE id=\$1;`
+	GetActiveAppByIDQueryString = `SELECT id,app_id,app_name FROM app WHERE deleted_at IS NULL AND id=\$1;`
 
 	getAppByAppIDQueryString = `SELECT id,app_id,app_name FROM app WHERE app_id=\$1;`
 
@@ -184,47 +184,62 @@ func Test_appsPostgreSQLRepository_GetAppVersions_WillReturnNoAppVersions(t *tes
 	}
 }
 
-func Test_appsPostgreSQLRepository_GetAppByID(t *testing.T) {
+func Test_appsPostgreSQLRepository_GetActiveAppByID(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatalf("Unexpected error opening a stub database connection: %v", err)
 	}
 
 	defer db.Close()
-	mockApp := helpers.GetMockAppList()
-	cols := []string{"id", "app_id", "app_name"}
-	// Insert app
-	row := sqlmock.NewRows(cols).AddRow(mockApp[0].ID, mockApp[0].AppID, mockApp[0].AppName)
+	mockApps := helpers.GetMockAppList()
+	cols := []string{"id", "app_id", "app_name", "deleted_at"}
+	cols2 := []string{"id", "app_id", "app_name"}
+
+	timestamp := "2019-02-15T09:38:33+00:00"
+
+	// Insert an app where the deleted_at column is set
+	sqlmock.NewRows(cols).AddRow(mockApps[0].ID, mockApps[0].AppID, mockApps[0].AppName, timestamp)
+
+	// Insert 2 apps which are not soft deleted
+	rows := sqlmock.NewRows(cols2).AddRow(mockApps[1].ID, mockApps[1].AppID, mockApps[1].AppName).AddRow(mockApps[2].ID, mockApps[2].AppID, mockApps[2].AppName)
 
 	tests := []struct {
-		name    string
-		ID      string
-		wantErr bool
+		name      string
+		ID        string
+		row       *sqlmock.Rows
+		cols      []string
+		timestamp string
+		wantErr   bool
 	}{
 		{
 			name: "Get app by id should return an app",
-			ID:   "7f89ce49-a736-459e-9110-e52d049fc025",
+			ID:   "7f89ce49-a736-459e-9110-e52d049fc026",
 		},
 		{
 			name:    "Get app by id using an valid id format should return an error",
-			ID:      "3489ce49-a736-459e-9110-e52d049fc025",
+			ID:      "3489ce49-a736-459e-9110-e52d049fc030",
+			wantErr: true,
+		},
+		{
+			name:    "Get app by id using id that is soft deleted",
+			ID:      "7f89ce49-a736-459e-9110-e52d049fc025",
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		var app *models.App
 		// We should expected to get back only the app with matching id
-		mock.ExpectQuery(getAppByIDQueryString).WithArgs(tt.ID).WillReturnRows(row)
+		mock.ExpectQuery(GetActiveAppByIDQueryString).WithArgs(tt.ID).WillReturnRows(rows)
 		a := NewPostgreSQLRepository(db)
 
-		app, err = a.GetAppByID(tt.ID)
+		app, err = a.GetActiveAppByID(tt.ID)
 
 		if err != nil && !tt.wantErr {
 			t.Fatalf("Got error trying to get app from database: %v", err)
 		}
 
-		if app == &mockApp[0] {
-			t.Fatalf("Expected an app to be returned from the database,want %v, got %v", &mockApp[0], app)
+		if app == &mockApps[0] {
+			t.Fatalf("Expected an app to be returned from the database,want %v, got %v", &mockApps[0], app)
 		}
 	}
 }
