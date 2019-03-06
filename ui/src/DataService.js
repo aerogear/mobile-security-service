@@ -1,17 +1,4 @@
-const getWSUrl = () => {
-  const loc = window.location;
-  let newUrl;
-  if (loc.protocol === 'https:') {
-    newUrl = 'wss:';
-  } else {
-    newUrl = 'ws:';
-  }
-  newUrl += `//${loc.host}`;
-  return newUrl;
-};
-
 const baseUrl = '/api';
-const wsUrl = `${getWSUrl()}/api`;
 
 export const wsError = {};
 

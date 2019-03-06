@@ -8,8 +8,19 @@ ifdef::env-github[]
 :table-caption!:
 endif::[]
 
+:toc:
+:toc-placement!:
 
 = Mobile Security Service UI
+
+ifdef::status[]
+.*Project health*
+image:https://circleci.com/gh/aerogear/mobile-security-service.svg?style=svg[Build Status (CircleCI), link=https://circleci.com/gh/aerogear/mobile-security-service]
+image:https://img.shields.io/:license-Apache2-blue.svg[License (License), link=http://www.apache.org/licenses/LICENSE-2.0]
+endif::[]
+
+:toc:
+toc::[]
 
 == Getting Started
 
