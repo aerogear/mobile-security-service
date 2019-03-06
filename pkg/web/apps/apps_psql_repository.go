@@ -218,3 +218,136 @@ func (a *appsPostgreSQLRepository) UnDeleteAppByAppID(appId string) error {
 
 	return nil
 }
+
+// GetVersionByAppIDAndVersion gets a version by its app ID and version number
+func (a *appsPostgreSQLRepository) GetVersionByAppIDAndVersion(appID string, versionNumber string) (*models.Version, error) {
+	version := models.Version{}
+
+	sqlStatement := `
+	SELECT v.id,v.version,v.app_id, v.disabled, v.disabled_message, v.num_of_app_launches, v.last_launched_at
+	FROM version as v
+	WHERE v.app_id = $1 AND v.version = $2;`
+
+	err := a.db.QueryRow(sqlStatement, appID, versionNumber).Scan(&version.ID, &version.Version, &version.AppID, &version.Disabled, &version.DisabledMessage, &version.NumOfAppLaunches, &version.LastLaunchedAt)
+
+	if err != nil {
+		log.Error(err)
+		if err == sql.ErrNoRows {
+			return nil, models.ErrNotFound
+		}
+		return nil, models.ErrInternalServerError
+	}
+
+	return &version, nil
+}
+
+// GetDeviceByDeviceIDAndAppID returns a device by its device ID and app ID
+func (a *appsPostgreSQLRepository) GetDeviceByDeviceIDAndAppID(deviceID string, appID string) (*models.Device, error) {
+	device := models.Device{}
+
+	sqlStatement := `
+		SELECT d.id, d.version_id, d.app_id, d.device_id, d.device_type, d.device_version
+		FROM device as d
+		WHERE d.device_id = $1 AND d.app_id = $2;`
+
+	if err := a.db.QueryRow(sqlStatement, deviceID, appID).
+		Scan(&device.ID, &device.VersionID, &device.AppID, &device.DeviceID, &device.DeviceType, &device.DeviceVersion); err != nil {
+
+		log.Error(err)
+		if err == sql.ErrNoRows {
+			return nil, models.ErrNotFound
+		}
+		return nil, models.ErrInternalServerError
+	}
+
+	return &device, nil
+}
+
+// GetDeviceByVersionAndAppID returns a device by its version number and app ID
+func (a *appsPostgreSQLRepository) GetDeviceByVersionAndAppID(version string, appID string) (*models.Device, error) {
+	device := models.Device{}
+
+	sqlStatement := `
+		SELECT d.id, d.version_id, d.app_id, d.device_id, d.device_type, d.device_version
+		FROM device as d
+		WHERE d.app_id = $1 AND d.device_version = $2;`
+
+	if err := a.db.QueryRow(sqlStatement, appID, version).
+		Scan(&device.ID, &device.VersionID, &device.AppID, &device.DeviceID, &device.DeviceType, &device.DeviceVersion); err != nil {
+
+		log.Error(err)
+		if err == sql.ErrNoRows {
+			return nil, models.ErrNotFound
+		}
+		return nil, models.ErrInternalServerError
+	}
+
+	return &device, nil
+}
+
+// GetAppByID retrieves an app by id from the database
+func (a *appsPostgreSQLRepository) GetActiveAppByAppID(appID string) (*models.App, error) {
+	app := models.App{}
+
+	sqlStatment := `SELECT id,app_id,app_name FROM app WHERE app_id=$1 AND deleted_at IS NULL;`
+	err := a.db.QueryRow(sqlStatment, appID).Scan(&app.ID, &app.AppID, &app.AppName)
+
+	if err != nil {
+		log.Error(err)
+		if err == sql.ErrNoRows {
+			return nil, models.ErrNotFound
+		}
+		return nil, models.ErrInternalServerError
+	}
+
+	return &app, nil
+
+}
+
+// CreateNewVersion creates a new version row
+// or increments the num_of_app_launches counter if the version already exists
+func (a *appsPostgreSQLRepository) CreateNewVersion(version *models.Version) error {
+	sqlStatement := `
+		INSERT INTO version(id, version, app_id)
+		VALUES($1, $2, $3);`
+
+	_, err := a.db.Exec(sqlStatement, version.ID, version.Version, version.AppID)
+
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+
+	return nil
+}
+
+func (a *appsPostgreSQLRepository) IncrementVersionTotals(versionID string, isNewInstall bool) error {
+	//TODO
+	// Example to try to avoid concurrence issues by delegating to the DB the increase count and update
+	// Try to something as :
+	// UPDATE versions
+	// SET
+	// total = total + 1
+	// WHERE
+	// id={$1}
+
+	return nil
+}
+
+func (a *appsPostgreSQLRepository) InsertDeviceOrUpdateVersionID(device *models.Device) error {
+	sqlStatement := `
+		INSERT INTO device(id,version_id,app_id,device_id,device_type,device_version)
+		VALUES($1, $2, $3, $4, $5, $6)
+		ON CONFLICT (id)
+		DO UPDATE
+		SET version_id = $2, device_version = $6`
+
+	_, err := a.db.Exec(sqlStatement, device.ID, device.VersionID, device.AppID, device.DeviceID, device.DeviceType, device.DeviceVersion)
+
+	if err != nil {
+		log.Error(err)
+		return models.ErrInternalServerError
+	}
+
+	return nil
+}
