@@ -8,7 +8,7 @@ const columns = [
   { title: 'Launches', transforms: [sortable] }
 ];
 
-const apps = [];
+const apps = { rows: [], data: {} };
 
 const sortBy = { direction: SortByDirection.asc, index: 0 };
 
@@ -19,7 +19,7 @@ export default (state = initialState, action) => {
     case REVERSE_SORT:
       const reversedOrder = state.sortBy.direction === SortByDirection.asc ? SortByDirection.desc : SortByDirection.asc;
       const index = action.payload.index;
-      const sortedRows = state.apps.sort((a, b) => (a[index] < b[index] ? -1 : a[index] > b[index] ? 1 : 0));
+      const sortedRows = state.apps.rows.sort((a, b) => (a[index] < b[index] ? -1 : a[index] > b[index] ? 1 : 0));
       const sortedApps = reversedOrder === SortByDirection.asc ? sortedRows : sortedRows.reverse();
       return {
         ...state,
@@ -27,7 +27,9 @@ export default (state = initialState, action) => {
           direction: reversedOrder,
           index: index
         },
-        apps: sortedApps
+        apps: {
+          rows: sortedApps
+        }
       };
     case APPS_REQUEST:
       return {
@@ -37,7 +39,7 @@ export default (state = initialState, action) => {
       var fetchedApps = [];
       action.result.forEach(app => {
         var temp = [];
-        temp[0] = app.appId;
+        temp[0] = app.appName;
         temp[1] = app.numOfDeployedVersions;
         temp[2] = app.numOfCurrentInstalls;
         temp[3] = app.numOfAppLaunches;
@@ -45,8 +47,10 @@ export default (state = initialState, action) => {
       });
       return {
         ...state,
-        apps: fetchedApps,
-        isAppsRequestFailed: false
+        apps: {
+          rows: fetchedApps,
+          data: action.result
+        }
       };
     case APPS_FAILURE:
       return {
