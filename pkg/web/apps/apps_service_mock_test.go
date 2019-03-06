@@ -13,6 +13,7 @@ var (
 	lockServiceMockDisableAllAppVersionsByAppID sync.RWMutex
 	lockServiceMockGetActiveAppByID             sync.RWMutex
 	lockServiceMockGetApps                      sync.RWMutex
+	lockServiceMockInitClientApp                sync.RWMutex
 	lockServiceMockUnbindingAppByAppID          sync.RWMutex
 	lockServiceMockUpdateAppVersions            sync.RWMutex
 )
@@ -39,6 +40,9 @@ var _ Service = &ServiceMock{}
 //             GetAppsFunc: func() (*[]models.App, error) {
 // 	               panic("mock out the GetApps method")
 //             },
+//             InitClientAppFunc: func(sdkInfo *models.Device) (*models.Version, error) {
+// 	               panic("mock out the InitClientApp method")
+//             },
 //             UnbindingAppByAppIDFunc: func(appID string) error {
 // 	               panic("mock out the UnbindingAppByAppID method")
 //             },
@@ -63,6 +67,9 @@ type ServiceMock struct {
 
 	// GetAppsFunc mocks the GetApps method.
 	GetAppsFunc func() (*[]models.App, error)
+
+	// InitClientAppFunc mocks the InitClientApp method.
+	InitClientAppFunc func(sdkInfo *models.Device) (*models.Version, error)
 
 	// UnbindingAppByAppIDFunc mocks the UnbindingAppByAppID method.
 	UnbindingAppByAppIDFunc func(appID string) error
@@ -93,6 +100,11 @@ type ServiceMock struct {
 		}
 		// GetApps holds details about calls to the GetApps method.
 		GetApps []struct {
+		}
+		// InitClientApp holds details about calls to the InitClientApp method.
+		InitClientApp []struct {
+			// sdkInfo is the sdkInfo argument value.
+			sdkInfo *models.Device
 		}
 		// UnbindingAppByAppID holds details about calls to the UnbindingAppByAppID method.
 		UnbindingAppByAppID []struct {
@@ -231,6 +243,37 @@ func (mock *ServiceMock) GetAppsCalls() []struct {
 	lockServiceMockGetApps.RLock()
 	calls = mock.calls.GetApps
 	lockServiceMockGetApps.RUnlock()
+	return calls
+}
+
+// InitClientApp calls InitClientAppFunc.
+func (mock *ServiceMock) InitClientApp(sdkInfo *models.Device) (*models.Version, error) {
+	if mock.InitClientAppFunc == nil {
+		panic("ServiceMock.InitClientAppFunc: method is nil but Service.InitClientApp was just called")
+	}
+	callInfo := struct {
+		sdkInfo *models.Device
+	}{
+		sdkInfo: sdkInfo,
+	}
+	lockServiceMockInitClientApp.Lock()
+	mock.calls.InitClientApp = append(mock.calls.InitClientApp, callInfo)
+	lockServiceMockInitClientApp.Unlock()
+	return mock.InitClientAppFunc(sdkInfo)
+}
+
+// InitClientAppCalls gets all the calls that were made to InitClientApp.
+// Check the length with:
+//     len(mockedService.InitClientAppCalls())
+func (mock *ServiceMock) InitClientAppCalls() []struct {
+	sdkInfo *models.Device
+} {
+	var calls []struct {
+		sdkInfo *models.Device
+	}
+	lockServiceMockInitClientApp.RLock()
+	calls = mock.calls.InitClientApp
+	lockServiceMockInitClientApp.RUnlock()
 	return calls
 }
 
