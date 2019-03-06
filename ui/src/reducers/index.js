@@ -19,7 +19,7 @@ export default (state = initialState, action) => {
     case REVERSE_SORT:
       const reversedOrder = state.sortBy.direction === SortByDirection.asc ? SortByDirection.desc : SortByDirection.asc;
       const index = action.payload.index;
-      const sortedRows = state.apps.sort((a, b) => (a[index] < b[index] ? -1 : a[index] > b[index] ? 1 : 0));
+      const sortedRows = state.apps.rows.sort((a, b) => (a[index] < b[index] ? -1 : a[index] > b[index] ? 1 : 0));
       const sortedApps = reversedOrder === SortByDirection.asc ? sortedRows : sortedRows.reverse();
       return {
         ...state,
@@ -27,7 +27,9 @@ export default (state = initialState, action) => {
           direction: reversedOrder,
           index: index
         },
-        apps: sortedApps
+        apps: {
+          rows: sortedApps
+        }
       };
     case APPS_REQUEST:
       return {

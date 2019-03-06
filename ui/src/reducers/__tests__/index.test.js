@@ -12,13 +12,13 @@ describe('reducer', () => {
   const apps = [
   ];
 
-  const sortedApps = [
-    ['com.aerogear.testapp', 2, 3, 6000],
-    ['com.aerogear.foobar', 0, 0, 0]
+  const sortedRows = [
+    ['Test App', 2, 3, 6000],
+    ['Foobar', 0, 0, 0]
   ];
 
   const sortBy = { direction: SortByDirection.asc, index: 0 };
-  const state = { apps: apps, sortBy: sortBy, columns: columns, isAppsRequestFailed: false };
+  const state = { apps: { rows: apps, data: {} }, sortBy: sortBy, columns: columns, isAppsRequestFailed: false };
 
   const resultApps =
     [
@@ -39,15 +39,18 @@ describe('reducer', () => {
         'numOfAppLaunches': 6000
       }
     ];
-  const fetchedApps = [
-    [ 'com.aerogear.foobar', 0, 0, 0 ],
-    [ 'com.aerogear.testapp', 2, 3, 6000 ]
+  const rows = [
+    [ 'Foobar', 0, 0, 0 ],
+    [ 'Test App', 2, 3, 6000 ]
   ];
 
   it('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual(
       {
-        apps: apps,
+        apps: {
+          rows: apps,
+          data: {}
+        },
         sortBy: sortBy,
         columns: columns,
         isAppsRequestFailed: false
@@ -58,13 +61,13 @@ describe('reducer', () => {
   it('should handle REVERSE_SORT', () => {
     const appsState = reducer(state, { type: APPS_SUCCESS, result: resultApps });
     const newState = reducer(appsState, { type: REVERSE_SORT, payload: { index: 1 } });
-    expect(newState).toEqual({ ...state, sortBy: { direction: SortByDirection.desc, index: 1 }, apps: sortedApps });
+    expect(newState).toEqual({ ...state, sortBy: { direction: SortByDirection.desc, index: 1 }, apps: { rows: sortedRows } });
   });
 
   it('should handle APPS_SUCCESS', () => {
     const newState = reducer(state, { type: APPS_SUCCESS, result: resultApps });
     expect(newState.isAppsRequestFailed).toEqual(false);
-    expect(newState.apps).toEqual(fetchedApps);
+    expect(newState.apps).toEqual({ rows: rows, data: resultApps });
   });
 
   it('should handle APPS_FAILURE', () => {

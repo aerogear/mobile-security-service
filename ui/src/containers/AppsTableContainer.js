@@ -22,7 +22,6 @@ export class AppsTableContainer extends React.Component {
     const id = app[0].id;
     const path = '/app/' + id;
     this.props.history.push(path);
-    // return <Redirect to={location}/>;
   }
   onSort (_event, index) {
     this.props.reverseAppsTableSort(index);
