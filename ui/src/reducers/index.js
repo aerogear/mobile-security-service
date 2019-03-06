@@ -8,7 +8,7 @@ const columns = [
   { title: 'Launches', transforms: [sortable] }
 ];
 
-const apps = [];
+const apps = { rows: [], data: {} };
 
 const sortBy = { direction: SortByDirection.asc, index: 0 };
 
@@ -37,7 +37,7 @@ export default (state = initialState, action) => {
       var fetchedApps = [];
       action.result.forEach(app => {
         var temp = [];
-        temp[0] = app.appId;
+        temp[0] = app.appName;
         temp[1] = app.numOfDeployedVersions;
         temp[2] = app.numOfCurrentInstalls;
         temp[3] = app.numOfAppLaunches;
@@ -45,8 +45,10 @@ export default (state = initialState, action) => {
       });
       return {
         ...state,
-        apps: fetchedApps,
-        isAppsRequestFailed: false
+        apps: {
+          rows: fetchedApps,
+          data: action.result
+        }
       };
     case APPS_FAILURE:
       return {
