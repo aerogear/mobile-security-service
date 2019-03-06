@@ -11,6 +11,9 @@ definitions:
       appName:
         type: string
         x-go-name: AppName
+      deletedAt:
+        type: string
+        x-go-name: DeletedAt
       deployedVersions:
         items:
           $ref: '#/definitions/Version'
@@ -36,6 +39,12 @@ definitions:
   Device:
     description: Device model
     properties:
+      appId:
+        type: string
+        x-go-name: AppID
+      appName:
+        type: string
+        x-go-name: AppName
       deviceId:
         type: string
         x-go-name: DeviceID
@@ -48,6 +57,9 @@ definitions:
       id:
         type: string
         x-go-name: ID
+      version:
+        type: string
+        x-go-name: Version
       versionId:
         type: string
         x-go-name: VersionID
@@ -73,6 +85,9 @@ definitions:
       id:
         type: string
         x-go-name: ID
+      lastLaunchedAt:
+        type: string
+        x-go-name: LastLaunchedAt
       numOfAppLaunches:
         format: int64
         type: integer
@@ -181,23 +196,21 @@ paths:
     post:
       description: Capture metrics from device and return if the app version they
         are using is disabled and has a set disabled message
-      operationId: initAppFromDevice
+      operationId: InitClientApp
       parameters:
-      - description: Updated app object
+      - description: SDK init call
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/AppInitRes'
+          $ref: '#/definitions/Version'
       produces:
       - application/json
       responses:
         "200":
           description: successful operation
         "400":
-          description: Invalid appId supplied
-        "404":
-          description: App not found
+          description: Invalid id supplied
       summary: Init call from sdk
 produces:
 - application/json

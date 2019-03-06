@@ -77,3 +77,15 @@ func GetMockAppVersionForDisableAll() models.Version {
 		DisabledMessage: "Please contact an administrator",
 	}
 }
+
+// GetMockDevice returns a mock device
+func GetMockDevice() *models.Device {
+	return &models.Device{
+		ID:            GetUUID(),
+		VersionID:     GetUUID(),
+		AppID:         "com.aerogear.testapp",
+		DeviceID:      GetUUID(),
+		DeviceVersion: "8.1",
+		DeviceType:    "Android",
+	}
+}

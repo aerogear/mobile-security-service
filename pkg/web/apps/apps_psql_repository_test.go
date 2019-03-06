@@ -45,6 +45,18 @@ var (
 		WHERE app_id=\$1;`
 )
 
+type AnyTimestamp struct{}
+
+func (e AnyTimestamp) Match(v driver.Value) bool {
+	return true
+}
+
+type AnyUUID struct{}
+
+func (e AnyUUID) Match(v driver.Value) bool {
+	return true
+}
+
 func Test_appsPostgreSQLRepository_GetApps_WillReturnTwoApps(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
@@ -365,12 +377,6 @@ func Test_appsPostgreSQLRepository_UpdateVersions_ReturnError(t *testing.T) {
 	}
 }
 
-type AnyTimestamp struct{}
-
-func (e AnyTimestamp) Match(v driver.Value) bool {
-	return true
-}
-
 func Test_appsPostgreSQLRepository_DeleteAppByAppID(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
@@ -435,32 +441,30 @@ func Test_appsPostgreSQLRepository_CreateApp(t *testing.T) {
 	sqlmock.NewRows(cols).AddRow(mockApps.ID, mockApps.AppID, mockApps.AppName)
 
 	// We should expected to get back only the apps which are not soft deleted
-	mock.ExpectExec("INSERT INTO app").WithArgs(mockApps.ID, mockApps.AppID, mockApps.AppName).WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectExec("INSERT INTO app").WithArgs(AnyUUID{}, mockApps.AppID, mockApps.AppName).WillReturnResult(sqlmock.NewResult(1, 1))
 	a := NewPostgreSQLRepository(db)
 
 	tests := []struct {
 		name    string
-		id      string
 		appId   string
 		nameApp string
 		wantErr bool
 	}{
 		{
 			name:    "Should create an app",
-			id:      mockApps.ID,
 			appId:   mockApps.AppID,
 			nameApp: mockApps.AppName,
 		},
 		{
 			name:    "Should return an error when try to create an app since the ID is invalid",
-			id:      mockApps.AppID,
 			appId:   mockApps.ID,
 			nameApp: mockApps.AppName,
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
-		err = a.CreateApp(tt.id, mockApps.AppID, mockApps.AppName)
+
+		err = a.CreateApp(models.NewApp(mockApps.AppID, mockApps.AppName))
 
 		if err != nil && !tt.wantErr {
 			t.Fatalf("Got error trying to create a new app from database: %v", err)

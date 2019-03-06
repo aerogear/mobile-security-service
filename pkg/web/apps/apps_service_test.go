@@ -30,7 +30,7 @@ var (
 		DeleteAppByAppIDFunc: func(appId string) error {
 			return nil
 		},
-		CreateAppFunc: func(id string, appId string, name string) error {
+		CreateAppFunc: func(app *models.App) error {
 			return nil
 		},
 		GetAppByAppIDFunc: func(appID string) (*models.App, error) {
@@ -60,7 +60,7 @@ var (
 		DeleteAppByAppIDFunc: func(appId string) error {
 			return models.ErrNotFound
 		},
-		CreateAppFunc: func(id string, appId string, name string) error {
+		CreateAppFunc: func(app *models.App) error {
 			return models.ErrConflict
 		},
 		GetAppByAppIDFunc: func(appID string) (*models.App, error) {
@@ -284,7 +284,7 @@ func Test_appsService_BindingApp(t *testing.T) {
 		GetAppByAppIDFunc: func(appID string) (*models.App, error) {
 			return nil, models.ErrNotFound
 		},
-		CreateAppFunc: func(id string, appId string, name string) error {
+		CreateAppFunc: func(app *models.App) error {
 			return nil
 		},
 		GetActiveAppByIDFunc: func(ID string) (*models.App, error) {
@@ -300,7 +300,7 @@ func Test_appsService_BindingApp(t *testing.T) {
 		GetAppByAppIDFunc: func(appID string) (*models.App, error) {
 			return nil, models.ErrInternalServerError
 		},
-		CreateAppFunc: func(id string, appId string, name string) error {
+		CreateAppFunc: func(app *models.App) error {
 			return nil
 		},
 	}

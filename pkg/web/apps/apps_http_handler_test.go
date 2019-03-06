@@ -34,6 +34,9 @@ var (
 		UpdateAppVersionsFunc: func(versions []models.Version) error {
 			return nil
 		},
+		InitClientAppFunc: func(sdkInfo *models.Device) (*models.Version, error) {
+			return &helpers.GetMockAppVersionList()[0], nil // FIXME: Create an only object result
+		},
 	}
 
 	// make and configure a mocked Service which will return the scenarios with errors
@@ -374,6 +377,56 @@ func Test_httpHandler_GetActiveAppByID(t *testing.T) {
 			}
 			if strings.TrimSpace(rec.Body.String()) != tt.want {
 				t.Errorf("httpHandler.GetActiveAppByID() got %v, want %v", strings.TrimSpace(rec.Body.String()), tt.want)
+			}
+		})
+	}
+}
+
+func TestHTTPHandler_InitClientApp(t *testing.T) {
+	deviceWithMissingDeviceID := helpers.GetMockDevice() // See that just one mock is enough
+	deviceWithMissingDeviceID.DeviceID = ""              // See here that you can change the object to match with the criteria
+
+	deviceWithMissingVersion := helpers.GetMockDevice()
+	deviceWithMissingVersion.VersionID = ""
+
+	config := config.Get()
+	APIRoutePrefix := config.APIRoutePrefix
+	type fields struct {
+		Service Service
+	}
+	tests := []struct {
+		name        string
+		fields      fields
+		device      models.Device
+		mockService ServiceMock
+		wantErr     error
+		wantCode    int
+	}{
+		{
+			name:        "A 400 Bad Request should be returned when request body is missing device ID",
+			device:      *deviceWithMissingDeviceID,
+			mockService: *mockedService,
+			wantCode:    400,
+		},
+		{
+			name:        "A 400 Bad Request should be returned when request body is missing version",
+			device:      *deviceWithMissingVersion,
+			mockService: *mockedService,
+			wantCode:    400,
+		},
+	}
+	for _, tt := range tests {
+		device, _ := json.Marshal(tt.device)
+		e := echo.New()
+		req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(string(device))) // body -> device
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath(APIRoutePrefix + "/init")
+		h := NewHTTPHandler(e, mockedService)
+		t.Run(tt.name, func(t *testing.T) {
+			h.InitClientApp(c)
+			if rec.Code != tt.wantCode {
+				t.Errorf("HTTPHandler.InitClientApp() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
 			}
 		})
 	}

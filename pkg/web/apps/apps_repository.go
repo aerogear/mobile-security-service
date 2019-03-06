@@ -12,7 +12,14 @@ type Repository interface {
 	UpdateAppVersions(versions []models.Version) error
 	DisableAllAppVersionsByAppID(appID string, message string) error
 	DeleteAppByAppID(appId string) error
-	CreateApp(id, appId, name string) error
+	CreateApp(app *models.App) error
 	GetAppByAppID(appID string) (*models.App, error)
+	GetActiveAppByAppID(appID string) (*models.App, error)
 	UnDeleteAppByAppID(appID string) error
+	GetVersionByAppIDAndVersion(appID string, versionNumber string) (*models.Version, error)
+	GetDeviceByDeviceIDAndAppID(deviceID string, appID string) (*models.Device, error)
+	GetDeviceByVersionAndAppID(versionID string, appID string) (*models.Device, error)
+	CreateNewVersion(version *models.Version) error
+	IncrementVersionTotals(versionID string, isNewInstall bool) error
+	InsertDeviceOrUpdateVersionID(device *models.Device) error
 }

@@ -16,6 +16,7 @@ type (
 		GetActiveAppByID(c echo.Context) error
 		UpdateAppVersions(c echo.Context) error
 		DisableAllAppVersionsByAppID(c echo.Context) error
+		InitClientApp(c echo.Context) error
 	}
 
 	// httpHandler instance
@@ -118,4 +119,49 @@ func (a *httpHandler) DisableAllAppVersionsByAppID(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, "")
 
+}
+
+// InitClientApp stores device information and returns if the app version is disabled
+func (a *httpHandler) InitClientApp(c echo.Context) error {
+	// Transform the body request in the version struct
+	device := models.Device{}
+	err := json.NewDecoder(c.Request().Body).Decode(&device)
+
+	// check if the data sent is in the correct format
+	if err != nil {
+		return httperrors.BadRequest(c, "Invalid data")
+	}
+
+	if err := a.validateInitCallDataProvided(device, c); err != nil {
+		return err
+	}
+
+	response, err := a.Service.InitClientApp(&device)
+
+	if err != nil {
+		return httperrors.GetHTTPResponseFromErr(c, err)
+	}
+
+	return c.JSON(http.StatusOK, response)
+
+}
+
+func (a *httpHandler) validateInitCallDataProvided(device models.Device, c echo.Context) error {
+
+	if !helpers.IsValidUUID(device.DeviceID) {
+		return httperrors.BadRequest(c, "Invalid DeviceID supplied")
+	}
+
+	if !helpers.IsValidUUID(device.VersionID) {
+		return httperrors.BadRequest(c, "Invalid VersionID supplied")
+	}
+
+	if !helpers.IsValidUUID(device.AppID) {
+		return httperrors.BadRequest(c, "Invalid AppID supplied")
+	}
+
+	if device.Version == "" {
+		return httperrors.BadRequest(c, "Invalid Version supplied")
+	}
+	return nil
 }

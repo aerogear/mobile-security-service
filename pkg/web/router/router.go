@@ -127,28 +127,25 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	//     description: App not found
 	r.POST("/apps/:id/versions/disable", appsHandler.DisableAllAppVersionsByAppID)
 
-	// swagger:operation POST /init AppInitRes
+	// swagger:operation POST /init Device
 	//
 	// Capture metrics from device and return if the app version they are using is disabled and has a set disabled message
 	// ---
 	// summary: Init call from sdk
-	// operationId: initAppFromDevice
+	// operationId: InitClientApp
 	// produces:
 	// - application/json
 	// parameters:
 	// - name: body
 	//   in: body
-	//   description: Updated app object
+	//   description: SDK init call
 	//   required: true
 	//   schema:
-	//     $ref: '#/definitions/AppInitRes'
+	//     $ref: '#/definitions/Version'
 	// responses:
 	//   200:
 	//     description: successful operation
 	//   400:
-	//     description: Invalid appId supplied
-	//   404:
-	//     description: App not found
-	r.POST("/init", appsHandler.GetApps) // TODO: Implement the func which will be used here and its call
-
+	//     description: Invalid id supplied
+	r.POST("/init", appsHandler.InitClientApp)
 }
