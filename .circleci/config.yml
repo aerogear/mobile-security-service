@@ -3,7 +3,7 @@
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
 jobs:
-  build:
+  build_server:
     working_directory: /go/src/github.com/aerogear/mobile-security-service
 
     docker:
@@ -30,6 +30,21 @@ jobs:
       - run: make test-integration-cover
       - run: /go/bin/goveralls -coverprofile=coverage-all.out -service=circle-ci -repotoken=IccwXNeC1niB17Du1tCWu8LA0wd7uBbCh
 
+  build_ui:
+    working_directory: ~/mobile-security-service
+
+    docker:
+      - image: circleci/node:8.15.0
+
+    steps:
+      - checkout
+      - run: make ui-check-code-style
+      - run: make ui-test-cover
+      - run: make ui
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ui/build
 
   docker_push_master:
     working_directory: /go/src/github.com/aerogear/mobile-security-service
@@ -63,20 +78,26 @@ workflows:
   version: 2
   build_and_push:
     jobs:
-      - build:
+      - build_server:
+          filters:
+            tags:
+              only: /.*/
+      - build_ui:
           filters:
             tags:
               only: /.*/
       - docker_push_master:
           requires:
-            - build
+            - build_server
+            - build_ui
           filters:
             branches:
               only:
                 - master
       - docker_release:
           requires:
-            - build
+            - build_server
+            - build_ui
           filters:
             tags:
               only: /\d{1,2}\.\d{1,2}\.\d{1,2}/

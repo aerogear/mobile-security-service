@@ -2,7 +2,6 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { AppsTableContainer } from '../AppsTableContainer';
 import AppsTable from '../../components/AppsTable';
-import { sortable, SortByDirection } from '@patternfly/react-table';
 
 describe('AppsTableContainer', () => {
   const getApps = jest.fn();

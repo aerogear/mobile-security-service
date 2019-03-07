@@ -145,7 +145,7 @@ ui: ui-npm-ci
 
 .PHONY: ui-check-code-style
 ui-check-code-style: ui
-	cd ui && npm run eslint
+	cd ui && npm run lint
 
 .PHONY: ui-test-cover
 ui-test-cover: ui-npm-ci

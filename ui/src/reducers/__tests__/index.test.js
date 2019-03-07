@@ -42,7 +42,6 @@ describe('reducer', () => {
     [ 'Foobar', 0, 0, 0 ],
     [ 'Test App', 2, 3, 6000 ]
   ];
-  const fetchedApps = [ [ 'com.aerogear.foobar', 0, 0, 0 ], [ 'com.aerogear.testapp', 2, 3, 6000 ] ];
 
   it('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual(initialState);
