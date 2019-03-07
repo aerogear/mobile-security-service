@@ -17,11 +17,11 @@ export class AppsTableContainer extends React.Component {
     this.props.getApps();
   }
   onRowClick (_event, rowId) {
-    var app = this.props.apps.data.filter(app => {
+    var app = this.props.apps.data.filter((app) => {
       return app.appName === rowId[0];
     });
     const id = app[0].id;
-    const path = '/app/' + id;
+    const path = '/apps/' + id;
     this.props.history.push(path);
   }
   onSort (_event, index, direction) {
@@ -31,7 +31,13 @@ export class AppsTableContainer extends React.Component {
   getTable () {
     return (
       <div className="apps-table">
-        <AppsTable columns={this.props.columns} rows={this.props.apps.rows} sortBy={this.props.sortBy} onSort= {this.onSort} onRowClick={this.onRowClick}/>
+        <AppsTable
+          columns={this.props.columns}
+          rows={this.props.apps.rows}
+          sortBy={this.props.sortBy}
+          onSort={this.onSort}
+          onRowClick={this.onRowClick}
+        />
       </div>
     );
   }
@@ -63,6 +69,6 @@ function mapStateToProps (state) {
     columns: state.columns,
     isAppsRequestFailed: state.isAppsRequestFailed
   };
-};
+}
 
 export default withRouter(connect(mapStateToProps, { appsTableSort, getApps })(AppsTableContainer));
