@@ -24,6 +24,10 @@ toc::[]
 
 == Getting Started
 
+=== Prerequisites
+
+Minimum node version: 10
+
 === Run the Server
 
 To run the app in the development mode on localhost:3000 run:

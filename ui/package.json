@@ -1,6 +1,9 @@
 {
   "name": "mobile-security-service-ui",
   "version": "0.1.0",
+  "engines": {
+    "node": ">=10"
+  },
   "private": true,
   "dependencies": {
     "@patternfly/react-core": "2.1.4",
