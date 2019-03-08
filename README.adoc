@@ -198,7 +198,7 @@ The database connection is configured using the table of environment variables b
 
 === Database Entity Relationship Diagram
 
-image::https://user-images.githubusercontent.com/1596014/53108499-0d09ec80-352f-11e9-8e7c-1943e1984986.png[Diagram]
+image::https://user-images.githubusercontent.com/1596014/54042089-3bd7c200-41c1-11e9-8a55-b3eda5253a51.png[Diagram]
 
 == Development information for contributors
 
@@ -278,16 +278,14 @@ Execute the following command to generate the mock file.
 $ moq -out <name_of_mock_file> . <name of interface>
 ----
 
-IMPORTANT: The name of the mock file must be <name of interface file> + _mock_test.go. Otherwise, the cover report will count the mock files.
-
-Following an example.
+Example:
 
 [source,shell]
 ----
-moq -out app_service_mock_test.go . Service
+moq -out apps_service_mock.go . Service
 ----
 
-IMPORTANT: This command need to be executed from the same directory where the interface is or it need to be called as, for example, `$ moq -out ./pkg/web/apps/app_service_mock.go ./pkg/web/apps Service`
+IMPORTANT: This command need to be executed from the same directory where the interface is or it need to be called as, for example, `$ moq -out ./pkg/web/apps/apps_service_mock.go ./pkg/web/apps Service`
 
 NOTE: See more over it in the Readme of https://github.com/matryer/moq[moq]
 
