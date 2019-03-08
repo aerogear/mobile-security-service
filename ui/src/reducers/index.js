@@ -3,6 +3,7 @@ import { APPS_FAILURE, APPS_SUCCESS, APPS_REQUEST, REVERSE_SORT, TOGGLE_HEADER_D
 import { SortByDirection, sortable } from '@patternfly/react-table';
 
 const columns = [
+  { title: 'App Name', transforms: [ sortable ] },
   { title: 'App ID', transforms: [ sortable ] },
   { title: 'Deployed Versions', transforms: [ sortable ] },
   { title: 'Current Installs', transforms: [ sortable ] },
@@ -48,9 +49,10 @@ export default (state = initialState, action) => {
       action.result.forEach((app) => {
         var temp = [];
         temp[0] = app.appName;
-        temp[1] = app.numOfDeployedVersions;
-        temp[2] = app.numOfCurrentInstalls;
-        temp[3] = app.numOfAppLaunches;
+        temp[1] = app.appId;
+        temp[2] = app.numOfDeployedVersions;
+        temp[3] = app.numOfCurrentInstalls;
+        temp[4] = app.numOfAppLaunches;
         fetchedApps.push(temp);
       });
       return {

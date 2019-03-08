@@ -4,6 +4,7 @@ import { SortByDirection, sortable } from '@patternfly/react-table';
 
 describe('reducer', () => {
   const columns = [
+    { title: 'App Name', transforms: [ sortable ] },
     { title: 'App ID', transforms: [ sortable ] },
     { title: 'Deployed Versions', transforms: [ sortable ] },
     { title: 'Current Installs', transforms: [ sortable ] },
@@ -12,8 +13,8 @@ describe('reducer', () => {
   const apps = [];
 
   const sortedRows = [
-    ['Test App', 2, 3, 6000],
-    ['Foobar', 0, 0, 0]
+    [ 'Test App', 'com.aerogear.testapp', 2, 3, 6000 ],
+    [ 'Foobar', 'com.aerogear.foobar', 0, 0, 0 ]
   ];
 
   const sortBy = { direction: SortByDirection.asc, index: 0 };
@@ -39,8 +40,8 @@ describe('reducer', () => {
       }
     ];
   const rows = [
-    [ 'Foobar', 0, 0, 0 ],
-    [ 'Test App', 2, 3, 6000 ]
+    [ 'Foobar', 'com.aerogear.foobar', 0, 0, 0 ],
+    [ 'Test App', 'com.aerogear.testapp', 2, 3, 6000 ]
   ];
 
   it('should return the initial state', () => {
