@@ -1,4 +1,7 @@
 import {
+  APP_REQUEST,
+  APP_SUCCESS,
+  APP_FAILURE,
   APPS_REQUEST,
   APPS_SUCCESS,
   APPS_FAILURE,
@@ -35,4 +38,6 @@ export const toggleHeaderDropdown = () => {
   };
 };
 
-export const getApps = fetchAction([ APPS_REQUEST, APPS_SUCCESS, APPS_FAILURE ], DataService.fetchApps);
+export const getApps = fetchAction([APPS_REQUEST, APPS_SUCCESS, APPS_FAILURE], DataService.fetchApps);
+
+export const getAppById = appId => fetchAction([APP_REQUEST, APP_SUCCESS, APP_FAILURE], async () => DataService.getAppById(appId))();
