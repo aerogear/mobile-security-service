@@ -1,15 +1,18 @@
 import * as actions from '../actions-ui';
-import { REVERSE_SORT } from '../types';
+import { APPS_SORT } from '../types';
+import { SortByDirection } from '@patternfly/react-table';
 
 describe('actions', () => {
   it('should reverse the app Table Sort', () => {
     const index = 0;
+    const direction = SortByDirection.asc;
     const expectedAction = {
-      type: REVERSE_SORT,
+      type: APPS_SORT,
       payload: {
-        index: index
+        index: index,
+        direction: direction
       }
     };
-    expect(actions.reverseAppsTableSort(index)).toEqual(expectedAction);
+    expect(actions.appsTableSort(index, direction)).toEqual(expectedAction);
   });
 });

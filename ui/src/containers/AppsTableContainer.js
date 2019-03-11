@@ -3,7 +3,7 @@ import AppsTable from '../components/AppsTable';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getApps, reverseAppsTableSort } from '../actions/actions-ui';
+import { getApps, appsTableSort } from '../actions/actions-ui';
 import './TableContainer.css';
 
 export class AppsTableContainer extends React.Component {
@@ -16,7 +16,7 @@ export class AppsTableContainer extends React.Component {
   componentWillMount () {
     this.props.getApps();
   }
-  onRowClick (event, rowId, props) {
+  onRowClick (_event, rowId) {
     var app = this.props.apps.data.filter(app => {
       return app.appName === rowId[0];
     });
@@ -24,14 +24,14 @@ export class AppsTableContainer extends React.Component {
     const path = '/app/' + id;
     this.props.history.push(path);
   }
-  onSort (_event, index) {
-    this.props.reverseAppsTableSort(index);
+  onSort (_event, index, direction) {
+    this.props.appsTableSort(index, direction);
   }
 
   getTable () {
     return (
       <div className="apps-table">
-        <AppsTable columns={this.props.columns} rows={this.props.apps.rows} sortBy={this.sortBy} onSort= {this.onSort} onRowClick={this.onRowClick}/>
+        <AppsTable columns={this.props.columns} rows={this.props.apps.rows} sortBy={this.props.sortBy} onSort= {this.onSort} onRowClick={this.onRowClick}/>
       </div>
     );
   }
@@ -65,4 +65,4 @@ function mapStateToProps (state) {
   };
 };
 
-export default withRouter(connect(mapStateToProps, { reverseAppsTableSort, getApps })(AppsTableContainer));
+export default withRouter(connect(mapStateToProps, { appsTableSort, getApps })(AppsTableContainer));
