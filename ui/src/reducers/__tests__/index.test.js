@@ -1,13 +1,13 @@
 import reducer from '../index';
-import { APPS_SUCCESS, REVERSE_SORT, APPS_FAILURE, TOGGLE_HEADER_DROPDOWN } from '../../actions/types.js';
+import { APPS_SUCCESS, REVERSE_SORT, APPS_FAILURE, TOGGLE_HEADER_DROPDOWN, APP_SUCCESS, APP_FAILURE } from '../../actions/types.js';
 import { SortByDirection, sortable } from '@patternfly/react-table';
 
 describe('reducer', () => {
   const columns = [
-    { title: 'App ID', transforms: [ sortable ] },
-    { title: 'Deployed Versions', transforms: [ sortable ] },
-    { title: 'Current Installs', transforms: [ sortable ] },
-    { title: 'Launches', transforms: [ sortable ] }
+    { title: 'App ID', transforms: [sortable] },
+    { title: 'Deployed Versions', transforms: [sortable] },
+    { title: 'Current Installs', transforms: [sortable] },
+    { title: 'Launches', transforms: [sortable] }
   ];
   const apps = [];
 
@@ -17,7 +17,7 @@ describe('reducer', () => {
   ];
 
   const sortBy = { direction: SortByDirection.asc, index: 0 };
-  const initialState = { apps: { rows: apps, data: {} }, sortBy: sortBy, columns: columns, isAppsRequestFailed: false, currentUser: 'currentUser', isUserDropdownOpen: false };
+  const initialState = { apps: { rows: apps, data: {} }, sortBy: sortBy, columns: columns, isAppsRequestFailed: false, currentUser: 'currentUser', isUserDropdownOpen: false, app: {}, isAppRequestFailed: false };
 
   const resultApps =
     [
@@ -38,9 +38,19 @@ describe('reducer', () => {
         'numOfAppLaunches': 6000
       }
     ];
+
+  const resultApp = {
+    'id': '0890506c-3dd1-43ad-8a09-21a4111a65a6',
+    'appId': 'com.aerogear.testapp',
+    'appName': 'Test App',
+    'numOfDeployedVersions': 2,
+    'numOfCurrentInstalls': 3,
+    'numOfAppLaunches': 6000
+  };
+
   const rows = [
-    [ 'Foobar', 0, 0, 0 ],
-    [ 'Test App', 2, 3, 6000 ]
+    ['Foobar', 0, 0, 0],
+    ['Test App', 2, 3, 6000]
   ];
 
   it('should return the initial state', () => {
@@ -62,6 +72,17 @@ describe('reducer', () => {
   it('should handle APPS_FAILURE', () => {
     const newState = reducer(initialState, { type: APPS_FAILURE });
     expect(newState.isAppsRequestFailed).toEqual(true);
+  });
+
+  it('should handle APP_SUCCESS', () => {
+    const newState = reducer(initialState, { type: APP_SUCCESS, result: resultApp });
+    expect(newState.isAppRequestFailed).toEqual(false);
+    expect(newState.app).toEqual(resultApp);
+  });
+
+  it('should handle APP_FAILURE', () => {
+    const newState = reducer(initialState, { type: APP_FAILURE });
+    expect(newState.isAppRequestFailed).toEqual(true);
   });
 
   it('should toggle header dropdown state', () => {
