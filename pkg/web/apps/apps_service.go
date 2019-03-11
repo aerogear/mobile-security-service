@@ -52,9 +52,11 @@ func (a *appsService) GetActiveAppByID(id string) (*models.App, error) {
 	}
 
 	deployedVersions, err := a.repository.GetAppVersionsByAppID(app.AppID)
-	if err != nil {
+
+	if err != nil && err != models.ErrNotFound {
 		return nil, err
 	}
+
 	app.DeployedVersions = deployedVersions
 
 	return app, nil
