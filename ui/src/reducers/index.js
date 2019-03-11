@@ -103,15 +103,15 @@ export default (state = initialState, action) => {
           data: action.result
         }
       };
-    case APP_DETAILS_SUCCESS:
-      const fetchedAppDetails = [];
-      action.result.forEach((appDetail) => {
-        fetchedAppDetails.push(appDetail);
-      });
-      return {
-        ...state,
-        appDetailRows: fetchedAppDetails
-      };
+    // case APP_SUCCESS:
+    //   const fetchedAppDetails = [];
+    //   action.result.forEach((appDetail) => {
+    //     fetchedAppDetails.push(appDetail);
+    //   });
+    //   return {
+    //     ...state,
+    //     appDetailRows: fetchedAppDetails
+    //   };
     case APPS_FAILURE:
       return {
         ...state,
