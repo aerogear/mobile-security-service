@@ -1,10 +1,12 @@
 import {
   APPS_FAILURE,
   APPS_SUCCESS,
-  APP_DETAILS_SUCCESS,
   APPS_REQUEST,
   APPS_SORT,
   TOGGLE_HEADER_DROPDOWN,
+  APP_SUCCESS,
+  APP_REQUEST,
+  APP_FAILURE,
   APP_DETAILS_SORT
 } from '../actions/types.js';
 
@@ -15,24 +17,26 @@ const initialState = {
   sortBy: { direction: SortByDirection.asc, index: 0 },
   appDetailsSortDirection: { direction: SortByDirection.asc, index: 0 },
   columns: [
-    { title: 'App Name', transforms: [ sortable ] },
-    { title: 'App ID', transforms: [ sortable ] },
-    { title: 'Deployed Versions', transforms: [ sortable ] },
-    { title: 'Current Installs', transforms: [ sortable ] },
-    { title: 'Launches', transforms: [ sortable ] }
+    { title: 'App Name', transforms: [sortable] },
+    { title: 'App ID', transforms: [sortable] },
+    { title: 'Deployed Versions', transforms: [sortable] },
+    { title: 'Current Installs', transforms: [sortable] },
+    { title: 'Launches', transforms: [sortable] }
   ],
   appDetailRows: [],
   appDetailColumns: [
-    { title: 'App Version', transforms: [ sortable ] },
-    { title: 'Current Installs', transforms: [ sortable ] },
-    { title: 'Launches', transforms: [ sortable ] },
-    { title: 'Last Launched', transforms: [ sortable ] },
-    { title: 'Disable on Startup', transforms: [ sortable ] },
-    { title: 'Custom Disable Message', transforms: [ sortable ] }
+    { title: 'App Version', transforms: [sortable] },
+    { title: 'Current Installs', transforms: [sortable] },
+    { title: 'Launches', transforms: [sortable] },
+    { title: 'Last Launched', transforms: [sortable] },
+    { title: 'Disable on Startup', transforms: [sortable] },
+    { title: 'Custom Disable Message', transforms: [sortable] }
   ],
   isAppsRequestFailed: false,
   currentUser: 'currentUser',
-  isUserDropdownOpen: false
+  isUserDropdownOpen: false,
+  app: {},
+  isAppRequestFailed: false
 };
 
 // returns a new array sorted in preferred direction
@@ -112,6 +116,20 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isAppsRequestFailed: true
+      };
+    case APP_REQUEST:
+      return {
+        ...state
+      };
+    case APP_SUCCESS:
+      return {
+        ...state,
+        app: action.result
+      };
+    case APP_FAILURE:
+      return {
+        ...state,
+        isAppRequestFailed: true
       };
     case TOGGLE_HEADER_DROPDOWN:
       const isUserDropdownOpen = state.isUserDropdownOpen;
