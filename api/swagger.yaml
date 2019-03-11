@@ -36,6 +36,9 @@ definitions:
   Device:
     description: Device model
     properties:
+      appId:
+        type: string
+        x-go-name: AppID
       deviceId:
         type: string
         x-go-name: DeviceID
@@ -48,6 +51,9 @@ definitions:
       id:
         type: string
         x-go-name: ID
+      version:
+        type: string
+        x-go-name: Version
       versionId:
         type: string
         x-go-name: VersionID
@@ -73,6 +79,9 @@ definitions:
       id:
         type: string
         x-go-name: ID
+      lastLaunchedAt:
+        type: string
+        x-go-name: LastLaunchedAt
       numOfAppLaunches:
         format: int64
         type: integer

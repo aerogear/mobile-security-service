@@ -7,6 +7,7 @@ import (
 	"github.com/aerogear/mobile-security-service/pkg/db"
 	"github.com/aerogear/mobile-security-service/pkg/helpers"
 	"github.com/aerogear/mobile-security-service/pkg/web/apps"
+	"github.com/aerogear/mobile-security-service/pkg/web/initclient"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -33,8 +34,12 @@ func setupTestServer() *httptest.Server {
 	appsService := apps.NewService(appsPostgreSQLRepository)
 	appsHandler := apps.NewHTTPHandler(e, appsService)
 
+	// Init handler setup
+	initClientHandler := initclient.NewHTTPHandler(e, appsService)
+
 	// Setup routes
 	SetAppRoutes(apiGroup, appsHandler)
+	SetInitRoutes(apiGroup, initClientHandler)
 
 	return httptest.NewServer(e)
 }
