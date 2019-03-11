@@ -6,11 +6,9 @@ import (
 	"net/http"
 
 	"github.com/aerogear/mobile-security-service/pkg/helpers"
-	"github.com/aerogear/mobile-security-service/pkg/web/apps"
-
 	"github.com/aerogear/mobile-security-service/pkg/httperrors"
-
 	"github.com/aerogear/mobile-security-service/pkg/models"
+	"github.com/aerogear/mobile-security-service/pkg/web/apps"
 	"github.com/labstack/echo"
 )
 

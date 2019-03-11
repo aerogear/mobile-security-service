@@ -16,6 +16,7 @@ type (
 		GetActiveAppByID(c echo.Context) error
 		UpdateAppVersions(c echo.Context) error
 		DisableAllAppVersionsByAppID(c echo.Context) error
+		HealthCheck(c echo.Context) error
 	}
 
 	// httpHandler instance
@@ -118,4 +119,8 @@ func (a *httpHandler) DisableAllAppVersionsByAppID(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, "")
 
+}
+
+func (a *httpHandler) HealthCheck(c echo.Context) error {
+	return c.JSON(http.StatusOK, "OK")
 }

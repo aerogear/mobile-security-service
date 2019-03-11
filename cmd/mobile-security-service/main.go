@@ -17,10 +17,10 @@ package main
 
 import (
 	"database/sql"
-
 	"github.com/aerogear/mobile-security-service/pkg/config"
 	"github.com/aerogear/mobile-security-service/pkg/db"
 	"github.com/aerogear/mobile-security-service/pkg/web/apps"
+	"github.com/aerogear/mobile-security-service/pkg/web/checks"
 	"github.com/aerogear/mobile-security-service/pkg/web/initclient"
 	"github.com/aerogear/mobile-security-service/pkg/web/router"
 	dotenv "github.com/joho/godotenv"
@@ -106,6 +106,10 @@ func setupServer(e *echo.Echo, c config.Config, dbConn *sql.DB) {
 	// Initclient handler setup
 	initclientHandler := initclient.NewHTTPHandler(e, appsService)
 
+	// InitChecks handler setup
+	checksHandler := checks.NewHTTPHandler(e, appsService)
+
 	// Setup initclient routes
 	router.SetInitRoutes(apiGroup, initclientHandler)
+	router.SetChecksRouter(apiGroup, checksHandler)
 }
