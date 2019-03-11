@@ -35,6 +35,9 @@ var (
 		CreateAppFunc: func(id string, appId string, name string) error {
 			return nil
 		},
+		GetAppByAppIDFunc: func(appID string) (*models.App, error) {
+			return nil, models.ErrNotFound
+		},
 		GetActiveAppByAppIDFunc: func(appID string) (*models.App, error) {
 			return nil, models.ErrNotFound
 		},
@@ -65,8 +68,11 @@ var (
 		CreateAppFunc: func(id string, appId string, name string) error {
 			return models.ErrConflict
 		},
-		GetActiveAppByAppIDFunc: func(appID string) (*models.App, error) {
+		GetAppByAppIDFunc: func(appID string) (*models.App, error) {
 			return helpers.GetMockApp(), nil
+		},
+		GetActiveAppByAppIDFunc: func(appID string) (*models.App, error) {
+			return nil, models.ErrNotFound
 		},
 		UnDeleteAppByAppIDFunc: func(appID string) error {
 			return nil
@@ -283,7 +289,7 @@ func Test_appsService_BindingApp(t *testing.T) {
 		UnDeleteAppByAppIDFunc: func(appID string) error {
 			return nil
 		},
-		GetActiveAppByAppIDFunc: func(appID string) (*models.App, error) {
+		GetAppByAppIDFunc: func(appID string) (*models.App, error) {
 			return nil, models.ErrNotFound
 		},
 		CreateAppFunc: func(id string, appId string, name string) error {
@@ -295,11 +301,11 @@ func Test_appsService_BindingApp(t *testing.T) {
 	}
 
 	// make and configure a mocked Repository
-	mockRepositoryWithErrorToGetAppId := &RepositoryMock{
+	mockRepositoryWithErrorToGetAppID := &RepositoryMock{
 		UnDeleteAppByAppIDFunc: func(appID string) error {
 			return nil
 		},
-		GetActiveAppByAppIDFunc: func(appID string) (*models.App, error) {
+		GetAppByAppIDFunc: func(appID string) (*models.App, error) {
 			return nil, models.ErrInternalServerError
 		},
 		CreateAppFunc: func(id string, appId string, name string) error {
@@ -341,7 +347,7 @@ func Test_appsService_BindingApp(t *testing.T) {
 			name:    "Should return error to binding an new app by app_id",
 			appId:   helpers.GetMockApp().AppID,
 			nameApp: helpers.GetMockApp().AppName,
-			repo:    *mockRepositoryWithErrorToGetAppId,
+			repo:    *mockRepositoryWithErrorToGetAppID,
 			wantErr: models.ErrInternalServerError,
 		},
 	}

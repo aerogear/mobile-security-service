@@ -67,6 +67,8 @@ var (
 
 	GetActiveAppByAppIDQuery = `SELECT id,app_id,app_name FROM app WHERE app_id=\$1 AND deleted_at IS NULL;`
 
+	GetAppByAppIDQuery = `SELECT id,app_id,app_name FROM app WHERE app_id=\$1;`
+
 	upsertVersionWithAppLaunchesAndLastLaunchedStatement = `INSERT INTO version as v \(id, version, app_id, disabled, disabled_message, last_launched_at\)
 		VALUES\(\$1, \$2, \$3, \$4, \$5, NOW\(\)\)
 		ON CONFLICT \(id\)
@@ -808,6 +810,83 @@ func Test_appsPostgreSQLRepository_GetActiveAppByAppID_ShouldReturnNoAppWhenAppI
 
 			repo := NewPostgreSQLRepository(db)
 			got, err := repo.GetActiveAppByAppID(tt.args.appID)
+
+			if (got != nil) && !reflect.DeepEqual(got.AppID, tt.want.app.AppID) {
+				t.Errorf("appsPostgreSQLRepository.GetActiveAppByAppID() = %v, want %v", got.AppID, tt.want.app.ID)
+			}
+
+			if !reflect.DeepEqual(err, tt.want.err) {
+				t.Errorf("appsPostgreSQLRepository.GetActiveAppByAppID() error = %v, wantErr %v", got, tt.want.err)
+			}
+		})
+	}
+}
+
+func Test_appsPostgreSQLRepository_GetAppByAppID(t *testing.T) {
+	db, mock, err := sqlmock.New()
+
+	if err != nil {
+		t.Fatalf("Unexpected error opening a stub database connection: %v", err)
+	}
+
+	defer db.Close()
+
+	cols := []string{"id", "app_id", "app_name"}
+
+	mockApps := helpers.GetMockAppList()
+
+	for _, a := range mockApps {
+		sqlmock.NewRows(cols).AddRow(a.ID, a.AppID, a.AppName)
+	}
+
+	wantApp := helpers.GetMockApp()
+
+	wantRow := sqlmock.NewRows(cols).AddRow(wantApp.ID, wantApp.AppID, wantApp.AppName)
+
+	type args struct {
+		appID string
+	}
+	type want struct {
+		app  *models.App
+		err  error
+		rows *sqlmock.Rows
+	}
+
+	tests := []struct {
+		name string
+		want want
+		args args
+	}{
+		{
+			name: "Should return an app",
+			args: args{
+				appID: wantApp.AppID,
+			},
+			want: want{
+				app:  wantApp,
+				err:  nil,
+				rows: wantRow,
+			},
+		},
+		{
+			name: "Should not return an app given invalid app ID",
+			args: args{
+				appID: uuid.New().String(),
+			},
+			want: want{
+				app:  nil,
+				err:  models.ErrNotFound,
+				rows: &sqlmock.Rows{},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			mock.ExpectQuery(GetAppByAppIDQuery).WithArgs(tt.args.appID).WillReturnRows(tt.want.rows)
+
+			repo := NewPostgreSQLRepository(db)
+			got, err := repo.GetAppByAppID(tt.args.appID)
 
 			if (got != nil) && !reflect.DeepEqual(got.AppID, tt.want.app.AppID) {
 				t.Errorf("appsPostgreSQLRepository.GetActiveAppByAppID() = %v, want %v", got.AppID, tt.want.app.ID)

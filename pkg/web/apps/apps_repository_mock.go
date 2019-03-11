@@ -14,6 +14,7 @@ var (
 	lockRepositoryMockDisableAllAppVersionsByAppID                sync.RWMutex
 	lockRepositoryMockGetActiveAppByAppID                         sync.RWMutex
 	lockRepositoryMockGetActiveAppByID                            sync.RWMutex
+	lockRepositoryMockGetAppByAppID                               sync.RWMutex
 	lockRepositoryMockGetAppVersionsByAppID                       sync.RWMutex
 	lockRepositoryMockGetApps                                     sync.RWMutex
 	lockRepositoryMockGetDeviceByDeviceIDAndAppID                 sync.RWMutex
@@ -49,6 +50,9 @@ var _ Repository = &RepositoryMock{}
 //             },
 //             GetActiveAppByIDFunc: func(ID string) (*models.App, error) {
 // 	               panic("mock out the GetActiveAppByID method")
+//             },
+//             GetAppByAppIDFunc: func(appID string) (*models.App, error) {
+// 	               panic("mock out the GetAppByAppID method")
 //             },
 //             GetAppVersionsByAppIDFunc: func(ID string) (*[]models.Version, error) {
 // 	               panic("mock out the GetAppVersionsByAppID method")
@@ -98,6 +102,9 @@ type RepositoryMock struct {
 
 	// GetActiveAppByIDFunc mocks the GetActiveAppByID method.
 	GetActiveAppByIDFunc func(ID string) (*models.App, error)
+
+	// GetAppByAppIDFunc mocks the GetAppByAppID method.
+	GetAppByAppIDFunc func(appID string) (*models.App, error)
 
 	// GetAppVersionsByAppIDFunc mocks the GetAppVersionsByAppID method.
 	GetAppVersionsByAppIDFunc func(ID string) (*[]models.Version, error)
@@ -158,6 +165,11 @@ type RepositoryMock struct {
 		GetActiveAppByID []struct {
 			// ID is the ID argument value.
 			ID string
+		}
+		// GetAppByAppID holds details about calls to the GetAppByAppID method.
+		GetAppByAppID []struct {
+			// AppID is the appID argument value.
+			AppID string
 		}
 		// GetAppVersionsByAppID holds details about calls to the GetAppVersionsByAppID method.
 		GetAppVersionsByAppID []struct {
@@ -375,6 +387,37 @@ func (mock *RepositoryMock) GetActiveAppByIDCalls() []struct {
 	lockRepositoryMockGetActiveAppByID.RLock()
 	calls = mock.calls.GetActiveAppByID
 	lockRepositoryMockGetActiveAppByID.RUnlock()
+	return calls
+}
+
+// GetAppByAppID calls GetAppByAppIDFunc.
+func (mock *RepositoryMock) GetAppByAppID(appID string) (*models.App, error) {
+	if mock.GetAppByAppIDFunc == nil {
+		panic("RepositoryMock.GetAppByAppIDFunc: method is nil but Repository.GetAppByAppID was just called")
+	}
+	callInfo := struct {
+		AppID string
+	}{
+		AppID: appID,
+	}
+	lockRepositoryMockGetAppByAppID.Lock()
+	mock.calls.GetAppByAppID = append(mock.calls.GetAppByAppID, callInfo)
+	lockRepositoryMockGetAppByAppID.Unlock()
+	return mock.GetAppByAppIDFunc(appID)
+}
+
+// GetAppByAppIDCalls gets all the calls that were made to GetAppByAppID.
+// Check the length with:
+//     len(mockedRepository.GetAppByAppIDCalls())
+func (mock *RepositoryMock) GetAppByAppIDCalls() []struct {
+	AppID string
+} {
+	var calls []struct {
+		AppID string
+	}
+	lockRepositoryMockGetAppByAppID.RLock()
+	calls = mock.calls.GetAppByAppID
+	lockRepositoryMockGetAppByAppID.RUnlock()
 	return calls
 }
 

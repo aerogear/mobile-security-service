@@ -189,11 +189,12 @@ func (a *appsPostgreSQLRepository) GetDeviceByVersionAndAppID(version string, ap
 }
 
 // GetAppByID retrieves an app by id from the database
-func (a *appsPostgreSQLRepository) GetActiveAppByAppID(appID string) (*models.App, error) {
+func (a *appsPostgreSQLRepository) GetAppByAppID(appID string) (*models.App, error) {
 	app := models.App{}
 
-	sqlStatment := `SELECT id,app_id,app_name FROM app WHERE app_id=$1 AND deleted_at IS NULL;`
-	err := a.db.QueryRow(sqlStatment, appID).Scan(&app.ID, &app.AppID, &app.AppName)
+	sqlStatement := `SELECT id,app_id,app_name FROM app WHERE app_id=$1;`
+
+	err := a.db.QueryRow(sqlStatement, appID).Scan(&app.ID, &app.AppID, &app.AppName)
 
 	if err != nil {
 		log.Error(err)
@@ -204,7 +205,25 @@ func (a *appsPostgreSQLRepository) GetActiveAppByAppID(appID string) (*models.Ap
 	}
 
 	return &app, nil
+}
 
+// GetActiveAppByID retrieves an app by id from the database where it is not soft deleted
+func (a *appsPostgreSQLRepository) GetActiveAppByAppID(appID string) (*models.App, error) {
+	app := models.App{}
+
+	sqlStatement := `SELECT id,app_id,app_name FROM app WHERE app_id=$1 AND deleted_at IS NULL;`
+
+	err := a.db.QueryRow(sqlStatement, appID).Scan(&app.ID, &app.AppID, &app.AppName)
+
+	if err != nil {
+		log.Error(err)
+		if err == sql.ErrNoRows {
+			return nil, models.ErrNotFound
+		}
+		return nil, models.ErrInternalServerError
+	}
+
+	return &app, nil
 }
 
 // UpsertVersionWithAppLaunchesAndLastLaunched creates a new version row

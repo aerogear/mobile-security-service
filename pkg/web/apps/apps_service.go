@@ -96,7 +96,7 @@ func (a *appsService) UnbindingAppByAppID(appID string) error {
 func (a *appsService) BindingAppByApp(appId, name string) error {
 
 	// Check if it exist
-	app, err := a.repository.GetActiveAppByAppID(appId)
+	app, err := a.repository.GetAppByAppID(appId)
 
 	// If it is new then create an app
 	if err != nil && err == models.ErrNotFound {
