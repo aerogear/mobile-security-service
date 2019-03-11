@@ -1,11 +1,11 @@
 import reducer from '../index';
 import {
   APPS_SUCCESS,
-  APP_DETAILS_SUCCESS,
   APPS_SORT,
-  APP_DETAILS_SORT,
   APPS_FAILURE,
-  TOGGLE_HEADER_DROPDOWN
+  TOGGLE_HEADER_DROPDOWN,
+  APP_SUCCESS, APP_FAILURE,
+  APP_DETAILS_SORT
 } from '../../actions/types.js';
 import { SortByDirection, sortable } from '@patternfly/react-table';
 
@@ -15,20 +15,20 @@ describe('reducer', () => {
     sortBy: { direction: SortByDirection.asc, index: 0 },
     appDetailsSortDirection: { direction: SortByDirection.asc, index: 0 },
     columns: [
-      { title: 'App Name', transforms: [ sortable ] },
-      { title: 'App ID', transforms: [ sortable ] },
-      { title: 'Deployed Versions', transforms: [ sortable ] },
-      { title: 'Current Installs', transforms: [ sortable ] },
-      { title: 'Launches', transforms: [ sortable ] }
+      { title: 'App Name', transforms: [sortable] },
+      { title: 'App ID', transforms: [sortable] },
+      { title: 'Deployed Versions', transforms: [sortable] },
+      { title: 'Current Installs', transforms: [sortable] },
+      { title: 'Launches', transforms: [sortable] }
     ],
     appDetailRows: [],
     appDetailColumns: [
-      { title: 'App Version', transforms: [ sortable ] },
-      { title: 'Current Installs', transforms: [ sortable ] },
-      { title: 'Launches', transforms: [ sortable ] },
-      { title: 'Last Launched', transforms: [ sortable ] },
-      { title: 'Disable on Startup', transforms: [ sortable ] },
-      { title: 'Custom Disable Message', transforms: [ sortable ] }
+      { title: 'App Version', transforms: [sortable] },
+      { title: 'Current Installs', transforms: [sortable] },
+      { title: 'Launches', transforms: [sortable] },
+      { title: 'Last Launched', transforms: [sortable] },
+      { title: 'Disable on Startup', transforms: [sortable] },
+      { title: 'Custom Disable Message', transforms: [sortable] }
     ],
     isAppsRequestFailed: false,
     currentUser: 'currentUser',
@@ -55,27 +55,39 @@ describe('reducer', () => {
   ];
 
   const sortedRows = [
-    [ 'Test App', 'com.aerogear.testapp', 2, 3, 6000 ],
-    [ 'Foobar', 'com.aerogear.foobar', 0, 0, 0 ]
+    ['Test App', 'com.aerogear.testapp', 2, 3, 6000],
+    ['Foobar', 'com.aerogear.foobar', 0, 0, 0]
   ];
 
   const resultAppDetails = [
-    [ 'v1.0', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version' ],
-    [ 'v1.1', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version' ],
-    [ 'v1.2', 75, 921, '2019-01-20 12:12:12', false, 'LTS' ],
-    [ 'v1.3', 125, 1221, '2019-01-31 11:05:43', false, 'Curent version' ],
-    [ 'v1.4', 40, 120, '2019-02-15 10:02:50', false, 'Beta version' ]
+    ['v1.0', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version'],
+    ['v1.1', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version'],
+    ['v1.2', 75, 921, '2019-01-20 12:12:12', false, 'LTS'],
+    ['v1.3', 125, 1221, '2019-01-31 11:05:43', false, 'Curent version'],
+    ['v1.4', 40, 120, '2019-02-15 10:02:50', false, 'Beta version']
   ];
 
   const sortedAppDetails = [
-    [ 'v1.0', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version' ],
-    [ 'v1.1', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version' ],
-    [ 'v1.2', 75, 921, '2019-01-20 12:12:12', false, 'LTS' ],
-    [ 'v1.3', 125, 1221, '2019-01-31 11:05:43', false, 'Curent version' ],
-    [ 'v1.4', 40, 120, '2019-02-15 10:02:50', false, 'Beta version' ]
+    ['v1.0', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version'],
+    ['v1.1', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version'],
+    ['v1.2', 75, 921, '2019-01-20 12:12:12', false, 'LTS'],
+    ['v1.3', 125, 1221, '2019-01-31 11:05:43', false, 'Curent version'],
+    ['v1.4', 40, 120, '2019-02-15 10:02:50', false, 'Beta version']
   ];
 
-  const rows = [ [ 'Foobar', 'com.aerogear.foobar', 0, 0, 0 ], [ 'Test App', 'com.aerogear.testapp', 2, 3, 6000 ] ];
+  const resultApp = {
+    'id': '0890506c-3dd1-43ad-8a09-21a4111a65a6',
+    'appId': 'com.aerogear.testapp',
+    'appName': 'Test App',
+    'numOfDeployedVersions': 2,
+    'numOfCurrentInstalls': 3,
+    'numOfAppLaunches': 6000
+  };
+
+  const rows = [
+    ['Foobar', 'com.aerogear.foobar', 0, 0, 0],
+    ['Test App', 'com.aerogear.testapp', 2, 3, 6000]
+  ];
 
   it('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual(initialState);
@@ -92,7 +104,7 @@ describe('reducer', () => {
   });
 
   it('should handle APP_DETAILS_SORT', () => {
-    const appsState = reducer(initialState, { type: APP_DETAILS_SUCCESS, result: resultAppDetails });
+    const appsState = reducer(initialState, { type: APP_SUCCESS, result: resultAppDetails });
     const newState = reducer(appsState, {
       type: APP_DETAILS_SORT,
       payload: { index: 0, direction: SortByDirection.asc }
@@ -113,6 +125,17 @@ describe('reducer', () => {
   it('should handle APPS_FAILURE', () => {
     const newState = reducer(initialState, { type: APPS_FAILURE });
     expect(newState.isAppsRequestFailed).toEqual(true);
+  });
+
+  it('should handle APP_SUCCESS', () => {
+    const newState = reducer(initialState, { type: APP_SUCCESS, result: resultApp });
+    expect(newState.isAppRequestFailed).toEqual(false);
+    expect(newState.app).toEqual(resultApp);
+  });
+
+  it('should handle APP_FAILURE', () => {
+    const newState = reducer(initialState, { type: APP_FAILURE });
+    expect(newState.isAppRequestFailed).toEqual(true);
   });
 
   it('should toggle header dropdown state', () => {
