@@ -1,6 +1,10 @@
 export const REVERSE_SORT = 'REVERSE_SORT';
 export const GET_APPS = 'GET_APPS';
+export const GET_APP_BY_ID = 'GET_APP_BY_ID';
 export const APPS_REQUEST = 'APPS_REQUEST';
 export const APPS_SUCCESS = 'APPS_SUCCESS';
 export const APPS_FAILURE = 'APPS_FAILURE';
+export const APP_REQUEST = 'APP_REQUEST';
+export const APP_SUCCESS = 'APP_SUCCESS';
+export const APP_FAILURE = 'APP_FAILURE';
 export const TOGGLE_HEADER_DROPDOWN = 'TOGGLE_HEADER_DROPDOWN';

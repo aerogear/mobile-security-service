@@ -1,12 +1,12 @@
-import { APPS_FAILURE, APPS_SUCCESS, APPS_REQUEST, REVERSE_SORT, TOGGLE_HEADER_DROPDOWN } from '../actions/types.js';
+import { APPS_FAILURE, APPS_SUCCESS, APPS_REQUEST, REVERSE_SORT, TOGGLE_HEADER_DROPDOWN, APP_SUCCESS, APP_REQUEST, APP_FAILURE } from '../actions/types.js';
 
 import { SortByDirection, sortable } from '@patternfly/react-table';
 
 const columns = [
-  { title: 'App ID', transforms: [ sortable ] },
-  { title: 'Deployed Versions', transforms: [ sortable ] },
-  { title: 'Current Installs', transforms: [ sortable ] },
-  { title: 'Launches', transforms: [ sortable ] }
+  { title: 'App ID', transforms: [sortable] },
+  { title: 'Deployed Versions', transforms: [sortable] },
+  { title: 'Current Installs', transforms: [sortable] },
+  { title: 'Launches', transforms: [sortable] }
 ];
 
 const apps = { rows: [], data: {} };
@@ -19,7 +19,9 @@ const initialState = {
   columns: columns,
   isAppsRequestFailed: false,
   currentUser: 'currentUser',
-  isUserDropdownOpen: false
+  isUserDropdownOpen: false,
+  app: {},
+  isAppRequestFailed: false
 };
 
 export default (state = initialState, action) => {
@@ -64,6 +66,20 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isAppsRequestFailed: true
+      };
+    case APP_REQUEST:
+      return {
+        ...state
+      };
+    case APP_SUCCESS:
+      return {
+        ...state,
+        app: action.result
+      };
+    case APP_FAILURE:
+      return {
+        ...state,
+        isAppRequestFailed: true
       };
     case TOGGLE_HEADER_DROPDOWN:
       const isUserDropdownOpen = state.isUserDropdownOpen;
