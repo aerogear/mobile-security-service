@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getApps, reverseAppsTableSort } from '../actions/actions-ui';
+import './TableContainer.css';
 
 export class AppsTableContainer extends React.Component {
   constructor (props) {
@@ -39,7 +40,7 @@ export class AppsTableContainer extends React.Component {
     if (this.props.isAppsRequestFailed) {
       return (
         <div className="no-apps">
-          <p>Unable to fetch any apps</p>
+          <p>Unable to fetch any apps :/</p>
         </div>
       );
     }

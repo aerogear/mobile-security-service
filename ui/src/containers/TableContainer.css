@@ -1,0 +1,13 @@
+p {
+  text-align: center;
+  padding: 3em;
+}
+
+thead{
+    font-size: large;
+    background-color: #ededed;
+}
+
+.pf-c-table tr{
+    cursor: pointer;
+}
