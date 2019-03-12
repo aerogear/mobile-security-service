@@ -10,6 +10,7 @@ import {
   ToolbarGroup,
   ToolbarItem
 } from '@patternfly/react-core';
+import { withRouter } from 'react-router-dom';
 import { UserIcon } from '@patternfly/react-icons';
 import accessibleStyles from '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
 import { css } from '@patternfly/react-styles';
@@ -19,8 +20,10 @@ import { connect } from 'react-redux';
 import config from '../../config/config';
 import { toggleHeaderDropdown } from '../../actions/actions-ui';
 
-class Header extends React.Component {
-  onTitleClick = () => {};
+export class Header extends React.Component {
+  onTitleClick = () => {
+    this.props.history.push('/');
+  };
 
   onUserDropdownToggle = () => {
     this.props.toggleHeaderDropdown();
@@ -35,10 +38,6 @@ class Header extends React.Component {
   };
 
   render () {
-    const logoProps = {
-      onClick: () => this.onTitleClick()
-    };
-
     const toolbar = (
       <Toolbar>
         <ToolbarGroup className={css(accessibleStyles.screenReader, accessibleStyles.visibleOnLg)}>
@@ -61,7 +60,7 @@ class Header extends React.Component {
       </Toolbar>
     );
 
-    const Header = <PageHeader logo={config.app.name.toUpperCase()} logoProps={logoProps} toolbar={toolbar} />;
+    const Header = <PageHeader logo={config.app.name.toUpperCase()} onClick={this.onTitleClick} toolbar={toolbar} />;
 
     return (
       <div className="mssHeader">
@@ -83,4 +82,4 @@ function mapStateToProps (state) {
   };
 }
 
-export default connect(mapStateToProps, { toggleHeaderDropdown })(Header);
+export default withRouter(connect(mapStateToProps, { toggleHeaderDropdown })(Header));

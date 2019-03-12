@@ -1,12 +1,13 @@
-import { APPS_REQUEST, APPS_SUCCESS, APPS_FAILURE, REVERSE_SORT, TOGGLE_HEADER_DROPDOWN } from '../actions/types.js';
+import { APPS_REQUEST, APPS_SUCCESS, APPS_FAILURE, APPS_SORT, TOGGLE_HEADER_DROPDOWN } from '../actions/types.js';
 import DataService from '../DataService';
 import fetchAction from './fetch';
 
-export const reverseAppsTableSort = (index) => {
+export const appsTableSort = (index, direction) => {
   return {
-    type: REVERSE_SORT,
+    type: APPS_SORT,
     payload: {
-      index: index
+      index: index,
+      direction: direction
     }
   };
 };

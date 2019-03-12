@@ -1,0 +1,17 @@
+p {
+  text-align: center;
+  padding: 3em;
+}
+
+thead{
+    font-size: large;
+    background-color: #ededed;
+}
+
+.apps-table{
+    overflow-x: scroll;
+}
+
+.pf-c-table tr{
+    cursor: pointer;
+}

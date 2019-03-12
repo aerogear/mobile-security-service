@@ -1,5 +1,5 @@
 import reducer from '../index';
-import { APPS_SUCCESS, REVERSE_SORT, APPS_FAILURE, TOGGLE_HEADER_DROPDOWN } from '../../actions/types.js';
+import { APPS_SUCCESS, APPS_SORT, APPS_FAILURE, TOGGLE_HEADER_DROPDOWN } from '../../actions/types.js';
 import { SortByDirection, sortable } from '@patternfly/react-table';
 
 describe('reducer', () => {
@@ -48,10 +48,10 @@ describe('reducer', () => {
     expect(reducer(undefined, {})).toEqual(initialState);
   });
 
-  it('should handle REVERSE_SORT', () => {
+  it('should handle APPS_SORT', () => {
     const appsState = reducer(initialState, { type: APPS_SUCCESS, result: resultApps });
-    const newState = reducer(appsState, { type: REVERSE_SORT, payload: { index: 1 } });
-    expect(newState).toEqual({ ...initialState, sortBy: { direction: SortByDirection.desc, index: 1 }, apps: { rows: sortedRows } });
+    const newState = reducer(appsState, { type: APPS_SORT, payload: { index: 1, direction: SortByDirection.desc } });
+    expect(newState).toEqual({ ...initialState, sortBy: { direction: SortByDirection.desc, index: 1 }, apps: { data: resultApps, rows: sortedRows } });
   });
 
   it('should handle APPS_SUCCESS', () => {

@@ -1,4 +1,4 @@
-import { APPS_FAILURE, APPS_SUCCESS, APPS_REQUEST, REVERSE_SORT, TOGGLE_HEADER_DROPDOWN } from '../actions/types.js';
+import { APPS_FAILURE, APPS_SUCCESS, APPS_REQUEST, APPS_SORT, TOGGLE_HEADER_DROPDOWN } from '../actions/types.js';
 
 import { SortByDirection, sortable } from '@patternfly/react-table';
 
@@ -25,19 +25,19 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case REVERSE_SORT:
-      const reversedOrder = state.sortBy.direction === SortByDirection.asc ? SortByDirection.desc : SortByDirection.asc;
+    case APPS_SORT:
       const index = action.payload.index;
-      const sortedRows = state.apps.rows.sort((a, b) => (a[index] < b[index] ? -1 : a[index] > b[index] ? 1 : 0));
-      const sortedApps = reversedOrder === SortByDirection.asc ? sortedRows : sortedRows.reverse();
+      let sortedRows = state.apps.rows.sort((a, b) => (a[index] < b[index] ? -1 : a[index] > b[index] ? 1 : 0));
+      sortedRows = action.payload.direction === SortByDirection.asc ? sortedRows : sortedRows.reverse();
       return {
         ...state,
         sortBy: {
-          direction: reversedOrder,
+          direction: action.payload.direction,
           index: index
         },
         apps: {
-          rows: sortedApps
+          rows: sortedRows,
+          data: state.apps.data
         }
       };
     case APPS_REQUEST:
