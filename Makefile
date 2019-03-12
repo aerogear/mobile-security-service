@@ -134,7 +134,8 @@ fmt:
 .PHONY: clean
 clean:
 	-rm -f ${BINARY}
-
+	-rm -rf .vendor-new
+	-rm -rf vendor/
 
 ## UI
 .PHONY:
