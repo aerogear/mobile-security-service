@@ -56,6 +56,37 @@ npm test
 
 Follow the output in order to run the desired test
 
+== Setup and configurations
+
+=== Environment Variables
+
+The **mobile-security-service** web application is configured using environment variables.
+
+* By default, the application will look for system environment variables to use.
+* If a system environment variable cannot be found, the application will then check the `.env` file in the application root.
+* If the `.env` file does not exist, or if the variable is not defined in the file, the application will use the default value defined in link:./src/config/config.js[config.js].
+
+NOTE: React applications can only read environment variables that are prefixed with `REACT_APP_`.
+
+=== Adding your own .env file
+
+Make a copy of the example file `.env.example`:
+
+[source,shell]
+----
+cp .env.example .env
+----
+
+Now the application will use the values defined in `.env`.
+
+=== Configuration
+
+|===
+| *Variable* | *Default* | *Description*
+| REACT_APP_API_URL                             | /api    | The base URL of the Mobile Security Service REST API
+| REACT_APP_NAME                        | Mobile Security Service    | The display name of the web application
+|===
+
 == A note on testing packages
 
 Tests are written using two packages

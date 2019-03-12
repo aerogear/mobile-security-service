@@ -7,6 +7,9 @@ import './index.css';
 import App from './components/App';
 import configureStore from './configureStore';
 
+// load environment variables from dotenv
+require('dotenv').config();
+
 const preloadedState = {};
 
 const store = configureStore(preloadedState);
