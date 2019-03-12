@@ -98,7 +98,7 @@ func (a *appsPostgreSQLRepository) GetAppVersionsByAppID(id string) (*[]models.V
 	}
 
 	if len(versions) == 0 {
-		return nil, models.ErrNotFound
+		return &versions, models.ErrNotFound
 	}
 
 	return &versions, nil
