@@ -100,7 +100,7 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	//     description: App not found
 	r.PUT("/apps/:id/versions", appsHandler.UpdateAppVersions)
 
-	// swagger:operation POST /apps/:id/versions/batch-disable Version
+	// swagger:operation POST /apps/:id/versions/disable Version
 	//
 	// Disable all versions of an app
 	// ---

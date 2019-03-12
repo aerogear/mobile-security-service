@@ -139,7 +139,7 @@ paths:
         "404":
           description: App not found
       summary: Update 1 or more versions of an app
-  /apps/:id/versions/batch-disable:
+  /apps/:id/versions/disable:
     post:
       description: Disable all versions of an app
       operationId: updateApp
