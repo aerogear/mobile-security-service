@@ -25,7 +25,7 @@ ui/build
 
 # misc
 ui/.DS_Store
-ui/.env.*
+ui/.env
 ui/*.log*
 ui/yarn.lock
 ui/.vscode/*

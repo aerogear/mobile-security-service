@@ -8,6 +8,7 @@
   "dependencies": {
     "@patternfly/react-core": "2.1.4",
     "@patternfly/react-table": "1.0.7",
+    "dotenv": "^6.2.0",
     "lodash": "4.17.11",
     "lodash-es": "4.17.11",
     "react": "16.8.0",

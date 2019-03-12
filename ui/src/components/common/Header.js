@@ -16,6 +16,7 @@ import { css } from '@patternfly/react-styles';
 import './Header.css';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import config from '../../config/config';
 import { toggleHeaderDropdown } from '../../actions/actions-ui';
 
 class Header extends React.Component {
@@ -60,7 +61,7 @@ class Header extends React.Component {
       </Toolbar>
     );
 
-    const Header = <PageHeader logo="MOBILE SECURITY SERVICE" logoProps={logoProps} toolbar={toolbar} />;
+    const Header = <PageHeader logo={config.app.name.toUpperCase()} logoProps={logoProps} toolbar={toolbar} />;
 
     return (
       <div className="mssHeader">

@@ -1,6 +1,4 @@
-const baseUrl = '/api';
-
-export const wsError = {};
+import config from './config/config';
 
 const requestConfig = (method, body) => ({
   method,
@@ -12,8 +10,8 @@ const requestConfig = (method, body) => ({
   body: body && JSON.stringify(body)
 });
 
-const request = async (url, method, body) => {
-  const response = await fetch(`${baseUrl}/${url}`, requestConfig(method, body));
+const request = async (path, method, body) => {
+  const response = await fetch(`${config.api.url}/${path}`, requestConfig(method, body));
   if (!response.ok) {
     const msg = await response.text();
     throw Error(msg);
@@ -21,8 +19,8 @@ const request = async (url, method, body) => {
   return method === 'DELETE' || response.json();
 };
 
-const fetchItems = async url => {
-  const result = await request(url, 'GET');
+const fetchItems = async path => {
+  const result = await request(path, 'GET');
   return result || [];
 };
 
