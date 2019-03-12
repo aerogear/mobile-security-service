@@ -186,6 +186,18 @@ paths:
         "404":
           description: App not found
       summary: Get app by id
+  /healthz:
+    get:
+      description: Check the health of the REST SERVICE API
+      operationId: health
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: successful operation
+        "500":
+          description: Internal Server Error
+      summary: Check if the server can receive requests
   /init:
     post:
       description: Capture metrics from device and return if the app version they
@@ -197,17 +209,27 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/AppInitRes'
+          $ref: '#/definitions/Version'
       produces:
       - application/json
       responses:
         "200":
           description: successful operation
         "400":
-          description: Invalid appId supplied
+          description: Invalid id supplied
         "404":
-          description: App not found
-      summary: Init call from sdk
+          description: Data not found
+      summary: Init call from SDK
+  /ping:
+    get:
+      description: Check the status of the REST SERVICE API
+      operationId: status
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: successful operation
+      summary: Check if the server is running
 produces:
 - application/json
 schemes:

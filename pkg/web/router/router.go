@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/aerogear/mobile-security-service/pkg/config"
 	"github.com/aerogear/mobile-security-service/pkg/web/apps"
+	"github.com/aerogear/mobile-security-service/pkg/web/checks"
 	"github.com/aerogear/mobile-security-service/pkg/web/initclient"
 	"github.com/aerogear/mobile-security-service/pkg/web/middleware"
 	"github.com/labstack/echo"
@@ -130,11 +131,11 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 }
 
 func SetInitRoutes(r *echo.Group, initHandler *initclient.HTTPHandler) {
-	// swagger:operation POST /init appInitResponse
+	// swagger:operation POST /init Device
 	//
 	// Capture metrics from device and return if the app version they are using is disabled and has a set disabled message
 	// ---
-	// summary: Init call from sdk
+	// summary: Init call from SDK
 	// operationId: initAppFromDevice
 	// produces:
 	// - application/json
@@ -144,13 +145,43 @@ func SetInitRoutes(r *echo.Group, initHandler *initclient.HTTPHandler) {
 	//   description: Updated app object
 	//   required: true
 	//   schema:
-	//     $ref: '#/definitions/AppInitRes'
+	//     $ref: '#/definitions/Version'
 	// responses:
 	//   200:
 	//     description: successful operation
 	//   400:
-	//     description: Invalid appId supplied
+	//     description: Invalid id supplied
 	//   404:
-	//     description: App not found
+	//     description: Data not found
 	r.POST("/init", initHandler.InitClientApp)
+}
+
+func SetChecksRouter(r *echo.Group, handler *checks.HTTPHandler) {
+	// swagger:operation GET /ping Status
+	//
+	// Check the status of the REST SERVICE API
+	// ---
+	// summary: Check if the server is running
+	// operationId: status
+	// produces:
+	// - application/json
+	// responses:
+	//   200:
+	//     description: successful operation
+	r.GET("/ping", handler.Ping)
+
+	// swagger:operation GET /healthz Status
+	//
+	// Check the health of the REST SERVICE API
+	// ---
+	// summary: Check if the server can receive requests
+	// operationId: health
+	// produces:
+	// - application/json
+	// responses:
+	//   200:
+	//     description: successful operation
+	//   500:
+	//     description: Internal Server Error
+	r.GET("/healthz", handler.Healthz)
 }
