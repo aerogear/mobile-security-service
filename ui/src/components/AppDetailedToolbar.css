@@ -1,0 +1,22 @@
+.details-toolbar{
+    margin-left: 5%
+}
+
+.toolbar-button{
+    margin: 0 .5rem;
+}
+
+.toolbar-buttons{
+    margin-left:auto; 
+    margin-right:3%;
+}
+
+li.pf-c-breadcrumb__item.home-breadcrumb{
+    color: #007BBA;
+    cursor: pointer;
+}
+
+li.breadcrumb{
+    font-size: 1.15rem;
+}
+

@@ -21,19 +21,19 @@ const initialState = {
   sortBy: { direction: SortByDirection.asc, index: 0 },
   appVersionsSortDirection: { direction: SortByDirection.asc, index: 0 },
   columns: [
-    { title: 'App Name', transforms: [ sortable ] },
-    { title: 'App ID', transforms: [ sortable ] },
-    { title: 'Deployed Versions', transforms: [ sortable ] },
-    { title: 'Current Installs', transforms: [ sortable ] },
-    { title: 'Launches', transforms: [ sortable ] }
+    { title: 'APP NAME', transforms: [sortable] },
+    { title: 'APP ID', transforms: [sortable] },
+    { title: 'DEPLOYED VERSIONS', transforms: [sortable] },
+    { title: 'CURRENT INSTALLS', transforms: [sortable] },
+    { title: 'LAUNCHES', transforms: [sortable] }
   ],
   appVersionsColumns: [
-    { title: 'App Version', transforms: [ sortable, cellWidth(10) ] },
-    { title: 'Current Installs', transforms: [ sortable, cellWidth(10) ] },
-    { title: 'Launches', transforms: [ sortable, cellWidth(10) ] },
-    { title: 'Last Launched', transforms: [ sortable, cellWidth(15) ] },
-    { title: 'Disable on Startup', transforms: [ sortable, cellWidth(10) ] },
-    { title: 'Custom Disable Message', transforms: [ sortable, cellWidth('max') ] }
+    { title: 'APP VERSION', transforms: [sortable, cellWidth(10)] },
+    { title: 'CURRENT INSTALLS', transforms: [sortable, cellWidth(10)] },
+    { title: 'LAUNCHES', transforms: [sortable, cellWidth(10)] },
+    { title: 'LAST LAUNCHED', transforms: [sortable, cellWidth(15)] },
+    { title: 'DISABLE ON STARTUP', transforms: [sortable, cellWidth(10)] },
+    { title: 'CUSTOM DISABLE MESSAGE', transforms: [sortable, cellWidth('max')] }
   ],
   isAppsRequestFailed: false,
   currentUser: 'currentUser',
