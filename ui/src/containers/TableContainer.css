@@ -9,7 +9,7 @@ thead{
 }
 
 .apps-table{
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 .pf-c-table tr{
