@@ -87,7 +87,7 @@ func (a *httpHandler) UpdateAppVersions(c echo.Context) error {
 	}
 
 	// Call service
-	errUpdate := a.Service.UpdateAppVersions(versions)
+	errUpdate := a.Service.UpdateAppVersions(id, versions)
 	if errUpdate != nil {
 		return httperrors.GetHTTPResponseFromErr(c, errUpdate)
 	}

@@ -31,7 +31,7 @@ var (
 				*helpers.GetMockApp(),
 			}, nil
 		},
-		UpdateAppVersionsFunc: func(versions []models.Version) error {
+		UpdateAppVersionsFunc: func(id string, versions []models.Version) error {
 			return nil
 		},
 	}
@@ -47,7 +47,7 @@ var (
 		GetAppsFunc: func() (*[]models.App, error) {
 			return nil, models.ErrNotFound
 		},
-		UpdateAppVersionsFunc: func(versions []models.Version) error {
+		UpdateAppVersionsFunc: func(id string, versions []models.Version) error {
 			return models.ErrNotFound
 		},
 	}
