@@ -8,10 +8,11 @@ class App extends React.Component {
   render () {
     return (
       <Router>
-        <div className='App'>
+        <div className="App">
           <Switch>
+            import AppDetailedView from './AppDetailedView';
             <Route exact path="/" component={LandingPage} />
-            <Route path="/app/:id" component={AppDetailedView} />
+            <Route path="/apps/:id" component={AppDetailedView} />
             {/* Default redirect */}
             <Redirect to="/" />
           </Switch>

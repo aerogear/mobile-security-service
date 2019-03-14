@@ -1,34 +1,59 @@
-import { APPS_FAILURE, APPS_SUCCESS, APPS_REQUEST, APPS_SORT, TOGGLE_HEADER_DROPDOWN } from '../actions/types.js';
+import {
+  APPS_FAILURE,
+  APPS_SUCCESS,
+  APP_DETAILS_SUCCESS,
+  APPS_REQUEST,
+  APPS_SORT,
+  TOGGLE_HEADER_DROPDOWN,
+  APP_DETAILS_SORT
+} from '../actions/types.js';
 
 import { SortByDirection, sortable } from '@patternfly/react-table';
 
-const columns = [
-  { title: 'App Name', transforms: [ sortable ] },
-  { title: 'App ID', transforms: [ sortable ] },
-  { title: 'Deployed Versions', transforms: [ sortable ] },
-  { title: 'Current Installs', transforms: [ sortable ] },
-  { title: 'Launches', transforms: [ sortable ] }
-];
-
-const apps = { rows: [], data: {} };
-
-const sortBy = { direction: SortByDirection.asc, index: 0 };
-
 const initialState = {
-  apps: apps,
-  sortBy: sortBy,
-  columns: columns,
+  apps: { rows: [], data: {} },
+  sortBy: { direction: SortByDirection.asc, index: 0 },
+  appDetailsSortDirection: { direction: SortByDirection.asc, index: 0 },
+  columns: [
+    { title: 'App Name', transforms: [ sortable ] },
+    { title: 'App ID', transforms: [ sortable ] },
+    { title: 'Deployed Versions', transforms: [ sortable ] },
+    { title: 'Current Installs', transforms: [ sortable ] },
+    { title: 'Launches', transforms: [ sortable ] }
+  ],
+  appDetailRows: [],
+  appDetailColumns: [
+    { title: 'App Version', transforms: [ sortable ] },
+    { title: 'Current Installs', transforms: [ sortable ] },
+    { title: 'Launches', transforms: [ sortable ] },
+    { title: 'Last Launched', transforms: [ sortable ] },
+    { title: 'Disable on Startup', transforms: [ sortable ] },
+    { title: 'Custom Disable Message', transforms: [ sortable ] }
+  ],
   isAppsRequestFailed: false,
   currentUser: 'currentUser',
   isUserDropdownOpen: false
 };
 
+// returns a new array sorted in preferred order
+const sortRows = (rows, index, order) => {
+  // sort in ascending order
+  const sortedRows = rows.sort((a, b) => (a[index] < b[index] ? -1 : a[index] > b[index] ? 1 : 0));
+
+  // reverse if descending order is preferred
+  if (order !== SortByDirection.asc) {
+    sortedRows.reverse();
+  }
+
+  return sortedRows;
+};
+
 export default (state = initialState, action) => {
   switch (action.type) {
     case APPS_SORT:
+      const order = action.payload.direction;
       const index = action.payload.index;
-      let sortedRows = state.apps.rows.sort((a, b) => (a[index] < b[index] ? -1 : a[index] > b[index] ? 1 : 0));
-      sortedRows = action.payload.direction === SortByDirection.asc ? sortedRows : sortedRows.reverse();
+      const sortedRows = sortRows(state.apps.rows, index, order);
       return {
         ...state,
         sortBy: {
@@ -40,14 +65,26 @@ export default (state = initialState, action) => {
           data: state.apps.data
         }
       };
+    case APP_DETAILS_SORT:
+      const newOrder = action.payload.direction;
+      const colIndex = action.payload.index;
+      const sortedAppDetails = sortRows(state.appDetailRows, colIndex, newOrder);
+      return {
+        ...state,
+        appDetailsSortDirection: {
+          direction: newOrder,
+          index: colIndex
+        },
+        appDetailRows: sortedAppDetails
+      };
     case APPS_REQUEST:
       return {
         ...state
       };
     case APPS_SUCCESS:
-      var fetchedApps = [];
+      const fetchedApps = [];
       action.result.forEach((app) => {
-        var temp = [];
+        const temp = [];
         temp[0] = app.appName;
         temp[1] = app.appId;
         temp[2] = app.numOfDeployedVersions;
@@ -61,6 +98,15 @@ export default (state = initialState, action) => {
           rows: fetchedApps,
           data: action.result
         }
+      };
+    case APP_DETAILS_SUCCESS:
+      const fetchedAppDetails = [];
+      action.result.forEach((appDetail) => {
+        fetchedAppDetails.push(appDetail);
+      });
+      return {
+        ...state,
+        appDetailRows: fetchedAppDetails
       };
     case APPS_FAILURE:
       return {
