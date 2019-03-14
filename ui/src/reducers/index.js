@@ -35,7 +35,7 @@ const initialState = {
   currentUser: 'currentUser',
   isUserDropdownOpen: false,
   app: {
-    deployedVersions: []
+    deployedVersions: { rows: [], data: {} }
   },
   isAppRequestFailed: false
 };
@@ -73,7 +73,7 @@ export default (state = initialState, action) => {
     case APP_DETAILS_SORT:
       const appDirection = action.payload.direction;
       const appIndex = action.payload.index;
-      const sortedAppVersions = sortRows(state.app.deployedVersions, appIndex, appDirection);
+      const sortedAppVersions = sortRows(state.app.deployedVersions.rows, appIndex, appDirection);
       return {
         ...state,
         appDetailsSortDirection: {
@@ -114,9 +114,28 @@ export default (state = initialState, action) => {
         ...state
       };
     case APP_SUCCESS:
+      const fetchedVersions = [];
+      action.result.deployedVersions.forEach((version) => {
+        const temp = [];
+        temp[0] = version['version'];
+        temp[1] = version['numOfCurrentInstalls'] || 0;
+        temp[2] = version['numOfAppLaunches'] || 0;
+        temp[3] = version['lastLaunchedAt'] || 'Never Launched';
+        temp[4] = version['disabled'];
+        temp[5] = version['disabledMessage'] || '';
+
+        fetchedVersions.push(temp);
+      });
+
       return {
         ...state,
-        app: action.result
+        app: {
+          deployedVersions: {
+            rows: fetchedVersions,
+            data: action.result
+          }
+        }
+        // app: action.result
       };
     case APP_FAILURE:
       return {
