@@ -10,7 +10,6 @@ class App extends React.Component {
       <Router>
         <div className="App">
           <Switch>
-            import AppDetailedView from './AppDetailedView';
             <Route exact path="/" component={LandingPage} />
             <Route path="/apps/:id" component={AppDetailedView} />
             {/* Default redirect */}

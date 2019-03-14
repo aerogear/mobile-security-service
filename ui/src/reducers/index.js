@@ -35,13 +35,13 @@ const initialState = {
   isUserDropdownOpen: false
 };
 
-// returns a new array sorted in preferred order
-const sortRows = (rows, index, order) => {
-  // sort in ascending order
+// returns a new array sorted in preferred direction
+const sortRows = (rows, index, direction) => {
+  // sort in ascending direction
   const sortedRows = rows.sort((a, b) => (a[index] < b[index] ? -1 : a[index] > b[index] ? 1 : 0));
 
-  // reverse if descending order is preferred
-  if (order !== SortByDirection.asc) {
+  // reverse if descending direction is preferred
+  if (direction !== SortByDirection.asc) {
     sortedRows.reverse();
   }
 
@@ -51,13 +51,13 @@ const sortRows = (rows, index, order) => {
 export default (state = initialState, action) => {
   switch (action.type) {
     case APPS_SORT:
-      const order = action.payload.direction;
+      const direction = action.payload.direction;
       const index = action.payload.index;
-      const sortedRows = sortRows(state.apps.rows, index, order);
+      const sortedRows = sortRows(state.apps.rows, index, direction);
       return {
         ...state,
         sortBy: {
-          direction: action.payload.direction,
+          direction: direction,
           index: index
         },
         apps: {
@@ -66,14 +66,14 @@ export default (state = initialState, action) => {
         }
       };
     case APP_DETAILS_SORT:
-      const newOrder = action.payload.direction;
-      const colIndex = action.payload.index;
-      const sortedAppDetails = sortRows(state.appDetailRows, colIndex, newOrder);
+      const appDirection = action.payload.direction;
+      const appIndex = action.payload.index;
+      const sortedAppDetails = sortRows(state.appDetailRows, appIndex, appDirection);
       return {
         ...state,
         appDetailsSortDirection: {
-          direction: newOrder,
-          index: colIndex
+          direction: appDirection,
+          index: appIndex
         },
         appDetailRows: sortedAppDetails
       };
