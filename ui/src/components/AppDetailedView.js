@@ -8,12 +8,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 class AppDetailedView extends React.Component {
-  constructor (props) {
-    super(props);
-    this.state = {};
-  }
-
-  componentDidMount () {
+  componentWillMount () {
     this.props.getAppById(this.props.match.params.id);
   }
 
