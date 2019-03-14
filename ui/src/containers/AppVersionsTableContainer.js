@@ -1,40 +1,67 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Checkbox } from '@patternfly/react-core';
-import { getApps, appDetailsSort } from '../actions/actions-ui';
+import { Checkbox, TextInput } from '@patternfly/react-core';
+import { getApps, appDetailsSort, updateDisabledAppVersion, updateVersionCustomMessage } from '../actions/actions-ui';
 import AppsTable from '../components/AppsTable';
 import './TableContainer.css';
 
 export class AppVersionsTableContainer extends React.Component {
+  handleDisableAppVersionChange = (_event, e) => {
+    const id = e.target.id;
+    const isDisabled = e.target.checked;
+    this.props.updateDisabledAppVersion(id, isDisabled);
+  };
+
+  handleCustomMessageInputChange = (_event, e) => {
+    const id = e.target.id;
+    const value = e.target.value;
+    this.props.updateVersionCustomMessage(id, value);
+  };
+
   onSort = (_event, index, direction) => {
     this.props.appDetailsSort(index, direction);
+  };
+
+  createCheckbox = (id, checked) => {
+    return (
+      <React.Fragment>
+        <Checkbox
+          label=""
+          isChecked={checked}
+          onChange={this.handleDisableAppVersionChange}
+          aria-label="disable app checkbox"
+          id={id}
+        />
+      </React.Fragment>
+    );
+  };
+
+  createTextInput = (id, text) => {
+    return (
+      <React.Fragment>
+        <TextInput
+          id={id}
+          type="text"
+          placeholder="Add a custom message.."
+          value={text}
+          onChange={this.handleCustomMessageInputChange}
+          aria-label="Custom Disable Message"
+        />
+      </React.Fragment>
+    );
   };
 
   getTable = (versions = []) => {
     const renderedRows = [];
     for (let i = 0; i < versions.length; i++) {
       const tempRow = [];
-
       tempRow[0] = versions[i][0];
       tempRow[1] = versions[i][1];
       tempRow[2] = versions[i][2];
       tempRow[3] = versions[i][3];
-
-      const cb = (
-        <React.Fragment>
-          <Checkbox
-            label=""
-            isChecked={versions[i][4]}
-            onChange={this.handleChange}
-            aria-label="disable app checkbox"
-            id={i.toString()}
-          />
-        </React.Fragment>
-      );
-      tempRow[4] = cb;
-      tempRow[5] = versions[i][5];
-
+      tempRow[4] = this.createCheckbox(versions[i][0].toString(), versions[i][4]);
+      tempRow[5] = this.createTextInput(versions[i][0], versions[i][5]);
       renderedRows.push(tempRow);
     }
 
@@ -78,4 +105,11 @@ function mapStateToProps (state) {
   };
 }
 
-export default connect(mapStateToProps, { appDetailsSort, getApps })(AppVersionsTableContainer);
+const mapDispatchToProps = {
+  appDetailsSort,
+  getApps,
+  updateDisabledAppVersion,
+  updateVersionCustomMessage
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppVersionsTableContainer);

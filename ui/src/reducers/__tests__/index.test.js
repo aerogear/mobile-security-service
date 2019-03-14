@@ -6,10 +6,13 @@ import {
   TOGGLE_HEADER_DROPDOWN,
   TOGGLE_NAVIGATION_MODAL,
   TOGGLE_APP_DETAILED_IS_DIRTY,
-  APP_SUCCESS, APP_FAILURE,
-  APP_VERSIONS_SORT
+  APP_SUCCESS,
+  APP_FAILURE,
+  APP_VERSIONS_SORT,
+  UPDATE_DISABLED_APP,
+  UPDATE_VERSION_CUSTOM_MESSAGE
 } from '../../actions/types.js';
-import { SortByDirection, sortable } from '@patternfly/react-table';
+import { SortByDirection, sortable, cellWidth } from '@patternfly/react-table';
 
 describe('reducer', () => {
   const initialState = {
@@ -17,19 +20,19 @@ describe('reducer', () => {
     sortBy: { direction: SortByDirection.asc, index: 0 },
     appVersionsSortDirection: { direction: SortByDirection.asc, index: 0 },
     columns: [
-      { title: 'App Name', transforms: [sortable] },
-      { title: 'App ID', transforms: [sortable] },
-      { title: 'Deployed Versions', transforms: [sortable] },
-      { title: 'Current Installs', transforms: [sortable] },
-      { title: 'Launches', transforms: [sortable] }
+      { title: 'App Name', transforms: [ sortable ] },
+      { title: 'App ID', transforms: [ sortable ] },
+      { title: 'Deployed Versions', transforms: [ sortable ] },
+      { title: 'Current Installs', transforms: [ sortable ] },
+      { title: 'Launches', transforms: [ sortable ] }
     ],
     appVersionsColumns: [
-      { title: 'App Version', transforms: [sortable] },
-      { title: 'Current Installs', transforms: [sortable] },
-      { title: 'Launches', transforms: [sortable] },
-      { title: 'Last Launched', transforms: [sortable] },
-      { title: 'Disable on Startup', transforms: [sortable] },
-      { title: 'Custom Disable Message', transforms: [sortable] }
+      { title: 'App Version', transforms: [ sortable, cellWidth(10) ] },
+      { title: 'Current Installs', transforms: [ sortable, cellWidth(10) ] },
+      { title: 'Launches', transforms: [ sortable, cellWidth(10) ] },
+      { title: 'Last Launched', transforms: [ sortable, cellWidth(15) ] },
+      { title: 'Disable on Startup', transforms: [ sortable, cellWidth(10) ] },
+      { title: 'Custom Disable Message', transforms: [ sortable, cellWidth('max') ] }
     ],
     isAppsRequestFailed: false,
     currentUser: 'currentUser',
@@ -63,16 +66,16 @@ describe('reducer', () => {
   ];
 
   const sortedRows = [
-    ['Test App', 'com.aerogear.testapp', 2, 3, 6000],
-    ['Foobar', 'com.aerogear.foobar', 0, 0, 0]
+    [ 'Test App', 'com.aerogear.testapp', 2, 3, 6000 ],
+    [ 'Foobar', 'com.aerogear.foobar', 0, 0, 0 ]
   ];
 
   const sortedAppVersions = [
-    ['v1.0', 100, 100, '2019-03-14T16:06:09.256498Z', true, 'Deprecated. Please upgrade to latest version'],
-    ['v1.1', 55, 621, '2019-01-11 10:45:03.256498Z', true, 'Deprecated. Please upgrade to latest version'],
-    ['v1.2', 75, 921, '2019-01-20 12:12:12.256498Z', false, 'LTS'],
-    ['v1.3', 125, 1221, '2017-01-31 11:05:43.256498Z', false, ''],
-    ['v1.4', 40, 120, '2018-02-15 10:02:50.256498Z', false, '']
+    [ 'v1.0', 100, 100, '2019-03-14T16:06:09.256498Z', true, 'Deprecated. Please upgrade to latest version' ],
+    [ 'v1.1', 55, 621, '2019-01-11 10:45:03.256498Z', true, 'Deprecated. Please upgrade to latest version' ],
+    [ 'v1.2', 75, 921, '2019-01-20 12:12:12.256498Z', false, 'LTS' ],
+    [ 'v1.3', 125, 1221, '2017-01-31 11:05:43.256498Z', false, '' ],
+    [ 'v1.4', 40, 120, '2018-02-15 10:02:50.256498Z', false, '' ]
   ];
 
   const resultApp = {
@@ -133,13 +136,12 @@ describe('reducer', () => {
     ]
   };
 
-  const rows = [
-    ['Foobar', 'com.aerogear.foobar', 0, 0, 0],
-    ['Test App', 'com.aerogear.testapp', 2, 3, 6000]
-  ];
+  const rows = [ [ 'Foobar', 'com.aerogear.foobar', 0, 0, 0 ], [ 'Test App', 'com.aerogear.testapp', 2, 3, 6000 ] ];
 
   it('should return the initial state', () => {
-    expect(reducer(undefined, {})).toEqual(initialState);
+    const newInitialState = JSON.stringify(reducer(undefined, {}), null, 2);
+    const expectedInitialState = JSON.stringify(initialState, null, 2);
+    expect(newInitialState).toEqual(expectedInitialState);
   });
 
   it('should handle APPS_SORT', () => {
@@ -205,7 +207,10 @@ describe('reducer', () => {
   });
 
   it('should handle close TOGGLE_NAVIGATION_MODAL', () => {
-    const newState = reducer(initialState, { type: TOGGLE_NAVIGATION_MODAL, payload: { isNavigationModalOpen: false } });
+    const newState = reducer(initialState, {
+      type: TOGGLE_NAVIGATION_MODAL,
+      payload: { isNavigationModalOpen: false }
+    });
     expect(newState.isNavigationModalOpen).toEqual(false);
   });
 
@@ -213,5 +218,25 @@ describe('reducer', () => {
     const appDetailedDirtyBeforeToggle = initialState.isAppDetailedDirty;
     const newState = reducer(initialState, { type: TOGGLE_APP_DETAILED_IS_DIRTY });
     expect(newState.isAppDetailedDirty).toEqual(!appDetailedDirtyBeforeToggle);
+  });
+
+  it('should update the checkbox disabled state', () => {
+    const appState = reducer(initialState, { type: APP_SUCCESS, result: resultApp });
+    const isDisabled = appState.app.versionsRows[0][4];
+    const updatedState = reducer(appState, {
+      type: UPDATE_DISABLED_APP,
+      payload: { id: 'v1.0', isDisabled: !isDisabled }
+    });
+    expect(updatedState.app.versionsRows[0][4]).toEqual(!isDisabled);
+  });
+
+  it('should update the custom text state', () => {
+    const appState = reducer(initialState, { type: APP_SUCCESS, result: resultApp });
+    const updatedMessage = appState.app.versionsRows[0][5] + '-newText';
+    const updatedState = reducer(appState, {
+      type: UPDATE_VERSION_CUSTOM_MESSAGE,
+      payload: { id: 'v1.0', value: updatedMessage }
+    });
+    expect(updatedState.app.versionsRows[0][5]).toEqual(updatedMessage);
   });
 });
