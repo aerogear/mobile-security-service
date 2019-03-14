@@ -13,7 +13,7 @@ describe('reducer', () => {
   const initialState = {
     apps: { rows: [], data: {} },
     sortBy: { direction: SortByDirection.asc, index: 0 },
-    appDetailsSortDirection: { direction: SortByDirection.asc, index: 0 },
+    appVersionsSortDirection: { direction: SortByDirection.asc, index: 0 },
     columns: [
       { title: 'App Name', transforms: [sortable] },
       { title: 'App ID', transforms: [sortable] },
@@ -21,8 +21,7 @@ describe('reducer', () => {
       { title: 'Current Installs', transforms: [sortable] },
       { title: 'Launches', transforms: [sortable] }
     ],
-    appVersions: [],
-    appDetailColumns: [
+    appVersionsColumns: [
       { title: 'App Version', transforms: [sortable] },
       { title: 'Current Installs', transforms: [sortable] },
       { title: 'Launches', transforms: [sortable] },
@@ -32,7 +31,11 @@ describe('reducer', () => {
     ],
     isAppsRequestFailed: false,
     currentUser: 'currentUser',
-    isUserDropdownOpen: false
+    isUserDropdownOpen: false,
+    app: {
+      deployedVersions: { rows: [], data: {} }
+    },
+    isAppRequestFailed: false
   };
 
   const resultApps = [
@@ -59,20 +62,35 @@ describe('reducer', () => {
     ['Foobar', 'com.aerogear.foobar', 0, 0, 0]
   ];
 
-  const resultAppDetails = [
-    ['v1.0', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version'],
-    ['v1.1', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version'],
-    ['v1.2', 75, 921, '2019-01-20 12:12:12', false, 'LTS'],
-    ['v1.3', 125, 1221, '2019-01-31 11:05:43', false, 'Curent version'],
-    ['v1.4', 40, 120, '2019-02-15 10:02:50', false, 'Beta version']
-  ];
+  const resultAppDetails = {
+    deployedVersions: [
+      {
+        id: '23d334ef-e200-4639-8a22-c5aee389dd22',
+        version: 'v1.0',
+        appId: 'com.aerogear.testapp1',
+        disabled: true,
+        disabledMessage: 'Deprecated. Please upgrade to latest version',
+        numOfCurrentInstalls: 100,
+        numOfAppLaunches: 100,
+        lastLaunchedAt: '2019-03-14T16:06:09.256498Z'
+      }
+    ]
+  };
+
+  // const resultAppDetails = [
+  //   ['v1.0', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version'],
+  //   ['v1.1', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version'],
+  //   ['v1.2', 75, 921, '2019-01-20 12:12:12', false, 'LTS'],
+  //   ['v1.3', 125, 1221, '2019-01-31 11:05:43', false, 'Curent version'],
+  //   ['v1.4', 40, 120, '2019-02-15 10:02:50', false, 'Beta version']
+  // ];
 
   const sortedAppVersions = [
-    ['v1.0', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version'],
-    ['v1.1', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version'],
-    ['v1.2', 75, 921, '2019-01-20 12:12:12', false, 'LTS'],
-    ['v1.3', 125, 1221, '2019-01-31 11:05:43', false, 'Curent version'],
-    ['v1.4', 40, 120, '2019-02-15 10:02:50', false, 'Beta version']
+    ['v1.0', 100, 100, '2019-03-14T16:06:09.256498Z', true, 'Deprecated. Please upgrade to latest version']
+    // ['v1.1', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version'],
+    // ['v1.2', 75, 921, '2019-01-20 12:12:12', false, 'LTS'],
+    // ['v1.3', 125, 1221, '2019-01-31 11:05:43', false, 'Curent version'],
+    // ['v1.4', 40, 120, '2019-02-15 10:02:50', false, 'Beta version']
   ];
 
   const resultApp = {
@@ -111,7 +129,7 @@ describe('reducer', () => {
     });
     expect(newState).toEqual({
       ...initialState,
-      appDetailsSortDirection: { direction: SortByDirection.asc, index: 0 },
+      appVersionsSortDirection: { direction: SortByDirection.asc, index: 0 },
       appVersions: sortedAppVersions
     });
   });

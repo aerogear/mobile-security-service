@@ -6,7 +6,7 @@ import { getApps, appDetailsSort } from '../actions/actions-ui';
 import AppsTable from '../components/AppsTable';
 import './TableContainer.css';
 
-export class AppTableContainer extends React.Component {
+export class AppVersionTableContainer extends React.Component {
   onSort = (_event, index, direction) => {
     this.props.appDetailsSort(index, direction);
   };
@@ -64,17 +64,17 @@ export class AppTableContainer extends React.Component {
   }
 }
 
-AppTableContainer.propTypes = {
+AppVersionTableContainer.propTypes = {
   sortBy: PropTypes.object.isRequired,
   columns: PropTypes.array.isRequired
 };
 
 function mapStateToProps (state) {
   return {
-    sortBy: state.appDetailsSortDirection,
+    sortBy: state.appVersionsSortDirection,
     columns: state.appVersionsColumns,
     appVersions: state.app.deployedVersions.rows
   };
 }
 
-export default connect(mapStateToProps, { appDetailsSort, getApps })(AppTableContainer);
+export default connect(mapStateToProps, { appDetailsSort, getApps })(AppVersionTableContainer);

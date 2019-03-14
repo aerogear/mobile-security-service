@@ -1,7 +1,7 @@
 import React from 'react';
 import { Title } from '@patternfly/react-core';
 import Header from './common/Header';
-import AppTableContainer from '../containers/AppTableContainer';
+import AppVersionTableContainer from '../containers/AppVersionTableContainer';
 import './AppDetailedView.css';
 import { getAppById } from '../actions/actions-ui';
 import { connect } from 'react-redux';
@@ -19,7 +19,7 @@ class AppDetailedView extends React.Component {
         <Title className="title" size="2xl">
           Deployed Versions
         </Title>
-        <AppTableContainer />
+        <AppVersionTableContainer />
       </div>
     );
   }
