@@ -1,7 +1,7 @@
 import React from 'react';
 import { Title } from '@patternfly/react-core';
 import Header from './common/Header';
-import AppDetailsContainer from '../containers/AppDetailsContainer';
+import AppTableContainer from '../containers/AppTableContainer';
 import './AppDetailedView.css';
 
 class AppDetailedView extends React.Component {
@@ -12,7 +12,7 @@ class AppDetailedView extends React.Component {
         <Title className="title" size="2xl">
           Deployed Versions
         </Title>
-        <AppDetailsContainer />
+        <AppTableContainer />
       </div>
     );
   }

@@ -6,7 +6,7 @@ import { getApps, appDetailsSort } from '../actions/actions-ui';
 import AppsTable from '../components/AppsTable';
 import './TableContainer.css';
 
-export class AppDetailsContainer extends React.Component {
+export class AppTableContainer extends React.Component {
   componentWillMount () {}
 
   handleChange = (e) => {
@@ -19,25 +19,25 @@ export class AppDetailsContainer extends React.Component {
 
   getTable = () => {
     const renderedRows = [];
-    for (let i = 0; i < this.props.apps.length; i++) {
+    for (let i = 0; i < this.props.app.length; i++) {
       const tempRow = [];
-      tempRow[0] = this.props.apps[i][0];
-      tempRow[1] = this.props.apps[i][1];
-      tempRow[2] = this.props.apps[i][2];
-      tempRow[3] = this.props.apps[i][3];
+      tempRow[0] = this.props.app[i][0];
+      tempRow[1] = this.props.app[i][1];
+      tempRow[2] = this.props.app[i][2];
+      tempRow[3] = this.props.app[i][3];
       const cb = (
         <React.Fragment>
           <Checkbox
             label=""
-            isChecked={this.props.apps[i][4]}
+            isChecked={this.props.app[i][4]}
             onChange={this.handleChange}
-            aria-label="controlled checkbox example"
+            aria-label="disable app checkbox"
             id={i.toString()}
           />
         </React.Fragment>
       );
       tempRow[4] = cb;
-      tempRow[5] = this.props.apps[i][5];
+      tempRow[5] = this.props.app[i][5];
       renderedRows.push(tempRow);
     }
 
@@ -66,8 +66,8 @@ export class AppDetailsContainer extends React.Component {
   }
 }
 
-AppDetailsContainer.propTypes = {
-  apps: PropTypes.array.isRequired,
+AppTableContainer.propTypes = {
+  app: PropTypes.array.isRequired,
   sortBy: PropTypes.object.isRequired,
   columns: PropTypes.array.isRequired,
   isAppsRequestFailed: PropTypes.bool.isRequired
@@ -75,11 +75,11 @@ AppDetailsContainer.propTypes = {
 
 function mapStateToProps (state) {
   return {
-    apps: state.appDetailRows,
+    app: state.appDetailRows,
     sortBy: state.appDetailsSortDirection,
     columns: state.appDetailColumns,
     isAppsRequestFailed: state.isAppsRequestFailed
   };
 }
 
-export default connect(mapStateToProps, { appDetailsSort, getApps })(AppDetailsContainer);
+export default connect(mapStateToProps, { appDetailsSort, getApps })(AppTableContainer);
