@@ -23,8 +23,7 @@ const initialState = {
     { title: 'Current Installs', transforms: [sortable] },
     { title: 'Launches', transforms: [sortable] }
   ],
-  appDetailRows: [],
-  appDetailColumns: [
+  appVersionsColumns: [
     { title: 'App Version', transforms: [sortable] },
     { title: 'Current Installs', transforms: [sortable] },
     { title: 'Launches', transforms: [sortable] },
@@ -35,7 +34,9 @@ const initialState = {
   isAppsRequestFailed: false,
   currentUser: 'currentUser',
   isUserDropdownOpen: false,
-  app: {},
+  app: {
+    deployedVersions: []
+  },
   isAppRequestFailed: false
 };
 
@@ -72,14 +73,14 @@ export default (state = initialState, action) => {
     case APP_DETAILS_SORT:
       const appDirection = action.payload.direction;
       const appIndex = action.payload.index;
-      const sortedAppDetails = sortRows(state.appDetailRows, appIndex, appDirection);
+      const sortedAppVersions = sortRows(state.app.deployedVersions, appIndex, appDirection);
       return {
         ...state,
         appDetailsSortDirection: {
           direction: appDirection,
           index: appIndex
         },
-        appDetailRows: sortedAppDetails
+        appVersions: sortedAppVersions
       };
     case APPS_REQUEST:
       return {
@@ -103,15 +104,6 @@ export default (state = initialState, action) => {
           data: action.result
         }
       };
-    // case APP_SUCCESS:
-    //   const fetchedAppDetails = [];
-    //   action.result.forEach((appDetail) => {
-    //     fetchedAppDetails.push(appDetail);
-    //   });
-    //   return {
-    //     ...state,
-    //     appDetailRows: fetchedAppDetails
-    //   };
     case APPS_FAILURE:
       return {
         ...state,
