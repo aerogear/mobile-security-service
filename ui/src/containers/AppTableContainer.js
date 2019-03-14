@@ -12,7 +12,6 @@ export class AppTableContainer extends React.Component {
   };
 
   getTable = (versions = []) => {
-    console.log('versionss', versions);
     const renderedRows = [];
     for (let i = 0; i < versions.length; i++) {
       const tempRow = [];
@@ -40,7 +39,7 @@ export class AppTableContainer extends React.Component {
     }
 
     return (
-      <div className="apps-table">
+      <div className="versions-table">
         <AppsTable
           columns={this.props.columns}
           rows={renderedRows}
