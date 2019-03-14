@@ -15,7 +15,7 @@ import { SortByDirection, sortable } from '@patternfly/react-table';
 const initialState = {
   apps: { rows: [], data: {} },
   sortBy: { direction: SortByDirection.asc, index: 0 },
-  appDetailsSortDirection: { direction: SortByDirection.asc, index: 0 },
+  appVersionsSortDirection: { direction: SortByDirection.asc, index: 0 },
   columns: [
     { title: 'App Name', transforms: [sortable] },
     { title: 'App ID', transforms: [sortable] },
@@ -76,7 +76,7 @@ export default (state = initialState, action) => {
       const sortedAppVersions = sortRows(state.app.deployedVersions.rows, versionIndex, versionDirection);
       return {
         ...state,
-        appDetailsSortDirection: {
+        appVersionsSortDirection: {
           direction: versionDirection,
           index: versionIndex
         },

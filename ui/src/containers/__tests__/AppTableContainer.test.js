@@ -1,12 +1,12 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { AppTableContainer } from '../AppTableContainer';
+import { AppVersionTableContainer } from '../AppVersionTableContainer';
 
 const props = { isAppsRequestFailed: false, app: [], sortBy: {}, columns: [] };
 
-describe('AppTableContainer', () => {
+describe('AppVersionTableContainer', () => {
   it('renders the expected component', () => {
-    const appTableContainer = shallow(<AppTableContainer {...props} />);
-    expect(appTableContainer).toBeDefined();
+    const AppVersionTableContainer = shallow(<AppVersionTableContainer {...props} />);
+    expect(AppVersionTableContainer).toBeDefined();
   });
 });
