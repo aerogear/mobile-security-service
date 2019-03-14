@@ -65,7 +65,7 @@ func (a *appsPostgreSQLRepository) GetApps() (*[]models.App, error) {
 // GetAppVersionsByAppID returns app app versions with the provided app ID
 func (a *appsPostgreSQLRepository) GetAppVersionsByAppID(id string) (*[]models.Version, error) {
 	rows, err := a.db.Query(`
-	SELECT v.id,v.version,v.app_id, v.disabled, v.disabled_message, v.num_of_app_launches,
+	SELECT v.id,v.version,v.app_id, v.disabled, v.disabled_message, v.num_of_app_launches, v.last_launched_at,
 	COALESCE(COUNT(DISTINCT d.id),0) as num_of_current_installs
 	FROM version as v LEFT JOIN device as d on v.id = d.version_id
 	WHERE v.app_id = $1 
@@ -89,7 +89,7 @@ func (a *appsPostgreSQLRepository) GetAppVersionsByAppID(id string) (*[]models.V
 	for rows.Next() {
 		var v models.Version
 		var disabledMessage sql.NullString
-		if err = rows.Scan(&v.ID, &v.Version, &v.AppID, &v.Disabled, &disabledMessage, &v.NumOfCurrentInstalls, &v.NumOfAppLaunches); err != nil {
+		if err = rows.Scan(&v.ID, &v.Version, &v.AppID, &v.Disabled, &disabledMessage, &v.NumOfCurrentInstalls, &v.LastLaunchedAt, &v.NumOfAppLaunches); err != nil {
 			log.Error(err)
 		}
 
