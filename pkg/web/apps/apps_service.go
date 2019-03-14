@@ -43,7 +43,7 @@ func (a *appsService) GetApps() (*[]models.App, error) {
 	return apps, nil
 }
 
-// GetActiveAppByID retrieves app by id from the repository
+// GetActiveAppByID retrieves app by id from the repository where the deleted_at is NULL
 func (a *appsService) GetActiveAppByID(id string) (*models.App, error) {
 
 	app, err := a.repository.GetActiveAppByID(id)

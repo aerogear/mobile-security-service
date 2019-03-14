@@ -92,7 +92,7 @@ func (a *httpHandler) UpdateAppVersions(c echo.Context) error {
 		return httperrors.GetHTTPResponseFromErr(c, errUpdate)
 	}
 
-	return c.JSON(http.StatusOK, "")
+	return c.NoContent(http.StatusNoContent)
 }
 
 //UpdateApp returns a app updated with the ID in JSON format from the AppService

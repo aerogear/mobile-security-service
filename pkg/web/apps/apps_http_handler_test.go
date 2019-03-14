@@ -130,7 +130,7 @@ func Test_httpHandler_UpdateAllAppVersionsByAppID(t *testing.T) {
 			data:        helpers.GetMockAppVersionList(),
 			wantErr:     false,
 			mockService: *mockedService,
-			wantCode:    200,
+			wantCode:    204,
 		},
 		{
 			name:        "Should return error since it is an invalid id",
