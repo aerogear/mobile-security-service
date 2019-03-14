@@ -7,7 +7,7 @@ import {
   APPS_FAILURE,
   APPS_SORT,
   TOGGLE_HEADER_DROPDOWN,
-  APP_DETAILS_SORT
+  APP_VERSIONS_SORT
 } from '../actions/types.js';
 import DataService from '../DataService';
 import fetchAction from './fetch';
@@ -24,7 +24,7 @@ export const appsTableSort = (index, direction) => {
 
 export const appDetailsSort = (index, direction) => {
   return {
-    type: APP_DETAILS_SORT,
+    type: APP_VERSIONS_SORT,
     payload: {
       index: index,
       direction: direction
