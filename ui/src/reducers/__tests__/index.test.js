@@ -5,7 +5,7 @@ import {
   APPS_FAILURE,
   TOGGLE_HEADER_DROPDOWN,
   APP_SUCCESS, APP_FAILURE,
-  APP_DETAILS_SORT
+  APP_VERSIONS_SORT
 } from '../../actions/types.js';
 import { SortByDirection, sortable } from '@patternfly/react-table';
 
@@ -103,10 +103,10 @@ describe('reducer', () => {
     });
   });
 
-  it('should handle APP_DETAILS_SORT', () => {
+  it('should handle APP_VERSIONS_SORT', () => {
     const appsState = reducer(initialState, { type: APP_SUCCESS, result: resultAppDetails });
     const newState = reducer(appsState, {
-      type: APP_DETAILS_SORT,
+      type: APP_VERSIONS_SORT,
       payload: { index: 0, direction: SortByDirection.asc }
     });
     expect(newState).toEqual({
