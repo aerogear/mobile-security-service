@@ -16,16 +16,16 @@ export class AppVersionsTableContainer extends React.Component {
     for (let i = 0; i < versions.length; i++) {
       const tempRow = [];
 
-      tempRow[0] = versions[i]['version'];
-      tempRow[1] = versions[i]['numOfCurrentInstalls'] || 0;
-      tempRow[2] = versions[i]['numOfAppLaunches'] || 0;
-      tempRow[3] = versions[i]['lastLaunchedAt'] || 'Never Launched';
+      tempRow[0] = versions[i][0];
+      tempRow[1] = versions[i][1];
+      tempRow[2] = versions[i][2];
+      tempRow[3] = versions[i][3];
 
       const cb = (
         <React.Fragment>
           <Checkbox
             label=""
-            isChecked={versions[i]['disabled']}
+            isChecked={versions[i][4]}
             onChange={this.handleChange}
             aria-label="disable app checkbox"
             id={i.toString()}
@@ -33,7 +33,7 @@ export class AppVersionsTableContainer extends React.Component {
         </React.Fragment>
       );
       tempRow[4] = cb;
-      tempRow[5] = versions[i]['disabledMessage'] || '';
+      tempRow[5] = versions[i][5];
 
       renderedRows.push(tempRow);
     }
@@ -52,7 +52,7 @@ export class AppVersionsTableContainer extends React.Component {
   };
 
   render () {
-    if (!this.props.appVersions) {
+    if (!this.props.appVersions || !this.props.appVersions.length) {
       return (
         <div className="no-versions">
           <p>This app has no versions</p>
@@ -66,14 +66,15 @@ export class AppVersionsTableContainer extends React.Component {
 
 AppVersionsTableContainer.propTypes = {
   sortBy: PropTypes.object.isRequired,
-  columns: PropTypes.array.isRequired
+  columns: PropTypes.array.isRequired,
+  appVersions: PropTypes.array.isRequired
 };
 
 function mapStateToProps (state) {
   return {
     sortBy: state.appVersionsSortDirection,
     columns: state.appVersionsColumns,
-    appVersions: state.app.data.deployedVersions
+    appVersions: state.app.versionsRows
   };
 }
 
