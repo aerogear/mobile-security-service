@@ -33,7 +33,8 @@ describe('reducer', () => {
     currentUser: 'currentUser',
     isUserDropdownOpen: false,
     app: {
-      deployedVersions: { rows: [], data: {} }
+      data: {},
+      versionsRows: []
     },
     isAppRequestFailed: false
   };
@@ -62,7 +63,18 @@ describe('reducer', () => {
     ['Foobar', 'com.aerogear.foobar', 0, 0, 0]
   ];
 
-  const resultAppDetails = {
+  const sortedAppVersions = [
+    ['v1.0', 100, 100, '2019-03-14T16:06:09.256498Z', true, 'Deprecated. Please upgrade to latest version'],
+    ['v1.1', 55, 621, '2019-01-11 10:45:03.256498Z', true, 'Deprecated. Please upgrade to latest version'],
+    ['v1.2', 75, 921, '2019-01-20 12:12:12.256498Z', false, 'LTS'],
+    ['v1.3', 125, 1221, '2017-01-31 11:05:43.256498Z', false, ''],
+    ['v1.4', 40, 120, '2018-02-15 10:02:50.256498Z', false, '']
+  ];
+
+  const resultApp = {
+    id: '1b9e7a5f-af7c-4055-b488-72f2b5f72266',
+    appId: 'com.aerogear.testapp1',
+    appName: 'Foobar',
     deployedVersions: [
       {
         id: '23d334ef-e200-4639-8a22-c5aee389dd22',
@@ -73,33 +85,48 @@ describe('reducer', () => {
         numOfCurrentInstalls: 100,
         numOfAppLaunches: 100,
         lastLaunchedAt: '2019-03-14T16:06:09.256498Z'
+      },
+      {
+        id: 'e23bcfd4-0d0a-48ee-96a8-db79141226da',
+        version: 'v1.1',
+        appId: 'com.aerogear.testapp1',
+        disabled: true,
+        disabledMessage: 'Deprecated. Please upgrade to latest version',
+        numOfCurrentInstalls: 55,
+        numOfAppLaunches: 621,
+        lastLaunchedAt: '2019-01-11 10:45:03.256498Z'
+      },
+      {
+        id: 'a7ab467a-e719-49f3-9ec0-200898703583',
+        version: 'v1.2',
+        appId: 'com.aerogear.testapp1',
+        disabled: false,
+        disabledMessage: 'LTS',
+        numOfCurrentInstalls: 75,
+        numOfAppLaunches: 921,
+        lastLaunchedAt: '2019-01-20 12:12:12.256498Z'
+      },
+      {
+        id: '6c656492-62ef-406f-a7ec-866b112488f5',
+        version: 'v1.3',
+        appId: 'com.aerogear.testapp1',
+        disabled: false,
+        disabledMessage: '',
+        numOfCurrentInstalls: 125,
+        numOfAppLaunches: 1221,
+        lastLaunchedAt: '2017-01-31 11:05:43.256498Z'
+      },
+      {
+        id: '2019-02-15 10:02:50.256498Z',
+        version: 'v1.4',
+        appId: 'com.aerogear.testapp1',
+        disabled: false,
+        disabledMessage: '',
+        numOfCurrentInstalls: 40,
+        numOfAppLaunches: 120,
+        lastLaunchedAt: '2018-02-15 10:02:50.256498Z'
       }
     ]
-  };
-
-  // const resultAppDetails = [
-  //   ['v1.0', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version'],
-  //   ['v1.1', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version'],
-  //   ['v1.2', 75, 921, '2019-01-20 12:12:12', false, 'LTS'],
-  //   ['v1.3', 125, 1221, '2019-01-31 11:05:43', false, 'Curent version'],
-  //   ['v1.4', 40, 120, '2019-02-15 10:02:50', false, 'Beta version']
-  // ];
-
-  const sortedAppVersions = [
-    ['v1.0', 100, 100, '2019-03-14T16:06:09.256498Z', true, 'Deprecated. Please upgrade to latest version']
-    // ['v1.1', 55, 621, '2019-01-11 10:45:03', true, 'Deprecated. Please upgrade to latest version'],
-    // ['v1.2', 75, 921, '2019-01-20 12:12:12', false, 'LTS'],
-    // ['v1.3', 125, 1221, '2019-01-31 11:05:43', false, 'Curent version'],
-    // ['v1.4', 40, 120, '2019-02-15 10:02:50', false, 'Beta version']
-  ];
-
-  const resultApp = {
-    'id': '0890506c-3dd1-43ad-8a09-21a4111a65a6',
-    'appId': 'com.aerogear.testapp',
-    'appName': 'Test App',
-    'numOfDeployedVersions': 2,
-    'numOfCurrentInstalls': 3,
-    'numOfAppLaunches': 6000
   };
 
   const rows = [
@@ -122,7 +149,7 @@ describe('reducer', () => {
   });
 
   it('should handle APP_VERSIONS_SORT', () => {
-    const appsState = reducer(initialState, { type: APP_SUCCESS, result: resultAppDetails });
+    const appsState = reducer(initialState, { type: APP_SUCCESS, result: resultApp });
     const newState = reducer(appsState, {
       type: APP_VERSIONS_SORT,
       payload: { index: 0, direction: SortByDirection.asc }
@@ -130,7 +157,10 @@ describe('reducer', () => {
     expect(newState).toEqual({
       ...initialState,
       appVersionsSortDirection: { direction: SortByDirection.asc, index: 0 },
-      appVersions: sortedAppVersions
+      app: {
+        data: resultApp,
+        versionsRows: sortedAppVersions
+      }
     });
   });
 
@@ -148,7 +178,10 @@ describe('reducer', () => {
   it('should handle APP_SUCCESS', () => {
     const newState = reducer(initialState, { type: APP_SUCCESS, result: resultApp });
     expect(newState.isAppRequestFailed).toEqual(false);
-    expect(newState.app).toEqual(resultApp);
+    expect(newState.app).toEqual({
+      data: resultApp,
+      versionsRows: sortedAppVersions
+    });
   });
 
   it('should handle APP_FAILURE', () => {
