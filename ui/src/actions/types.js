@@ -1,7 +1,5 @@
 export const APPS_SORT = 'APPS_SORT';
 export const APP_VERSIONS_SORT = 'APP_VERSIONS_SORT';
-export const GET_APPS = 'GET_APPS';
-export const GET_APP_BY_ID = 'GET_APP_BY_ID';
 export const APPS_REQUEST = 'APPS_REQUEST';
 export const APPS_SUCCESS = 'APPS_SUCCESS';
 export const APP_DETAILS_SUCCESS = 'APP_DETAILS_SUCCESS';
