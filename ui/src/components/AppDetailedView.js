@@ -1,7 +1,7 @@
 import React from 'react';
 import { Title } from '@patternfly/react-core';
 import Header from './common/Header';
-import AppVersionTableContainer from '../containers/AppVersionTableContainer';
+import AppVersionsTableContainer from '../containers/AppVersionsTableContainer';
 import './AppDetailedView.css';
 import { getAppById } from '../actions/actions-ui';
 import { connect } from 'react-redux';
@@ -19,7 +19,7 @@ class AppDetailedView extends React.Component {
         <Title className="title" size="2xl">
           Deployed Versions
         </Title>
-        <AppVersionTableContainer />
+        <AppVersionsTableContainer />
       </div>
     );
   }
@@ -32,7 +32,7 @@ AppDetailedView.propTypes = {
 
 function mapStateToProps (state) {
   return {
-    app: state.app,
+    app: state.app.data,
     getAppById: PropTypes.func.isRequired
   };
 };

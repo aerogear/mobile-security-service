@@ -35,7 +35,7 @@ const initialState = {
   currentUser: 'currentUser',
   isUserDropdownOpen: false,
   app: {
-    deployedVersions: { rows: [], data: {} }
+    data: {}
   },
   isAppRequestFailed: false
 };
@@ -73,7 +73,7 @@ export default (state = initialState, action) => {
     case APP_VERSIONS_SORT:
       const versionDirection = action.payload.direction;
       const versionIndex = action.payload.index;
-      const sortedAppVersions = sortRows(state.app.deployedVersions.rows, versionIndex, versionDirection);
+      const sortedAppVersions = sortRows(state.app.versionsRows, versionIndex, versionDirection);
       return {
         ...state,
         appVersionsSortDirection: {
@@ -130,12 +130,9 @@ export default (state = initialState, action) => {
       return {
         ...state,
         app: {
-          deployedVersions: {
-            rows: fetchedVersions,
-            data: action.result
-          }
+          data: action.result,
+          versionsRows: fetchedVersions
         }
-        // app: action.result
       };
     case APP_FAILURE:
       return {
