@@ -23,7 +23,7 @@ var (
 	WHERE a.deleted_at IS NULL 
 	GROUP BY a.id;`
 
-	getAppVersionsQueryString = `SELECT v.id,v.version,v.app_id, v.disabled, v.disabled_message, v.num_of_app_launches,
+	getAppVersionsQueryString = `SELECT v.id,v.version,v.app_id, v.disabled, v.disabled_message, v.num_of_app_launches, v.last_launched_at,
 	COALESCE\(COUNT\(DISTINCT d.id\),0\) as num_of_current_installs
 	FROM version as v LEFT JOIN device as d on v.id = d.version_id
 	WHERE v.app_id = \$1 
