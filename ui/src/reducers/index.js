@@ -35,7 +35,8 @@ const initialState = {
   currentUser: 'currentUser',
   isUserDropdownOpen: false,
   app: {
-    data: {}
+    data: {},
+    versionsRows: []
   },
   isAppRequestFailed: false
 };
@@ -74,14 +75,19 @@ export default (state = initialState, action) => {
       const versionDirection = action.payload.direction;
       const versionIndex = action.payload.index;
       const sortedAppVersions = sortRows(state.app.versionsRows, versionIndex, versionDirection);
-      return {
+      
+      const newState = {
         ...state,
         appVersionsSortDirection: {
           direction: versionDirection,
           index: versionIndex
-        },
-        appVersions: sortedAppVersions
+        }
       };
+
+      newState.app.versionsRows = sortedAppVersions;
+
+      return newState;
+
     case APPS_REQUEST:
       return {
         ...state
