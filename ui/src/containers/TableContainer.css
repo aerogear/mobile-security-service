@@ -8,10 +8,10 @@ thead{
     background-color: #ededed;
 }
 
-.apps-table{
+.apps-table, .versions-table {
     overflow-x: auto;
 }
 
-.pf-c-table tr{
+.apps-table tr{
     cursor: pointer;
 }

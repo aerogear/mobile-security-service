@@ -1,8 +1,10 @@
 export const APPS_SORT = 'APPS_SORT';
-export const APP_DETAILS_SORT = 'APP_DETAILS_SORT';
-export const GET_APPS = 'GET_APPS';
+export const APP_VERSIONS_SORT = 'APP_VERSIONS_SORT';
 export const APPS_REQUEST = 'APPS_REQUEST';
 export const APPS_SUCCESS = 'APPS_SUCCESS';
 export const APP_DETAILS_SUCCESS = 'APP_DETAILS_SUCCESS';
 export const APPS_FAILURE = 'APPS_FAILURE';
+export const APP_REQUEST = 'APP_REQUEST';
+export const APP_SUCCESS = 'APP_SUCCESS';
+export const APP_FAILURE = 'APP_FAILURE';
 export const TOGGLE_HEADER_DROPDOWN = 'TOGGLE_HEADER_DROPDOWN';

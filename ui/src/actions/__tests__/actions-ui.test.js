@@ -1,5 +1,5 @@
 import * as actions from '../actions-ui';
-import { APPS_SORT, APP_DETAILS_SORT } from '../types';
+import { APPS_SORT, APP_VERSIONS_SORT } from '../types';
 import { SortByDirection } from '@patternfly/react-table';
 
 describe('actions', () => {
@@ -20,7 +20,7 @@ describe('actions', () => {
     const index = 0;
     const direction = SortByDirection.asc;
     const expectedAction = {
-      type: APP_DETAILS_SORT,
+      type: APP_VERSIONS_SORT,
       payload: {
         index: index,
         direction: direction

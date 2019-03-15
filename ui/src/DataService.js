@@ -24,8 +24,14 @@ const fetchItems = async path => {
   return result || [];
 };
 
+const fetchItem = async url => {
+  const result = await request(url, 'GET');
+  return result || {};
+};
+
 const dataService = {
-  fetchApps: () => fetchItems('apps')
+  fetchApps: () => fetchItems('apps'),
+  getAppById: (id) => fetchItem(`apps/${id}`)
 };
 
 export default dataService;

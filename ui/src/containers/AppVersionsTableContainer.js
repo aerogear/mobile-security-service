@@ -6,30 +6,26 @@ import { getApps, appDetailsSort } from '../actions/actions-ui';
 import AppsTable from '../components/AppsTable';
 import './TableContainer.css';
 
-export class AppTableContainer extends React.Component {
-  componentWillMount () {}
-
-  handleChange = (e) => {
-    console.log('checkbox clicked');
-  };
-
+export class AppVersionsTableContainer extends React.Component {
   onSort = (_event, index, direction) => {
     this.props.appDetailsSort(index, direction);
   };
 
-  getTable = () => {
+  getTable = (versions = []) => {
     const renderedRows = [];
-    for (let i = 0; i < this.props.app.length; i++) {
+    for (let i = 0; i < versions.length; i++) {
       const tempRow = [];
-      tempRow[0] = this.props.app[i][0];
-      tempRow[1] = this.props.app[i][1];
-      tempRow[2] = this.props.app[i][2];
-      tempRow[3] = this.props.app[i][3];
+
+      tempRow[0] = versions[i][0];
+      tempRow[1] = versions[i][1];
+      tempRow[2] = versions[i][2];
+      tempRow[3] = versions[i][3];
+
       const cb = (
         <React.Fragment>
           <Checkbox
             label=""
-            isChecked={this.props.app[i][4]}
+            isChecked={versions[i][4]}
             onChange={this.handleChange}
             aria-label="disable app checkbox"
             id={i.toString()}
@@ -37,12 +33,13 @@ export class AppTableContainer extends React.Component {
         </React.Fragment>
       );
       tempRow[4] = cb;
-      tempRow[5] = this.props.app[i][5];
+      tempRow[5] = versions[i][5];
+
       renderedRows.push(tempRow);
     }
 
     return (
-      <div className="apps-table">
+      <div className="versions-table">
         <AppsTable
           columns={this.props.columns}
           rows={renderedRows}
@@ -55,31 +52,30 @@ export class AppTableContainer extends React.Component {
   };
 
   render () {
-    if (this.props.isAppsRequestFailed) {
+    if (!this.props.appVersions || !this.props.appVersions.length) {
       return (
-        <div className="no-apps">
-          <p>Unable to fetch any apps</p>
+        <div className="no-versions">
+          <p>This app has no versions</p>
         </div>
       );
     }
-    return this.getTable();
+
+    return this.getTable(this.props.appVersions);
   }
 }
 
-AppTableContainer.propTypes = {
-  app: PropTypes.array.isRequired,
+AppVersionsTableContainer.propTypes = {
   sortBy: PropTypes.object.isRequired,
   columns: PropTypes.array.isRequired,
-  isAppsRequestFailed: PropTypes.bool.isRequired
+  appVersions: PropTypes.array.isRequired
 };
 
 function mapStateToProps (state) {
   return {
-    app: state.appDetailRows,
-    sortBy: state.appDetailsSortDirection,
-    columns: state.appDetailColumns,
-    isAppsRequestFailed: state.isAppsRequestFailed
+    sortBy: state.appVersionsSortDirection,
+    columns: state.appVersionsColumns,
+    appVersions: state.app.versionsRows
   };
 }
 
-export default connect(mapStateToProps, { appDetailsSort, getApps })(AppTableContainer);
+export default connect(mapStateToProps, { appDetailsSort, getApps })(AppVersionsTableContainer);

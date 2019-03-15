@@ -1,11 +1,13 @@
 import {
   APPS_FAILURE,
   APPS_SUCCESS,
-  APP_DETAILS_SUCCESS,
   APPS_REQUEST,
   APPS_SORT,
   TOGGLE_HEADER_DROPDOWN,
-  APP_DETAILS_SORT
+  APP_SUCCESS,
+  APP_REQUEST,
+  APP_FAILURE,
+  APP_VERSIONS_SORT
 } from '../actions/types.js';
 
 import { SortByDirection, sortable } from '@patternfly/react-table';
@@ -13,26 +15,30 @@ import { SortByDirection, sortable } from '@patternfly/react-table';
 const initialState = {
   apps: { rows: [], data: {} },
   sortBy: { direction: SortByDirection.asc, index: 0 },
-  appDetailsSortDirection: { direction: SortByDirection.asc, index: 0 },
+  appVersionsSortDirection: { direction: SortByDirection.asc, index: 0 },
   columns: [
-    { title: 'App Name', transforms: [ sortable ] },
-    { title: 'App ID', transforms: [ sortable ] },
-    { title: 'Deployed Versions', transforms: [ sortable ] },
-    { title: 'Current Installs', transforms: [ sortable ] },
-    { title: 'Launches', transforms: [ sortable ] }
+    { title: 'App Name', transforms: [sortable] },
+    { title: 'App ID', transforms: [sortable] },
+    { title: 'Deployed Versions', transforms: [sortable] },
+    { title: 'Current Installs', transforms: [sortable] },
+    { title: 'Launches', transforms: [sortable] }
   ],
-  appDetailRows: [],
-  appDetailColumns: [
-    { title: 'App Version', transforms: [ sortable ] },
-    { title: 'Current Installs', transforms: [ sortable ] },
-    { title: 'Launches', transforms: [ sortable ] },
-    { title: 'Last Launched', transforms: [ sortable ] },
-    { title: 'Disable on Startup', transforms: [ sortable ] },
-    { title: 'Custom Disable Message', transforms: [ sortable ] }
+  appVersionsColumns: [
+    { title: 'App Version', transforms: [sortable] },
+    { title: 'Current Installs', transforms: [sortable] },
+    { title: 'Launches', transforms: [sortable] },
+    { title: 'Last Launched', transforms: [sortable] },
+    { title: 'Disable on Startup', transforms: [sortable] },
+    { title: 'Custom Disable Message', transforms: [sortable] }
   ],
   isAppsRequestFailed: false,
   currentUser: 'currentUser',
-  isUserDropdownOpen: false
+  isUserDropdownOpen: false,
+  app: {
+    data: {},
+    versionsRows: []
+  },
+  isAppRequestFailed: false
 };
 
 // returns a new array sorted in preferred direction
@@ -65,18 +71,22 @@ export default (state = initialState, action) => {
           data: state.apps.data
         }
       };
-    case APP_DETAILS_SORT:
-      const appDirection = action.payload.direction;
-      const appIndex = action.payload.index;
-      const sortedAppDetails = sortRows(state.appDetailRows, appIndex, appDirection);
-      return {
+    case APP_VERSIONS_SORT:
+      const versionDirection = action.payload.direction;
+      const versionIndex = action.payload.index;
+      const sortedAppVersions = sortRows(state.app.versionsRows, versionIndex, versionDirection);
+      const newState = {
         ...state,
-        appDetailsSortDirection: {
-          direction: appDirection,
-          index: appIndex
-        },
-        appDetailRows: sortedAppDetails
+        appVersionsSortDirection: {
+          direction: versionDirection,
+          index: versionIndex
+        }
       };
+
+      newState.app.versionsRows = sortedAppVersions;
+
+      return newState;
+
     case APPS_REQUEST:
       return {
         ...state
@@ -99,19 +109,40 @@ export default (state = initialState, action) => {
           data: action.result
         }
       };
-    case APP_DETAILS_SUCCESS:
-      const fetchedAppDetails = [];
-      action.result.forEach((appDetail) => {
-        fetchedAppDetails.push(appDetail);
-      });
-      return {
-        ...state,
-        appDetailRows: fetchedAppDetails
-      };
     case APPS_FAILURE:
       return {
         ...state,
         isAppsRequestFailed: true
+      };
+    case APP_REQUEST:
+      return {
+        ...state
+      };
+    case APP_SUCCESS:
+      const fetchedVersions = [];
+      action.result.deployedVersions.forEach((version) => {
+        const temp = [];
+        temp[0] = version['version'];
+        temp[1] = version['numOfCurrentInstalls'] || 0;
+        temp[2] = version['numOfAppLaunches'] || 0;
+        temp[3] = version['lastLaunchedAt'] || 'Never Launched';
+        temp[4] = version['disabled'];
+        temp[5] = version['disabledMessage'] || '';
+
+        fetchedVersions.push(temp);
+      });
+
+      return {
+        ...state,
+        app: {
+          data: action.result,
+          versionsRows: fetchedVersions
+        }
+      };
+    case APP_FAILURE:
+      return {
+        ...state,
+        isAppRequestFailed: true
       };
     case TOGGLE_HEADER_DROPDOWN:
       const isUserDropdownOpen = state.isUserDropdownOpen;
