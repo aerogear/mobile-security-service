@@ -75,7 +75,6 @@ export default (state = initialState, action) => {
       const versionDirection = action.payload.direction;
       const versionIndex = action.payload.index;
       const sortedAppVersions = sortRows(state.app.versionsRows, versionIndex, versionDirection);
-      
       const newState = {
         ...state,
         appVersionsSortDirection: {
