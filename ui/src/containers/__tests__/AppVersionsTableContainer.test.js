@@ -7,6 +7,6 @@ const props = { appVersions: [], sortBy: {}, columns: [] };
 describe('AppVersionsTableContainer', () => {
   it('renders the expected component', () => {
     const appVersionsTableContainer = shallow(<AppVersionsTableContainer {...props} />);
-    expect(appVersionsTableContainer).toBeDefined();
+    expect(appVersionsTableContainer).toHaveLength(1);
   });
 });

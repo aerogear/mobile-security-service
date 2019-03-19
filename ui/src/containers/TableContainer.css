@@ -8,10 +8,10 @@ thead{
     background-color: #ededed;
 }
 
-.apps-table, .versions-table {
+.table-scroll-x {
     overflow-x: auto;
 }
 
-.apps-table tr{
+.table-clickable-row tr{
     cursor: pointer;
 }

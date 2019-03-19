@@ -1,7 +1,8 @@
 import React from 'react';
-import { Title } from '@patternfly/react-core';
+import { Title, Grid, GridItem } from '@patternfly/react-core';
 import Header from './common/Header';
 import AppVersionsTableContainer from '../containers/AppVersionsTableContainer';
+import AppOverviewContainer from '../containers/AppOverviewContainer';
 import './AppDetailedView.css';
 import { getAppById } from '../actions/actions-ui';
 import { connect } from 'react-redux';
@@ -16,10 +17,17 @@ class AppDetailedView extends React.Component {
     return (
       <div className="app-detailed-view">
         <Header />
-        <Title className="title" size="2xl">
-          Deployed Versions
-        </Title>
-        <AppVersionsTableContainer />
+        <Grid gutter="md" className="container">
+          <GridItem span={1} />
+          <GridItem span={10}>
+            <AppOverviewContainer app={this.props.app} className='app-overview-container'/>
+            <Title className="table-title" size="2xl">
+              Deployed Versions
+            </Title>
+            <AppVersionsTableContainer className='table-scroll-x'/>
+          </GridItem>
+          <GridItem span={1} />
+        </Grid>
       </div>
     );
   }
