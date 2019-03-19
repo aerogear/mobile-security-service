@@ -44,7 +44,11 @@ const initialState = {
 // returns a new array sorted in preferred direction
 const sortRows = (rows, index, direction) => {
   // sort in ascending direction
-  const sortedRows = rows.sort((a, b) => (a[index] < b[index] ? -1 : a[index] > b[index] ? 1 : 0));
+  const sortedRows = [...rows].sort((a, b) => (a[index] < b[index] ? -1 : a[index] > b[index] ? 1 : 0));
+
+  if (areColumnValuesEqual(rows, index)) {
+    return rows;
+  }
 
   // reverse if descending direction is preferred
   if (direction !== SortByDirection.asc) {
@@ -52,6 +56,32 @@ const sortRows = (rows, index, direction) => {
   }
 
   return sortedRows;
+};
+
+/**
+ * Check if all of the table column values are the same
+ *
+ * @param {Array} rows The table rows in which we will compare values
+ * @param {*} index The index of the table column to compare values
+ *
+ * @returns {Boolean} Return whether every value is the same or not
+ */
+const areColumnValuesEqual = (rows, index) => {
+  if (!rows || !index) {
+    return false;
+  }
+
+  return rows.every((r, i) => {
+    if (i === 0) {
+      return true;
+    }
+
+    if (r[index] !== rows[i - 1][index]) {
+      return false;
+    }
+
+    return true;
+  });
 };
 
 export default (state = initialState, action) => {
