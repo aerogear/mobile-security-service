@@ -4,6 +4,8 @@ import {
   APPS_SORT,
   APPS_FAILURE,
   TOGGLE_HEADER_DROPDOWN,
+  TOGGLE_NAVIGATION_MODAL,
+  TOGGLE_APP_DETAILED_IS_DIRTY,
   APP_SUCCESS, APP_FAILURE,
   APP_VERSIONS_SORT
 } from '../../actions/types.js';
@@ -32,6 +34,8 @@ describe('reducer', () => {
     isAppsRequestFailed: false,
     currentUser: 'currentUser',
     isUserDropdownOpen: false,
+    isNavigationModalOpen: false,
+    isAppDetailedDirty: false,
     app: {
       data: {},
       versionsRows: []
@@ -193,5 +197,21 @@ describe('reducer', () => {
     const dropdownBeforeToggle = initialState.isUserDropdownOpen;
     const newState = reducer(initialState, { type: TOGGLE_HEADER_DROPDOWN });
     expect(newState.isUserDropdownOpen).toEqual(!dropdownBeforeToggle);
+  });
+
+  it('should handle open TOGGLE_NAVIGATION_MODAL', () => {
+    const newState = reducer(initialState, { type: TOGGLE_NAVIGATION_MODAL, payload: { isNavigationModalOpen: true } });
+    expect(newState.isNavigationModalOpen).toEqual(true);
+  });
+
+  it('should handle close TOGGLE_NAVIGATION_MODAL', () => {
+    const newState = reducer(initialState, { type: TOGGLE_NAVIGATION_MODAL, payload: { isNavigationModalOpen: false } });
+    expect(newState.isNavigationModalOpen).toEqual(false);
+  });
+
+  it('should handle TOGGLE_APP_DETAILED_IS_DIRTY', () => {
+    const appDetailedDirtyBeforeToggle = initialState.isAppDetailedDirty;
+    const newState = reducer(initialState, { type: TOGGLE_APP_DETAILED_IS_DIRTY });
+    expect(newState.isAppDetailedDirty).toEqual(!appDetailedDirtyBeforeToggle);
   });
 });
