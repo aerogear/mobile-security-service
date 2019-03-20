@@ -87,12 +87,12 @@ func (a *httpHandler) UpdateAppVersions(c echo.Context) error {
 	}
 
 	// Call service
-	errUpdate := a.Service.UpdateAppVersions(versions)
+	errUpdate := a.Service.UpdateAppVersions(id, versions)
 	if errUpdate != nil {
 		return httperrors.GetHTTPResponseFromErr(c, errUpdate)
 	}
 
-	return c.JSON(http.StatusOK, "")
+	return c.NoContent(http.StatusNoContent)
 }
 
 //UpdateApp returns a app updated with the ID in JSON format from the AppService

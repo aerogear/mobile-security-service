@@ -4,6 +4,7 @@ import (
 	"github.com/aerogear/mobile-security-service/pkg/helpers"
 	"github.com/aerogear/mobile-security-service/pkg/models"
 	"github.com/google/uuid"
+	log "github.com/sirupsen/logrus"
 )
 
 type (
@@ -11,7 +12,7 @@ type (
 	Service interface {
 		GetApps() (*[]models.App, error)
 		GetActiveAppByID(ID string) (*models.App, error)
-		UpdateAppVersions(versions []models.Version) error
+		UpdateAppVersions(id string, versions []models.Version) error
 		DisableAllAppVersionsByAppID(id string, message string) error
 		UnbindingAppByAppID(appID string) error
 		BindingAppByApp(appId, name string) error
@@ -42,7 +43,7 @@ func (a *appsService) GetApps() (*[]models.App, error) {
 	return apps, nil
 }
 
-// GetActiveAppByID retrieves app by id from the repository
+// GetActiveAppByID retrieves app by id from the repository where the deleted_at is NULL
 func (a *appsService) GetActiveAppByID(id string) (*models.App, error) {
 
 	app, err := a.repository.GetActiveAppByID(id)
@@ -63,11 +64,23 @@ func (a *appsService) GetActiveAppByID(id string) (*models.App, error) {
 }
 
 // GetApps retrieves the list of apps from the repository
-func (a *appsService) UpdateAppVersions(versions []models.Version) error {
-	err := a.repository.UpdateAppVersions(versions)
+func (a *appsService) UpdateAppVersions(id string, versions []models.Version) error {
+
+	app, err := a.repository.GetActiveAppByID(id)
+
+	if err != nil {
+		return err
+	}
+
+	for i := 0; i < len(versions); i++ {
+		if versions[i].AppID != app.AppID {
+			log.Error("Invalid data provided. The version id % is not associated with the app id %", versions[i].ID, id)
+			return models.ErrBadParamInput
+		}
+	}
 
 	// Check for errors and return the appropriate error to the handler
-	if err != nil {
+	if err := a.repository.UpdateAppVersions(versions); err != nil {
 		return err
 	}
 
