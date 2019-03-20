@@ -208,11 +208,14 @@ func Test_appsService_DisableAllAppVersionsByAppID(t *testing.T) {
 }
 
 func Test_appsService_UpdateAppVersions(t *testing.T) {
+	version := helpers.GetMockAppVersionList()[0]
+	version.AppID = helpers.GetMockApp().AppID
 	type fields struct {
 		repository Repository
 	}
 	tests := []struct {
 		name     string
+		id       string
 		fields   fields
 		versions []models.Version
 		wantErr  error
@@ -220,11 +223,20 @@ func Test_appsService_UpdateAppVersions(t *testing.T) {
 	}{
 		{
 			name:     "Update versions",
+			id:       helpers.GetMockApp().ID,
+			versions: []models.Version{version},
+			repo:     *mockRepositoryWithSuccessResults,
+		},
+		{
+			name:     "Should return error because the id of the app is not the same of the versions",
+			id:       helpers.GetMockApp().ID,
 			versions: helpers.GetMockAppVersionList(),
+			wantErr:  models.ErrBadParamInput,
 			repo:     *mockRepositoryWithSuccessResults,
 		},
 		{
 			name:    "Return error to update the version",
+			id:      helpers.GetMockApp().ID,
 			repo:    *mockRepositoryError,
 			wantErr: models.ErrNotFound,
 		},
@@ -232,15 +244,15 @@ func Test_appsService_UpdateAppVersions(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			a := NewService(&tt.repo)
-			err := a.UpdateAppVersions(tt.versions)
+			err := a.UpdateAppVersions(tt.id, tt.versions)
 
 			if (err != nil) && tt.wantErr == nil {
-				t.Errorf("appsService.DisableAllAppVersionsByAppID() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("appsService.UpdateAppVersions() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
 			if (err != nil) && (tt.wantErr != err || tt.wantErr == nil) {
-				t.Errorf("appsService.DisableAllAppVersionsByAppID() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("appsService.UpdateAppVersions() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})

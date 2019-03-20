@@ -31,7 +31,7 @@ var (
 				*helpers.GetMockApp(),
 			}, nil
 		},
-		UpdateAppVersionsFunc: func(versions []models.Version) error {
+		UpdateAppVersionsFunc: func(id string, versions []models.Version) error {
 			return nil
 		},
 	}
@@ -47,7 +47,7 @@ var (
 		GetAppsFunc: func() (*[]models.App, error) {
 			return nil, models.ErrNotFound
 		},
-		UpdateAppVersionsFunc: func(versions []models.Version) error {
+		UpdateAppVersionsFunc: func(id string, versions []models.Version) error {
 			return models.ErrNotFound
 		},
 	}
@@ -130,7 +130,7 @@ func Test_httpHandler_UpdateAllAppVersionsByAppID(t *testing.T) {
 			data:        helpers.GetMockAppVersionList(),
 			wantErr:     false,
 			mockService: *mockedService,
-			wantCode:    200,
+			wantCode:    204,
 		},
 		{
 			name:        "Should return error since it is an invalid id",
