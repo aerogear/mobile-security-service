@@ -12,10 +12,10 @@ export class AppOverviewContainer extends React.Component {
       <div className={className}>
         <Grid>
           <GridItem span={3}>
-            <span className="app-property">App ID</span>
+            <div className="app-property">App ID</div>
           </GridItem>
           <GridItem span={6}>
-            <span className="app-property">{app.appId}</span>
+            <div className="app-property">{app.appId}</div>
           </GridItem>
         </Grid>
       </div>
