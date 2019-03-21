@@ -39,7 +39,8 @@ export class AppVersionsTableContainer extends React.Component {
     }
 
     return (
-      <div className="versions-table">
+
+      <div className={this.props.className}>
         <AppsTable
           columns={this.props.columns}
           rows={renderedRows}

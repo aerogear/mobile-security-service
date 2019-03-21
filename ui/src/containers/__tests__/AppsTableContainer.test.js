@@ -10,7 +10,6 @@ describe('AppsTableContainer', () => {
   it('renders without crashing', () => {
     const Wrapper = shallow(<AppsTableContainer {...props} />);
     expect(Wrapper.find(AppsTable)).toHaveLength(1);
-    expect(Wrapper.find('div.apps-table')).toHaveLength(1);
   });
 
   it('renders the expected view on app request', () => {

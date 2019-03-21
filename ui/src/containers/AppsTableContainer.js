@@ -30,7 +30,7 @@ export class AppsTableContainer extends React.Component {
 
   getTable () {
     return (
-      <div className="apps-table">
+      <div className={this.props.className}>
         <AppsTable
           columns={this.props.columns}
           rows={this.props.apps.rows}
