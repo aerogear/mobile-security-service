@@ -11,11 +11,15 @@ export class AppOverviewContainer extends React.Component {
     return (
       <div className={className}>
         <Grid>
-          <GridItem span={3}>
-            <span className="app-property">App ID</span>
-          </GridItem>
-          <GridItem span={6}>
-            <span className="app-property">{app.appId}</span>
+          <GridItem span={8}>
+            <Grid>
+              <GridItem span={4}>
+                <div className="app-property">App ID</div>
+              </GridItem>
+              <GridItem span={8}>
+                <div className="app-property">{app.appId}</div>
+              </GridItem>
+            </Grid>
           </GridItem>
         </Grid>
       </div>
