@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import NavigationModalContainer from '../containers/NavigationModalContainer';
-import { Title, Grid, GridItem } from '@patternfly/react-core';
+import { Title } from '@patternfly/react-core';
 import Header from './common/Header';
 import AppVersionsTableContainer from '../containers/AppVersionsTableContainer';
 import AppOverviewContainer from '../containers/AppOverviewContainer';
@@ -9,6 +9,7 @@ import './AppDetailedView.css';
 import { getAppById, toggleNavigationModal } from '../actions/actions-ui';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Content from './common/Content';
 
 class AppDetailedView extends React.Component {
   componentWillMount () {
@@ -33,18 +34,14 @@ class AppDetailedView extends React.Component {
     return (
       <div className="app-detailed-view">
         <Header />
-        <Grid gutter="md" className="container">
-          <GridItem span={1} />
-          <GridItem span={10}>
-            <AppOverviewContainer app={this.props.app} className='app-overview-container' />
-            <Title className="table-title" size="2xl">
-              Deployed Versions
-            </Title>
-            <AppVersionsTableContainer className='table-scroll-x' />
-            <NavigationModalContainer text="You still have unsaved changes." title="Are you sure you want to leave this page?" />
-          </GridItem>
-          <GridItem span={1} />
-        </Grid>
+        <Content className="container">
+          <AppOverviewContainer app={this.props.app} className='app-overview-container' />
+          <Title className="table-title" size="2xl">
+            Deployed Versions
+          </Title>
+          <AppVersionsTableContainer className='table-scroll-x' />
+          <NavigationModalContainer text="You still have unsaved changes." title="Are you sure you want to leave this page?" />
+        </Content>
       </div>
     );
   }
