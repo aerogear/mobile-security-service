@@ -9,29 +9,31 @@ import {
   APP_SUCCESS,
   APP_REQUEST,
   APP_FAILURE,
-  APP_VERSIONS_SORT
+  APP_VERSIONS_SORT,
+  UPDATE_DISABLED_APP,
+  UPDATE_VERSION_CUSTOM_MESSAGE
 } from '../actions/types.js';
 
-import { SortByDirection, sortable } from '@patternfly/react-table';
+import { SortByDirection, sortable, cellWidth } from '@patternfly/react-table';
 
 const initialState = {
   apps: { rows: [], data: {} },
   sortBy: { direction: SortByDirection.asc, index: 0 },
   appVersionsSortDirection: { direction: SortByDirection.asc, index: 0 },
   columns: [
-    { title: 'App Name', transforms: [sortable] },
-    { title: 'App ID', transforms: [sortable] },
-    { title: 'Deployed Versions', transforms: [sortable] },
-    { title: 'Current Installs', transforms: [sortable] },
-    { title: 'Launches', transforms: [sortable] }
+    { title: 'App Name', transforms: [ sortable ] },
+    { title: 'App ID', transforms: [ sortable ] },
+    { title: 'Deployed Versions', transforms: [ sortable ] },
+    { title: 'Current Installs', transforms: [ sortable ] },
+    { title: 'Launches', transforms: [ sortable ] }
   ],
   appVersionsColumns: [
-    { title: 'App Version', transforms: [sortable] },
-    { title: 'Current Installs', transforms: [sortable] },
-    { title: 'Launches', transforms: [sortable] },
-    { title: 'Last Launched', transforms: [sortable] },
-    { title: 'Disable on Startup', transforms: [sortable] },
-    { title: 'Custom Disable Message', transforms: [sortable] }
+    { title: 'App Version', transforms: [ sortable, cellWidth(10) ] },
+    { title: 'Current Installs', transforms: [ sortable, cellWidth(10) ] },
+    { title: 'Launches', transforms: [ sortable, cellWidth(10) ] },
+    { title: 'Last Launched', transforms: [ sortable, cellWidth(15) ] },
+    { title: 'Disable on Startup', transforms: [ sortable, cellWidth(10) ] },
+    { title: 'Custom Disable Message', transforms: [ sortable, cellWidth('max') ] }
   ],
   isAppsRequestFailed: false,
   currentUser: 'currentUser',
@@ -48,7 +50,7 @@ const initialState = {
 // returns a new array sorted in preferred direction
 const sortRows = (rows, index, direction) => {
   // sort in ascending direction
-  const sortedRows = [...rows].sort((a, b) => (a[index] < b[index] ? -1 : a[index] > b[index] ? 1 : 0));
+  const sortedRows = [ ...rows ].sort((a, b) => (a[index] < b[index] ? -1 : a[index] > b[index] ? 1 : 0));
 
   if (areColumnValuesEqual(rows, index)) {
     return rows;
@@ -193,6 +195,38 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isAppDetailedDirty: !state.isAppDetailedDirty
+      };
+    case UPDATE_DISABLED_APP:
+      const id = action.payload.id;
+      const isDisabled = action.payload.isDisabled;
+      const updatedVersions = state.app.versionsRows.map((version) => {
+        if (version[0] === id) {
+          version[4] = isDisabled;
+        }
+        return version;
+      });
+      return {
+        ...state,
+        app: {
+          data: state.app.data,
+          versionsRows: [ ...updatedVersions ]
+        }
+      };
+    case UPDATE_VERSION_CUSTOM_MESSAGE:
+      const versionId = action.payload.id;
+      const value = action.payload.value;
+      const updatedVersionsRows = state.app.versionsRows.map((version) => {
+        if (version[0] === versionId) {
+          version[5] = value;
+        }
+        return version;
+      });
+      return {
+        ...state,
+        app: {
+          data: state.app.data,
+          versionsRows: [ ...updatedVersionsRows ]
+        }
       };
     default:
       return state;

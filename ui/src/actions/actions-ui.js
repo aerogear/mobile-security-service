@@ -9,7 +9,9 @@ import {
   TOGGLE_HEADER_DROPDOWN,
   TOGGLE_NAVIGATION_MODAL,
   TOGGLE_APP_DETAILED_IS_DIRTY,
-  APP_VERSIONS_SORT
+  APP_VERSIONS_SORT,
+  UPDATE_DISABLED_APP,
+  UPDATE_VERSION_CUSTOM_MESSAGE
 } from '../actions/types.js';
 import DataService from '../DataService';
 import fetchAction from './fetch';
@@ -49,12 +51,33 @@ export const toggleNavigationModal = (isNavigationModalOpen) => {
   };
 };
 
+export const updateDisabledAppVersion = (id, isDisabled) => {
+  return {
+    type: UPDATE_DISABLED_APP,
+    payload: {
+      id: id,
+      isDisabled: isDisabled
+    }
+  };
+};
+
 export const toggleAppDetailedIsDirty = () => {
   return {
     type: TOGGLE_APP_DETAILED_IS_DIRTY
   };
 };
 
-export const getApps = fetchAction([APPS_REQUEST, APPS_SUCCESS, APPS_FAILURE], DataService.fetchApps);
+export const updateVersionCustomMessage = (id, value) => {
+  return {
+    type: UPDATE_VERSION_CUSTOM_MESSAGE,
+    payload: {
+      id: id,
+      value: value
+    }
+  };
+};
 
-export const getAppById = appId => fetchAction([APP_REQUEST, APP_SUCCESS, APP_FAILURE], async () => DataService.getAppById(appId))();
+export const getApps = fetchAction([ APPS_REQUEST, APPS_SUCCESS, APPS_FAILURE ], DataService.fetchApps);
+
+export const getAppById = (appId) =>
+  fetchAction([ APP_REQUEST, APP_SUCCESS, APP_FAILURE ], async () => DataService.getAppById(appId))();
