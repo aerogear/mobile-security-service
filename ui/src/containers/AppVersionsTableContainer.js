@@ -59,7 +59,7 @@ export class AppVersionsTableContainer extends React.Component {
       tempRow[0] = versions[i][0];
       tempRow[1] = versions[i][1];
       tempRow[2] = versions[i][2];
-      tempRow[3] = versions[i][3];
+      tempRow[3] = new Date(versions[i][3]).toTimeString();
       tempRow[4] = this.createCheckbox(versions[i][0].toString(), versions[i][4]);
       tempRow[5] = this.createTextInput(versions[i][0], versions[i][5]);
       renderedRows.push(tempRow);

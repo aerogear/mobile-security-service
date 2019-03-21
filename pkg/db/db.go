@@ -40,13 +40,13 @@ func Setup(db *sql.DB) error {
 	}
 
 	if _, err := db.Exec(`
+		SET TIME ZONE 'UTC';
 		CREATE TABLE IF NOT EXISTS app (
 			id uuid NOT NULL PRIMARY KEY,
 			app_id character varying NOT NULL UNIQUE,
 			app_name character varying,
-			deleted_at timestamp without time zone
+			deleted_at timestamptz
 		);
-
 		CREATE TABLE IF NOT EXISTS version (
 			id uuid NOT NULL PRIMARY KEY,
 			version character varying NOT NULL,
@@ -54,10 +54,9 @@ func Setup(db *sql.DB) error {
 			disabled boolean DEFAULT false NOT NULL,
 			disabled_message character varying,
 			num_of_app_launches integer DEFAULT 1 NOT NULL,
-			last_launched_at timestamp without time zone NOT NULL default now(),
+			last_launched_at timestamptz NOT NULL default now(),
 			unique (app_id, version)
 		);
-
 		CREATE TABLE IF NOT EXISTS device (
 			id uuid NOT NULL PRIMARY KEY,
 			version_id uuid NOT NULL REFERENCES version(id),
@@ -66,7 +65,6 @@ func Setup(db *sql.DB) error {
 			device_type character varying NOT NULL,
 			device_version character varying NOT NULL
 		);
-
 	`); err != nil {
 		return err
 	}
