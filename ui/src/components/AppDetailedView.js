@@ -4,7 +4,7 @@ import NavigationModalContainer from '../containers/NavigationModalContainer';
 import { Title } from '@patternfly/react-core';
 import Header from './common/Header';
 import AppVersionsTableContainer from '../containers/AppVersionsTableContainer';
-import AppOverviewContainer from '../containers/AppOverviewContainer';
+import AppOverview from './AppOverview';
 import './AppDetailedView.css';
 import { getAppById, toggleNavigationModal } from '../actions/actions-ui';
 import { connect } from 'react-redux';
@@ -35,7 +35,7 @@ class AppDetailedView extends React.Component {
       <div className="app-detailed-view">
         <Header />
         <Content className="container">
-          <AppOverviewContainer app={this.props.app} className='app-overview-container' />
+          <AppOverview app={this.props.app} className='app-overview' />
           <Title className="table-title" size="2xl">
             Deployed Versions
           </Title>

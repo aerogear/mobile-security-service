@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Grid, GridItem } from '@patternfly/react-core';
-import './AppOverviewContainer.css';
+import './AppOverview.css';
 
-export class AppOverviewContainer extends React.Component {
+export class AppOverview extends React.Component {
   render () {
     const { className, app } = this.props;
 
@@ -23,7 +23,7 @@ export class AppOverviewContainer extends React.Component {
   }
 }
 
-AppOverviewContainer.propTypes = {
+AppOverview.propTypes = {
   app: PropTypes.object.isRequired
 };
 
@@ -33,4 +33,4 @@ function mapStateToProps (state) {
   };
 }
 
-export default connect(mapStateToProps)(AppOverviewContainer);
+export default connect(mapStateToProps)(AppOverview);
