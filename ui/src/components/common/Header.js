@@ -60,7 +60,7 @@ export class Header extends React.Component {
       </Toolbar>
     );
 
-    const Header = <PageHeader logo={config.app.name.toUpperCase()} onClick={this.onTitleClick} toolbar={toolbar} />;
+    const Header = <PageHeader logo={config.app.name.toUpperCase()} logoProps={{ onClick: this.onTitleClick }} toolbar={toolbar} />;
 
     return (
       <div className="mssHeader">
