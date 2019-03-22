@@ -1,11 +1,11 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { AppOverviewContainer } from '../AppOverviewContainer';
+import { AppOverview } from '../AppOverview';
 
-describe('AppsTableContainer', () => {
+describe('AppOverview', () => {
   const props = { app: {} };
   it('renders the expected component', () => {
-    const Wrapper = shallow(<AppOverviewContainer {...props} />);
+    const Wrapper = shallow(<AppOverview {...props} />);
     expect(Wrapper).toHaveLength(1);
   });
 });
