@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Checkbox, TextInput } from '@patternfly/react-core';
+import moment from 'moment';
 import { getApps, appDetailsSort, updateDisabledAppVersion, updateVersionCustomMessage } from '../actions/actions-ui';
 import AppsTable from '../components/AppsTable';
 import './TableContainer.css';
@@ -59,7 +60,11 @@ export class AppVersionsTableContainer extends React.Component {
       tempRow[0] = versions[i][0];
       tempRow[1] = versions[i][1];
       tempRow[2] = versions[i][2];
-      tempRow[3] = new Date(versions[i][3]).toTimeString();
+      if (versions[i][3].isNullOrUndefined || versions[i][3] === 'Never Launched') {
+        tempRow[3] = 'Never Launched';
+      } else {
+        tempRow[3] = moment(versions[i][3]).format('YYYY-MM-DD HH:mm:ss');
+      }
       tempRow[4] = this.createCheckbox(versions[i][0].toString(), versions[i][4]);
       tempRow[5] = this.createTextInput(versions[i][0], versions[i][5]);
       renderedRows.push(tempRow);
