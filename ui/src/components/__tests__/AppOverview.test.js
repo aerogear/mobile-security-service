@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { AppOverview } from '../AppOverview';
+import AppOverview from '../AppOverview';
 
 describe('AppOverview', () => {
   const props = { app: {} };

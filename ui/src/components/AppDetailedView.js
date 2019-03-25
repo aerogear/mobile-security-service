@@ -10,6 +10,7 @@ import { getAppById, toggleNavigationModal } from '../actions/actions-ui';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Content from './common/Content';
+import AppDetailedToolbar from './AppDetailedToolbar';
 
 class AppDetailedView extends React.Component {
   componentWillMount () {
@@ -34,6 +35,7 @@ class AppDetailedView extends React.Component {
     return (
       <div className="app-detailed-view">
         <Header />
+        <AppDetailedToolbar app={this.props.app}/>
         <Content className="container">
           <AppOverview app={this.props.app} className='app-overview' />
           <Title className="table-title" size="2xl">
