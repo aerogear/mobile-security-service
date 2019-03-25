@@ -8,6 +8,7 @@ import {
   APPS_SORT,
   TOGGLE_HEADER_DROPDOWN,
   TOGGLE_NAVIGATION_MODAL,
+  TOGGLE_SAVE_APP_MODAL,
   TOGGLE_APP_DETAILED_IS_DIRTY,
   APP_VERSIONS_SORT,
   UPDATE_DISABLED_APP,
@@ -49,6 +50,13 @@ export const toggleNavigationModal = (isOpen, targetLocation) => {
       isOpen: isOpen,
       targetLocation: targetLocation
     }
+  };
+};
+
+export const toggleSaveAppModal = isSaveAppModalOpen => {
+  return {
+    type: TOGGLE_SAVE_APP_MODAL,
+    payload: { isSaveAppModalOpen }
   };
 };
 

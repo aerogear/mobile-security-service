@@ -2,8 +2,10 @@ import React from 'react';
 import { shallow, mount } from 'enzyme';
 import { AppDetailedToolbar } from '../AppDetailedToolbar';
 
-describe('AppDetailedView', () => {
-  const props = { app: {} };
+describe('AppDetailedToolbar', () => {
+  const onSaveApp = jest.fn();
+  const onDisableApp = jest.fn();
+  const props = { app: {}, onSaveApp, onDisableApp };
 
   it('renders the expected components without crashing', () => {
     const wrapper = shallow(<AppDetailedToolbar {...props}/>);

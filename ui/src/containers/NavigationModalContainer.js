@@ -31,9 +31,9 @@ class NavigationModalContainer extends React.Component {
           <Button key="stay" variant="primary" onClick={this.handleModalClose}>
             Stay
           </Button>
-        ]}
-        text={this.props.text}
-      />
+        ]}>
+        {this.props.children}
+      </LargeModal>
     );
   }
 }
@@ -42,8 +42,8 @@ NavigationModalContainer.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   targetLocation: PropTypes.string,
   title: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired,
-  unblockHistory: PropTypes.func.isRequired
+  unblockHistory: PropTypes.func.isRequired,
+  children: PropTypes.string.isRequired
 };
 
 function mapStateToProps (state) {
