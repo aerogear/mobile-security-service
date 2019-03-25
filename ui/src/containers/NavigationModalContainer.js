@@ -1,10 +1,9 @@
 import React from 'react';
-import { Button } from '@patternfly/react-core';
+import { Button, Modal } from '@patternfly/react-core';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { toggleNavigationModal, toggleAppDetailedIsDirty } from '../actions/actions-ui';
-import { LargeModal } from '../components/common/LargeModal';
 
 class NavigationModalContainer extends React.Component {
   handleModalClose = () => {
@@ -20,7 +19,8 @@ class NavigationModalContainer extends React.Component {
 
   render () {
     return (
-      <LargeModal
+      <Modal
+        isLarge
         title={this.props.title}
         isOpen={this.props.isOpen}
         onClose={this.handleModalClose}
@@ -33,7 +33,7 @@ class NavigationModalContainer extends React.Component {
           </Button>
         ]}>
         {this.props.children}
-      </LargeModal>
+      </Modal>
     );
   }
 }

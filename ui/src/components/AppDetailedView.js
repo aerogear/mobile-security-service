@@ -1,17 +1,18 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import NavigationModalContainer from '../containers/NavigationModalContainer';
-import SaveAppModalContainer from '../containers/SaveAppModalContainer';
-import { Title } from '@patternfly/react-core';
-import Header from './common/Header';
-import AppVersionsTableContainer from '../containers/AppVersionsTableContainer';
-import AppOverview from './AppOverview';
-import './AppDetailedView.css';
-import { getAppById, toggleNavigationModal, toggleSaveAppModal } from '../actions/actions-ui';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Title } from '@patternfly/react-core';
+import Header from './common/Header';
+import AppOverview from './AppOverview';
 import Content from './common/Content';
 import AppDetailedToolbar from './AppDetailedToolbar';
+import AppVersionsTableContainer from '../containers/AppVersionsTableContainer';
+import DisableAppModalContainer from '../containers/DisableAppModalContainer';
+import NavigationModalContainer from '../containers/NavigationModalContainer';
+import SaveAppModalContainer from '../containers/SaveAppModalContainer';
+import './AppDetailedView.css';
+import { getAppById, toggleNavigationModal, toggleSaveAppModal, toggleDisableAppModal } from '../actions/actions-ui';
 
 class AppDetailedView extends React.Component {
   componentWillMount () {
@@ -30,14 +31,6 @@ class AppDetailedView extends React.Component {
     this.unblockHistory();
   }
 
-  onSaveApp = () => {
-    this.props.toggleSaveAppModal(true);
-  }
-
-  onDisableApp () {
-    // TODO: Show modal
-  }
-
   onConfirmSaveApp () {
     this.props.toggleSaveAppModal(false);
     // TODO: Make a PUT request to API
@@ -48,7 +41,7 @@ class AppDetailedView extends React.Component {
     return (
       <div className="app-detailed-view">
         <Header />
-        <AppDetailedToolbar app={this.props.app} onSaveApp={() => this.onSaveApp()} onDisableApp={() => this.onDisableApp()}/>
+        <AppDetailedToolbar app={this.props.app} onSaveApp={this.props.toggleSaveAppModal} onDisableApp={this.props.toggleDisableAppModal}/>
         <Content className="container">
           <AppOverview app={this.props.app} className='app-overview' />
           <Title className="table-title" size="2xl">
@@ -56,11 +49,12 @@ class AppDetailedView extends React.Component {
           </Title>
           <AppVersionsTableContainer className='table-scroll-x' />
           <NavigationModalContainer title="Are you sure you want to leave this page?" unblockHistory={this.unblockHistory}>
-          You still have unsaved changes.
+            You still have unsaved changes.
           </NavigationModalContainer>
           <SaveAppModalContainer title="Save Changes" onConfirm={() => this.onConfirmSaveApp()}>
-          Are you sure you want to save your changes to this app?
+            Are you sure you want to save your changes to this app?
           </SaveAppModalContainer>
+          <DisableAppModalContainer />
         </Content>
       </div>
     );
@@ -84,7 +78,8 @@ function mapStateToProps (state) {
 const mapDispatchToProps = {
   getAppById,
   toggleNavigationModal,
-  toggleSaveAppModal
+  toggleSaveAppModal,
+  toggleDisableAppModal
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AppDetailedView));

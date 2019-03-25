@@ -1,18 +1,5 @@
 import reducer from '../index';
-import {
-  APPS_SUCCESS,
-  APPS_SORT,
-  APPS_FAILURE,
-  TOGGLE_HEADER_DROPDOWN,
-  TOGGLE_NAVIGATION_MODAL,
-  TOGGLE_APP_DETAILED_IS_DIRTY,
-  APP_SUCCESS,
-  APP_FAILURE,
-  APP_VERSIONS_SORT,
-  UPDATE_DISABLED_APP,
-  UPDATE_VERSION_CUSTOM_MESSAGE,
-  TOGGLE_SAVE_APP_MODAL
-} from '../../actions/types.js';
+import * as actions from '../../actions/types.js';
 import { SortByDirection, sortable, cellWidth } from '@patternfly/react-table';
 
 describe('reducer', () => {
@@ -48,7 +35,12 @@ describe('reducer', () => {
       data: {},
       versionsRows: []
     },
-    isAppRequestFailed: false
+    isAppRequestFailed: false,
+    modals: {
+      disableApp: {
+        isOpen: false
+      }
+    }
   };
 
   const resultApps = [
@@ -150,8 +142,8 @@ describe('reducer', () => {
   });
 
   it('should handle APPS_SORT', () => {
-    const appsState = reducer(initialState, { type: APPS_SUCCESS, result: resultApps });
-    const newState = reducer(appsState, { type: APPS_SORT, payload: { index: 1, direction: SortByDirection.desc } });
+    const appsState = reducer(initialState, { type: actions.APPS_SUCCESS, result: resultApps });
+    const newState = reducer(appsState, { type: actions.APPS_SORT, payload: { index: 1, direction: SortByDirection.desc } });
     expect(newState).toEqual({
       ...initialState,
       sortBy: { direction: SortByDirection.desc, index: 1 },
@@ -160,9 +152,9 @@ describe('reducer', () => {
   });
 
   it('should handle APP_VERSIONS_SORT', () => {
-    const appsState = reducer(initialState, { type: APP_SUCCESS, result: resultApp });
+    const appsState = reducer(initialState, { type: actions.APP_SUCCESS, result: resultApp });
     const newState = reducer(appsState, {
-      type: APP_VERSIONS_SORT,
+      type: actions.APP_VERSIONS_SORT,
       payload: { index: 0, direction: SortByDirection.asc }
     });
     expect(newState).toEqual({
@@ -176,18 +168,18 @@ describe('reducer', () => {
   });
 
   it('should handle APPS_SUCCESS', () => {
-    const newState = reducer(initialState, { type: APPS_SUCCESS, result: resultApps });
+    const newState = reducer(initialState, { type: actions.APPS_SUCCESS, result: resultApps });
     expect(newState.isAppsRequestFailed).toEqual(false);
     expect(newState.apps).toEqual({ rows: rows, data: resultApps });
   });
 
   it('should handle APPS_FAILURE', () => {
-    const newState = reducer(initialState, { type: APPS_FAILURE });
+    const newState = reducer(initialState, { type: actions.APPS_FAILURE });
     expect(newState.isAppsRequestFailed).toEqual(true);
   });
 
   it('should handle APP_SUCCESS', () => {
-    const newState = reducer(initialState, { type: APP_SUCCESS, result: resultApp });
+    const newState = reducer(initialState, { type: actions.APP_SUCCESS, result: resultApp });
     expect(newState.isAppRequestFailed).toEqual(false);
     expect(newState.app).toEqual({
       data: resultApp,
@@ -196,19 +188,19 @@ describe('reducer', () => {
   });
 
   it('should handle APP_FAILURE', () => {
-    const newState = reducer(initialState, { type: APP_FAILURE });
+    const newState = reducer(initialState, { type: actions.APP_FAILURE });
     expect(newState.isAppRequestFailed).toEqual(true);
   });
 
   it('should toggle header dropdown state', () => {
     const dropdownBeforeToggle = initialState.isUserDropdownOpen;
-    const newState = reducer(initialState, { type: TOGGLE_HEADER_DROPDOWN });
+    const newState = reducer(initialState, { type: actions.TOGGLE_HEADER_DROPDOWN });
     expect(newState.isUserDropdownOpen).toEqual(!dropdownBeforeToggle);
   });
 
   it('should handle open TOGGLE_NAVIGATION_MODAL', () => {
     const newState = reducer(initialState, {
-      type: TOGGLE_NAVIGATION_MODAL,
+      type: actions.TOGGLE_NAVIGATION_MODAL,
       payload: {
         isOpen: true,
         targetLocation: '/'
@@ -220,7 +212,7 @@ describe('reducer', () => {
 
   it('should handle close TOGGLE_NAVIGATION_MODAL', () => {
     const newState = reducer(initialState, {
-      type: TOGGLE_NAVIGATION_MODAL,
+      type: actions.TOGGLE_NAVIGATION_MODAL,
       payload: {
         isOpen: false
       }
@@ -231,7 +223,7 @@ describe('reducer', () => {
 
   it('should handle close TOGGLE_SAVE_APP_MODAL', () => {
     const newState = reducer(initialState, {
-      type: TOGGLE_SAVE_APP_MODAL,
+      type: actions.TOGGLE_SAVE_APP_MODAL,
       payload: { isSaveAppModalOpen: false }
     });
     expect(newState.isSaveAppModalOpen).toEqual(false);
@@ -239,33 +231,39 @@ describe('reducer', () => {
 
   it('should handle open TOGGLE_SAVE_APP_MODAL', () => {
     const newState = reducer(initialState, {
-      type: TOGGLE_SAVE_APP_MODAL,
+      type: actions.TOGGLE_SAVE_APP_MODAL,
       payload: { isSaveAppModalOpen: true }
     });
     expect(newState.isSaveAppModalOpen).toEqual(true);
   });
 
+  it('should toggle TOGGLE_DISABLE_APP_MODAL', () => {
+    const isOpen = initialState.modals.disableApp.isOpen;
+    const newState = reducer(initialState, { type: actions.TOGGLE_DISABLE_APP_MODAL });
+    expect(newState.modals.disableApp.isOpen).toEqual(!isOpen);
+  });
+
   it('should handle TOGGLE_APP_DETAILED_IS_DIRTY', () => {
     const appDetailedDirtyBeforeToggle = initialState.isAppDetailedDirty;
-    const newState = reducer(initialState, { type: TOGGLE_APP_DETAILED_IS_DIRTY });
+    const newState = reducer(initialState, { type: actions.TOGGLE_APP_DETAILED_IS_DIRTY });
     expect(newState.isAppDetailedDirty).toEqual(!appDetailedDirtyBeforeToggle);
   });
 
   it('should update the checkbox disabled state', () => {
-    const appState = reducer(initialState, { type: APP_SUCCESS, result: resultApp });
+    const appState = reducer(initialState, { type: actions.APP_SUCCESS, result: resultApp });
     const isDisabled = appState.app.versionsRows[0][4];
     const updatedState = reducer(appState, {
-      type: UPDATE_DISABLED_APP,
+      type: actions.UPDATE_DISABLED_APP,
       payload: { id: 'v1.0', isDisabled: !isDisabled }
     });
     expect(updatedState.app.versionsRows[0][4]).toEqual(!isDisabled);
   });
 
   it('should update the custom text state', () => {
-    const appState = reducer(initialState, { type: APP_SUCCESS, result: resultApp });
+    const appState = reducer(initialState, { type: actions.APP_SUCCESS, result: resultApp });
     const updatedMessage = appState.app.versionsRows[0][5] + '-newText';
     const updatedState = reducer(appState, {
-      type: UPDATE_VERSION_CUSTOM_MESSAGE,
+      type: actions.UPDATE_VERSION_CUSTOM_MESSAGE,
       payload: { id: 'v1.0', value: updatedMessage }
     });
     expect(updatedState.app.versionsRows[0][5]).toEqual(updatedMessage);
