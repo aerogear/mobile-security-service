@@ -1,5 +1,13 @@
 import * as actions from '../actions-ui';
-import { APPS_SORT, APP_VERSIONS_SORT, UPDATE_DISABLED_APP, UPDATE_VERSION_CUSTOM_MESSAGE } from '../types';
+import {
+  APPS_SORT,
+  APP_VERSIONS_SORT,
+  UPDATE_DISABLED_APP,
+  UPDATE_VERSION_CUSTOM_MESSAGE,
+  TOGGLE_HEADER_DROPDOWN,
+  TOGGLE_NAVIGATION_MODAL,
+  TOGGLE_APP_DETAILED_IS_DIRTY
+} from '../types';
 import { SortByDirection } from '@patternfly/react-table';
 
 describe('actions', () => {
@@ -27,6 +35,33 @@ describe('actions', () => {
       }
     };
     expect(actions.appDetailsSort(index, direction)).toEqual(expectedAction);
+  });
+
+  it('should toggle the header dropdown', () => {
+    const expectedAction = {
+      type: TOGGLE_HEADER_DROPDOWN
+    };
+    expect(actions.toggleHeaderDropdown()).toEqual(expectedAction);
+  });
+
+  it('should toggle the navigational modal', () => {
+    const isOpen = true;
+    const targetLocation = '/';
+    const expectedAction = {
+      type: TOGGLE_NAVIGATION_MODAL,
+      payload: {
+        isOpen: isOpen,
+        targetLocation: targetLocation
+      }
+    };
+    expect(actions.toggleNavigationModal(isOpen, targetLocation)).toEqual(expectedAction);
+  });
+
+  it('should toggle whether app detail view is dirty', () => {
+    const expectedAction = {
+      type: TOGGLE_APP_DETAILED_IS_DIRTY
+    };
+    expect(actions.toggleAppDetailedIsDirty()).toEqual(expectedAction);
   });
 
   it('should update the disabled status of the app version', () => {
