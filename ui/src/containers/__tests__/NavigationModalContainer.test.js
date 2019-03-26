@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import NavigationModalContainer from '../NavigationModalContainer';
 
-const props = { isNavigationModalOpen: true };
+const props = { isOpen: true };
 
 describe('NavigationModalContainer', () => {
   it('renders the expected component', () => {

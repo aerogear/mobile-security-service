@@ -13,7 +13,8 @@ class NavigationModalContainer extends React.Component {
 
   handleLeaveClick = () => {
     this.props.toggleAppDetailedIsDirty();
-    this.props.history.goBack();
+    this.props.unblockHistory();
+    this.props.history.push(this.props.targetLocation);
     this.handleModalClose();
   };
 
@@ -21,7 +22,7 @@ class NavigationModalContainer extends React.Component {
     return (
       <LargeModal
         title={this.props.title}
-        isOpen={this.props.isNavigationModalOpen}
+        isOpen={this.props.isOpen}
         onClose={this.handleModalClose}
         actions={[
           <Button key="leave" variant="danger" onClick={this.handleLeaveClick}>
@@ -38,14 +39,17 @@ class NavigationModalContainer extends React.Component {
 }
 
 NavigationModalContainer.propTypes = {
-  isNavigationModalOpen: PropTypes.bool.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  targetLocation: PropTypes.string,
   title: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired
+  text: PropTypes.string.isRequired,
+  unblockHistory: PropTypes.func.isRequired
 };
 
 function mapStateToProps (state) {
   return {
-    isNavigationModalOpen: state.isNavigationModalOpen
+    isOpen: state.navigationModal.isOpen,
+    targetLocation: state.navigationModal.targetLocation
   };
 }
 

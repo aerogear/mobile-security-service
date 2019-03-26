@@ -38,7 +38,10 @@ const initialState = {
   isAppsRequestFailed: false,
   currentUser: 'currentUser',
   isUserDropdownOpen: false,
-  isNavigationModalOpen: false,
+  navigationModal: {
+    isOpen: false,
+    targetLocation: undefined
+  },
   isAppDetailedDirty: false,
   app: {
     data: {},
@@ -187,9 +190,13 @@ export default (state = initialState, action) => {
         isUserDropdownOpen: !isUserDropdownOpen
       };
     case TOGGLE_NAVIGATION_MODAL:
+      const targetLocation = action.payload.targetLocation || undefined;
       return {
         ...state,
-        isNavigationModalOpen: action.payload.isNavigationModalOpen
+        navigationModal: {
+          isOpen: action.payload.isOpen,
+          targetLocation: targetLocation
+        }
       };
     case TOGGLE_APP_DETAILED_IS_DIRTY:
       return {
