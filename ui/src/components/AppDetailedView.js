@@ -14,20 +14,18 @@ import Content from './common/Content';
 class AppDetailedView extends React.Component {
   componentWillMount () {
     this.props.getAppById(this.props.match.params.id);
-  }
 
-  componentDidMount () {
-    this.unblock = this.props.history.block(targetLocation => {
+    this.unblockHistory = this.props.history.block(targetLocation => {
       // If the view has a dirty state, display the popup
       if (this.props.isDirty) {
-        this.props.toggleNavigationModal(true);
+        this.props.toggleNavigationModal(true, targetLocation.pathname);
         return false;
       }
     });
   }
 
   componentWillUnmount () {
-    this.unblock();
+    this.unblockHistory();
   }
 
   render () {
@@ -40,7 +38,7 @@ class AppDetailedView extends React.Component {
             Deployed Versions
           </Title>
           <AppVersionsTableContainer className='table-scroll-x' />
-          <NavigationModalContainer text="You still have unsaved changes." title="Are you sure you want to leave this page?" />
+          <NavigationModalContainer text="You still have unsaved changes." title="Are you sure you want to leave this page?" unblockHistory={this.unblockHistory}/>
         </Content>
       </div>
     );

@@ -37,7 +37,10 @@ describe('reducer', () => {
     isAppsRequestFailed: false,
     currentUser: 'currentUser',
     isUserDropdownOpen: false,
-    isNavigationModalOpen: false,
+    navigationModal: {
+      isOpen: false,
+      targetLocation: undefined
+    },
     isAppDetailedDirty: false,
     app: {
       data: {},
@@ -202,16 +205,26 @@ describe('reducer', () => {
   });
 
   it('should handle open TOGGLE_NAVIGATION_MODAL', () => {
-    const newState = reducer(initialState, { type: TOGGLE_NAVIGATION_MODAL, payload: { isNavigationModalOpen: true } });
-    expect(newState.isNavigationModalOpen).toEqual(true);
+    const newState = reducer(initialState, {
+      type: TOGGLE_NAVIGATION_MODAL,
+      payload: {
+        isOpen: true,
+        targetLocation: '/'
+      }
+    });
+    expect(newState.navigationModal.isOpen).toEqual(true);
+    expect(newState.navigationModal.targetLocation).toEqual('/');
   });
 
   it('should handle close TOGGLE_NAVIGATION_MODAL', () => {
     const newState = reducer(initialState, {
       type: TOGGLE_NAVIGATION_MODAL,
-      payload: { isNavigationModalOpen: false }
+      payload: {
+        isOpen: false
+      }
     });
-    expect(newState.isNavigationModalOpen).toEqual(false);
+    expect(newState.navigationModal.isOpen).toEqual(false);
+    expect(newState.navigationModal.targetLocation).toEqual(undefined);
   });
 
   it('should handle TOGGLE_APP_DETAILED_IS_DIRTY', () => {

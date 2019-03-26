@@ -42,11 +42,12 @@ export const toggleHeaderDropdown = () => {
   };
 };
 
-export const toggleNavigationModal = (isNavigationModalOpen) => {
+export const toggleNavigationModal = (isOpen, targetLocation) => {
   return {
     type: TOGGLE_NAVIGATION_MODAL,
     payload: {
-      isNavigationModalOpen: isNavigationModalOpen
+      isOpen: isOpen,
+      targetLocation: targetLocation
     }
   };
 };
