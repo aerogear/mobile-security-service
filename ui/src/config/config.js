@@ -3,6 +3,7 @@ const config = {
   app: {
     name: getEnv('REACT_APP_NAME', 'Mobile Security Service')
   },
+  dateTimeFormat: getEnv('REACT_APP_DATETIME_FORMAT', 'YYYY-MM-DD HH:mm:ss'),
   api: {
     url: getEnv('REACT_APP_API_URL', '/api')
   }
