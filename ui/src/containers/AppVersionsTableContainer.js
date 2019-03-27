@@ -6,6 +6,7 @@ import moment from 'moment';
 import { getApps, appDetailsSort, updateDisabledAppVersion, updateVersionCustomMessage } from '../actions/actions-ui';
 import AppsTable from '../components/AppsTable';
 import './TableContainer.css';
+import config from '../config/config';
 
 export class AppVersionsTableContainer extends React.Component {
   handleDisableAppVersionChange = (_event, e) => {
@@ -63,7 +64,7 @@ export class AppVersionsTableContainer extends React.Component {
       if (versions[i][3].isNullOrUndefined || versions[i][3] === 'Never Launched') {
         tempRow[3] = 'Never Launched';
       } else {
-        tempRow[3] = moment(versions[i][3]).format('YYYY-MM-DD HH:mm:ss');
+        tempRow[3] = moment(versions[i][3]).format(config.dateTimeFormat);
       }
       tempRow[4] = this.createCheckbox(versions[i][0].toString(), versions[i][4]);
       tempRow[5] = this.createTextInput(versions[i][0], versions[i][5]);
