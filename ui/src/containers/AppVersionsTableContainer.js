@@ -3,22 +3,55 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Checkbox, TextInput } from '@patternfly/react-core';
 import moment from 'moment';
-import { getApps, appDetailsSort, updateDisabledAppVersion, updateVersionCustomMessage } from '../actions/actions-ui';
+import { getApps, appDetailsSort } from '../actions/actions-ui';
 import AppsTable from '../components/AppsTable';
 import './TableContainer.css';
 import config from '../config/config';
 
 export class AppVersionsTableContainer extends React.Component {
+  shouldComponentUpdate = () => {
+    return this.state.shouldAppUpdate;
+  }
+  componentWillMount = () => {
+    this.setState({
+      ...this.state,
+      shouldAppUpdate: false
+    });
+  }
+  componentDidMount = () => {
+    this.setState({
+      ...this.state,
+      updatedVersions: this.props.appVersions
+    });
+  }
   handleDisableAppVersionChange = (_event, e) => {
     const id = e.target.id;
     const isDisabled = e.target.checked;
-    this.props.updateDisabledAppVersion(id, isDisabled);
+    this.state.updatedVersions.forEach(version => {
+      if (version.getVersion() === id) {
+        version.setIsDisabled(isDisabled);
+      }
+    });
+    this.setState({
+      ...this.state,
+      shouldAppUpdate: false,
+      updatedVersions: this.state.updatedVersions
+    });
   };
 
   handleCustomMessageInputChange = (_event, e) => {
     const id = e.target.id;
     const value = e.target.value;
-    this.props.updateVersionCustomMessage(id, value);
+    this.state.updatedVersions.forEach(version => {
+      if (version.getVersion() === id) {
+        version.setDisabledMessage(value);
+      }
+    });
+    this.setState({
+      ...this.state,
+      shouldAppUpdate: false,
+      updatedVersions: this.state.updatedVersions
+    });
   };
 
   onSort = (_event, index, direction) => {
@@ -46,7 +79,7 @@ export class AppVersionsTableContainer extends React.Component {
           id={id}
           type="text"
           placeholder="Add a custom message.."
-          value={text}
+          value={text === null ? undefined : text}
           onChange={this.handleCustomMessageInputChange}
           aria-label="Custom Disable Message"
         />
@@ -56,21 +89,21 @@ export class AppVersionsTableContainer extends React.Component {
 
   getTable = (versions = []) => {
     const renderedRows = [];
-    for (let i = 0; i < versions.length; i++) {
+    versions.forEach(version => {
       const tempRow = [];
-      tempRow[0] = versions[i][0];
-      tempRow[1] = versions[i][1];
-      tempRow[2] = versions[i][2];
-      if (versions[i][3].isNullOrUndefined || versions[i][3] === 'Never Launched') {
+      tempRow[0] = version.getVersion();
+      tempRow[1] = version.getAppLaunches();
+      tempRow[2] = version.getInstalls();
+      const lastLaunched = version.getLastLaunchedAt();
+      if (lastLaunched.isNullOrUndefined || lastLaunched === 'Never Launched') {
         tempRow[3] = 'Never Launched';
       } else {
-        tempRow[3] = moment(versions[i][3]).format(config.dateTimeFormat);
+        tempRow[3] = moment(lastLaunched).format(config.dateTimeFormat);
       }
-      tempRow[4] = this.createCheckbox(versions[i][0].toString(), versions[i][4]);
-      tempRow[5] = this.createTextInput(versions[i][0], versions[i][5]);
+      tempRow[4] = this.createCheckbox(version.getVersion(), version.isDisabled());
+      tempRow[5] = this.createTextInput(version.getVersion(), version.getDisabledMessage());
       renderedRows.push(tempRow);
-    }
-
+    });
     return (
 
       <div className={this.props.className}>
@@ -93,7 +126,6 @@ export class AppVersionsTableContainer extends React.Component {
         </div>
       );
     }
-
     return this.getTable(this.props.appVersions);
   }
 }
@@ -108,15 +140,14 @@ function mapStateToProps (state) {
   return {
     sortBy: state.appVersionsSortDirection,
     columns: state.appVersionsColumns,
-    appVersions: state.app.versionsRows
+    appVersions: state.app.versionsRows,
+    app: state.app.data
   };
 }
 
 const mapDispatchToProps = {
   appDetailsSort,
-  getApps,
-  updateDisabledAppVersion,
-  updateVersionCustomMessage
+  getApps
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppVersionsTableContainer);

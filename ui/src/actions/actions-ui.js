@@ -9,9 +9,7 @@ import {
   TOGGLE_HEADER_DROPDOWN,
   TOGGLE_NAVIGATION_MODAL,
   TOGGLE_APP_DETAILED_IS_DIRTY,
-  APP_VERSIONS_SORT,
-  UPDATE_DISABLED_APP,
-  UPDATE_VERSION_CUSTOM_MESSAGE
+  APP_VERSIONS_SORT
 } from '../actions/types.js';
 import DataService from '../DataService';
 import fetchAction from './fetch';
@@ -23,6 +21,12 @@ export const appsTableSort = (index, direction) => {
       index: index,
       direction: direction
     }
+  };
+};
+
+export const toggleAppDetailedIsDirty = () => {
+  return {
+    type: TOGGLE_APP_DETAILED_IS_DIRTY
   };
 };
 
@@ -48,32 +52,6 @@ export const toggleNavigationModal = (isOpen, targetLocation) => {
     payload: {
       isOpen: isOpen,
       targetLocation: targetLocation
-    }
-  };
-};
-
-export const updateDisabledAppVersion = (id, isDisabled) => {
-  return {
-    type: UPDATE_DISABLED_APP,
-    payload: {
-      id: id,
-      isDisabled: isDisabled
-    }
-  };
-};
-
-export const toggleAppDetailedIsDirty = () => {
-  return {
-    type: TOGGLE_APP_DETAILED_IS_DIRTY
-  };
-};
-
-export const updateVersionCustomMessage = (id, value) => {
-  return {
-    type: UPDATE_VERSION_CUSTOM_MESSAGE,
-    payload: {
-      id: id,
-      value: value
     }
   };
 };

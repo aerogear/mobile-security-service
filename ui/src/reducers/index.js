@@ -9,12 +9,11 @@ import {
   APP_SUCCESS,
   APP_REQUEST,
   APP_FAILURE,
-  APP_VERSIONS_SORT,
-  UPDATE_DISABLED_APP,
-  UPDATE_VERSION_CUSTOM_MESSAGE
+  APP_VERSIONS_SORT
 } from '../actions/types.js';
 
 import { SortByDirection, sortable, cellWidth } from '@patternfly/react-table';
+import Version from '../models/versions.js';
 
 const initialState = {
   apps: { rows: [], data: {} },
@@ -42,12 +41,12 @@ const initialState = {
     isOpen: false,
     targetLocation: undefined
   },
-  isAppDetailedDirty: false,
   app: {
     data: {},
     versionsRows: []
   },
-  isAppRequestFailed: false
+  isAppRequestFailed: false,
+  shouldAppUpdate: true
 };
 
 // returns a new array sorted in preferred direction
@@ -160,15 +159,8 @@ export default (state = initialState, action) => {
     case APP_SUCCESS:
       const fetchedVersions = [];
       action.result.deployedVersions.forEach((version) => {
-        const temp = [];
-        temp[0] = version['version'];
-        temp[1] = version['numOfCurrentInstalls'] || 0;
-        temp[2] = version['numOfAppLaunches'] || 0;
-        temp[3] = version['lastLaunchedAt'] || 'Never Launched';
-        temp[4] = version['disabled'];
-        temp[5] = version['disabledMessage'] || '';
-
-        fetchedVersions.push(temp);
+        const tempVersion = new Version(version);
+        fetchedVersions.push(tempVersion);
       });
 
       return {
@@ -202,38 +194,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isAppDetailedDirty: !state.isAppDetailedDirty
-      };
-    case UPDATE_DISABLED_APP:
-      const id = action.payload.id;
-      const isDisabled = action.payload.isDisabled;
-      const updatedVersions = state.app.versionsRows.map((version) => {
-        if (version[0] === id) {
-          version[4] = isDisabled;
-        }
-        return version;
-      });
-      return {
-        ...state,
-        app: {
-          data: state.app.data,
-          versionsRows: [ ...updatedVersions ]
-        }
-      };
-    case UPDATE_VERSION_CUSTOM_MESSAGE:
-      const versionId = action.payload.id;
-      const value = action.payload.value;
-      const updatedVersionsRows = state.app.versionsRows.map((version) => {
-        if (version[0] === versionId) {
-          version[5] = value;
-        }
-        return version;
-      });
-      return {
-        ...state,
-        app: {
-          data: state.app.data,
-          versionsRows: [ ...updatedVersionsRows ]
-        }
       };
     default:
       return state;
