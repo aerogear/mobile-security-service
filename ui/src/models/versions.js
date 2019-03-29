@@ -11,7 +11,6 @@ export default class Version {
   }
 
   getId () {
-    console.log('getting id: ', this.id);
     return this.id;
   }
 

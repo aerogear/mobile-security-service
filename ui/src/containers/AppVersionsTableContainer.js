@@ -42,15 +42,15 @@ export class AppVersionsTableContainer extends React.Component {
   handleCustomMessageInputChange = (_event, e) => {
     const id = e.target.id;
     const value = e.target.value;
-    this.state.updatedVersions.forEach(version => {
+    this.state.updatedVersions.map(version => {
       if (version.getVersion() === id) {
         version.setDisabledMessage(value);
       }
+      return version;
     });
     this.setState({
       ...this.state,
-      shouldAppUpdate: false,
-      updatedVersions: this.state.updatedVersions
+      shouldAppUpdate: false
     });
   };
 
@@ -79,7 +79,7 @@ export class AppVersionsTableContainer extends React.Component {
           id={id}
           type="text"
           placeholder="Add a custom message.."
-          value={text === null ? undefined : text}
+          defaultValue={text === null ? undefined : text}
           onChange={this.handleCustomMessageInputChange}
           aria-label="Custom Disable Message"
         />
@@ -89,7 +89,7 @@ export class AppVersionsTableContainer extends React.Component {
 
   getTable = (versions = []) => {
     const renderedRows = [];
-    versions.forEach(version => {
+    versions.map(version => {
       const tempRow = [];
       tempRow[0] = version.getVersion();
       tempRow[1] = version.getAppLaunches();
@@ -103,6 +103,7 @@ export class AppVersionsTableContainer extends React.Component {
       tempRow[4] = this.createCheckbox(version.getVersion(), version.isDisabled());
       tempRow[5] = this.createTextInput(version.getVersion(), version.getDisabledMessage());
       renderedRows.push(tempRow);
+      return version;
     });
     return (
 
