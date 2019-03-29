@@ -4,7 +4,6 @@ import {
   APPS_REQUEST,
   APPS_SORT,
   TOGGLE_HEADER_DROPDOWN,
-  TOGGLE_NAVIGATION_MODAL,
   TOGGLE_APP_DETAILED_IS_DIRTY,
   APP_SUCCESS,
   APP_REQUEST,
@@ -38,11 +37,7 @@ const initialState = {
   isAppsRequestFailed: false,
   currentUser: 'currentUser',
   isUserDropdownOpen: false,
-  navigationModal: {
-    isOpen: false,
-    targetLocation: undefined
-  },
-  isAppDetailedDirty: false,
+  isAppDetailedDirty: true,
   app: {
     data: {},
     versionsRows: []
@@ -188,15 +183,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isUserDropdownOpen: !isUserDropdownOpen
-      };
-    case TOGGLE_NAVIGATION_MODAL:
-      const targetLocation = action.payload.targetLocation || undefined;
-      return {
-        ...state,
-        navigationModal: {
-          isOpen: action.payload.isOpen,
-          targetLocation: targetLocation
-        }
       };
     case TOGGLE_APP_DETAILED_IS_DIRTY:
       return {

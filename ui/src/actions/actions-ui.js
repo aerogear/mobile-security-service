@@ -7,7 +7,6 @@ import {
   APPS_FAILURE,
   APPS_SORT,
   TOGGLE_HEADER_DROPDOWN,
-  TOGGLE_NAVIGATION_MODAL,
   TOGGLE_APP_DETAILED_IS_DIRTY,
   APP_VERSIONS_SORT,
   UPDATE_DISABLED_APP,
@@ -39,16 +38,6 @@ export const appDetailsSort = (index, direction) => {
 export const toggleHeaderDropdown = () => {
   return {
     type: TOGGLE_HEADER_DROPDOWN
-  };
-};
-
-export const toggleNavigationModal = (isOpen, targetLocation) => {
-  return {
-    type: TOGGLE_NAVIGATION_MODAL,
-    payload: {
-      isOpen: isOpen,
-      targetLocation: targetLocation
-    }
   };
 };
 

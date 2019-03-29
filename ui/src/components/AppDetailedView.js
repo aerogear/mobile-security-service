@@ -6,20 +6,28 @@ import Header from './common/Header';
 import AppVersionsTableContainer from '../containers/AppVersionsTableContainer';
 import AppOverview from './AppOverview';
 import './AppDetailedView.css';
-import { getAppById, toggleNavigationModal } from '../actions/actions-ui';
+import { getAppById, toggleNavigationModal, toggleAppDetailedIsDirty } from '../actions/actions-ui';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Content from './common/Content';
 import AppDetailedToolbar from './AppDetailedToolbar';
 
 class AppDetailedView extends React.Component {
+  state = {
+    isNavigationModalOpen: false,
+    targetLocation: undefined
+  };
+
   componentWillMount () {
     this.props.getAppById(this.props.match.params.id);
 
     this.unblockHistory = this.props.history.block(targetLocation => {
       // If the view has a dirty state, display the popup
       if (this.props.isDirty) {
-        this.props.toggleNavigationModal(true, targetLocation.pathname);
+        this.setState({
+          isNavigationModalOpen: true,
+          targetLocation: targetLocation.pathname
+        });
         return false;
       }
     });
@@ -28,6 +36,20 @@ class AppDetailedView extends React.Component {
   componentWillUnmount () {
     this.unblockHistory();
   }
+
+  handleNavigationModalClose = () => {
+    this.setState({
+      isNavigationModalOpen: false,
+      targetLocation: undefined
+    });
+  };
+
+  handleNavigationModalLeaveClick = () => {
+    this.props.toggleAppDetailedIsDirty();
+    this.unblockHistory();
+    this.props.history.push(this.state.targetLocation);
+    this.handleNavigationModalClose();
+  };
 
   render () {
     return (
@@ -40,7 +62,13 @@ class AppDetailedView extends React.Component {
             Deployed Versions
           </Title>
           <AppVersionsTableContainer className='table-scroll-x' />
-          <NavigationModalContainer text="You still have unsaved changes." title="Are you sure you want to leave this page?" unblockHistory={this.unblockHistory}/>
+          <NavigationModalContainer
+            text="You still have unsaved changes."
+            title="Are you sure you want to leave this page?"
+            isOpen={this.state.isNavigationModalOpen}
+            handleLeaveClick={this.handleNavigationModalLeaveClick}
+            handleModalClose={this.handleNavigationModalClose}
+          />
         </Content>
       </div>
     );
@@ -63,7 +91,8 @@ function mapStateToProps (state) {
 
 const mapDispatchToProps = {
   getAppById,
-  toggleNavigationModal
+  toggleNavigationModal,
+  toggleAppDetailedIsDirty
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AppDetailedView));
