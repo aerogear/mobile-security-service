@@ -192,9 +192,11 @@ func (a *appsPostgreSQLRepository) GetDeviceByVersionAndAppID(version string, ap
 func (a *appsPostgreSQLRepository) GetAppByAppID(appID string) (*models.App, error) {
 	app := models.App{}
 
-	sqlStatement := `SELECT id,app_id,app_name FROM app WHERE app_id=$1;`
+	sqlStatement := `SELECT id,app_id,app_name,deleted_at FROM app WHERE app_id=$1;`
 
-	err := a.db.QueryRow(sqlStatement, appID).Scan(&app.ID, &app.AppID, &app.AppName)
+	var deletedAt sql.NullString
+	err := a.db.QueryRow(sqlStatement, appID).Scan(&app.ID, &app.AppID, &app.AppName, &deletedAt)
+	app.DeletedAt = deletedAt.String
 
 	if err != nil {
 		log.Error(err)
@@ -336,6 +338,21 @@ func (a *appsPostgreSQLRepository) UnDeleteAppByAppID(appId string) error {
 		UPDATE app
 		SET deleted_at=NULL
 		WHERE app_id=$1;`, appId)
+
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+
+	return nil
+}
+
+func (a *appsPostgreSQLRepository) UpdateAppNameByAppID(appId string, name string) error {
+
+	_, err := a.db.Exec(`
+		UPDATE app
+		SET app_name=$1
+		WHERE app_id=$2;`, name, appId)
 
 	if err != nil {
 		log.Error(err)

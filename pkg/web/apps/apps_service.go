@@ -15,7 +15,7 @@ type (
 		UpdateAppVersions(id string, versions []models.Version) error
 		DisableAllAppVersionsByAppID(id string, message string) error
 		DeleteAppById(id string) error
-		BindingAppByApp(appId, name string) error
+		CreateUpdateApp(app models.App) error
 		InitClientApp(deviceInfo *models.Device) (*models.Version, error)
 	}
 
@@ -108,23 +108,37 @@ func (a *appsService) DeleteAppById(id string) error {
 	return nil
 }
 
-func (a *appsService) BindingAppByApp(appId, name string) error {
+func (a *appsService) CreateUpdateApp(app models.App) error {
 
 	// Check if it exist
-	app, err := a.repository.GetAppByAppID(appId)
+	appStored, err := a.repository.GetAppByAppID(app.AppID)
 
 	// If it is new then create an app
 	if err != nil && err == models.ErrNotFound {
 		id := helpers.GetUUID()
-		return a.repository.CreateApp(id, appId, name)
+		return a.repository.CreateApp(id, app.AppID, app.AppName)
 	}
 
+	// return error in the creation
 	if err != nil {
 		return err
 	}
 
-	// if is deleted so just reactive the existent app
-	return a.repository.UnDeleteAppByAppID(app.AppID)
+	// check if is disabled
+	if appStored.DeletedAt != "" {
+		// if is deleted so just reactive the existent app
+		if err := a.repository.UnDeleteAppByAppID(app.AppID); err != nil {
+			return err
+		}
+	}
+
+	// update the name if it was changed
+	if app.AppName != "" && appStored.AppName != app.AppName {
+		// Update the name of the app
+		return a.repository.UpdateAppNameByAppID(app.AppID, app.AppName)
+	}
+
+	return nil
 }
 
 // // InitClientApp returns information about the current state of the app - its disabled status

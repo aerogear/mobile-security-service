@@ -37,6 +37,9 @@ var (
 		DeleteAppByIdFunc: func(id string) error {
 			return nil
 		},
+		CreateUpdateAppFunc: func(app models.App) error {
+			return nil
+		},
 	}
 
 	// make and configure a mocked Service which will return the scenarios with errors
@@ -54,6 +57,9 @@ var (
 			return models.ErrNotFound
 		},
 		DeleteAppByIdFunc: func(id string) error {
+			return models.ErrInternalServerError
+		},
+		CreateUpdateAppFunc: func(app models.App) error {
 			return models.ErrInternalServerError
 		},
 	}
@@ -438,6 +444,77 @@ func Test_httpHandler_GetActiveAppByID(t *testing.T) {
 			_ = h.GetActiveAppByID(c)
 			if rec.Code != tt.wantCode {
 				t.Errorf("HTTPHandler.GetActiveAppByID() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
+			}
+		})
+	}
+}
+
+func Test_HttpHandler_PostApp(t *testing.T) {
+	mockAppWithoutName := &models.App{
+		AppID: "com.aerogear.mobile_app_one",
+	}
+
+	mockAppWithoutID := &models.App{
+		AppName: "Mobile App One",
+	}
+
+	config := config.Get()
+	APIRoutePrefix := config.APIRoutePrefix
+	type fields struct {
+		Service Service
+	}
+	tests := []struct {
+		name        string
+		fields      fields
+		data        *models.App
+		appId       string
+		wantErr     bool
+		want        int
+		wantCode    int
+		mockService ServiceMock
+	}{
+		{
+			name:        "Post with appId and name should return success",
+			data:        helpers.GetMockApp(),
+			want:        http.StatusNoContent,
+			mockService: *mockedService,
+			wantCode:    201,
+		},
+		{
+			name:        "Post with just appId should return success",
+			data:        mockAppWithoutName,
+			want:        http.StatusNoContent,
+			mockService: *mockedService,
+			wantCode:    201,
+		},
+		{
+			name:        "Post app without appId should return error",
+			data:        mockAppWithoutID,
+			want:        http.StatusBadRequest,
+			mockService: *mockedService,
+			wantCode:    400,
+		},
+		{
+			name:        "Error in the database should return error in the post request",
+			data:        helpers.GetMockApp(),
+			want:        http.StatusInternalServerError,
+			mockService: *mockedServiceWithError,
+			wantCode:    500,
+		},
+	}
+	for _, tt := range tests {
+		e := echo.New()
+		app, _ := json.Marshal(tt.data)
+		req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(string(app)))
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath(APIRoutePrefix + "/apps")
+		h := NewHTTPHandler(e, &tt.mockService)
+
+		t.Run(tt.name, func(t *testing.T) {
+			h.PostApp(c)
+			if rec.Code != tt.wantCode {
+				t.Errorf("HTTPHandler.DisableAllAppVersionsByAppID() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
 			}
 		})
 	}

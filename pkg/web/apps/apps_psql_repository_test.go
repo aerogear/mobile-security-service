@@ -49,6 +49,10 @@ var (
 		SET deleted_at=NULL
 		WHERE app_id=\$1;`
 
+	getUpdateAppNameByAppIDQueryString = `UPDATE app
+		SET app_name=\$1
+		WHERE app_id=\$2;`
+
 	getDeviceByDeviceIDQuery = `SELECT id,version_id,app_id,device_id,device_type,device_version
 	FROM devicei
 	WHERE device_id = \$1;`
@@ -67,7 +71,7 @@ var (
 
 	GetActiveAppByAppIDQuery = `SELECT id,app_id,app_name FROM app WHERE app_id=\$1 AND deleted_at IS NULL;`
 
-	GetAppByAppIDQuery = `SELECT id,app_id,app_name FROM app WHERE app_id=\$1;`
+	GetAppByAppIDQuery = `SELECT id,app_id,app_name,deleted_at FROM app WHERE app_id=\$1;`
 
 	upsertVersionWithAppLaunchesAndLastLaunchedStatement = `INSERT INTO version as v \(id, version, app_id, disabled, disabled_message, last_launched_at\)
 		VALUES\(\$1, \$2, \$3, \$4, \$5, NOW\(\)\)
@@ -503,6 +507,56 @@ func Test_appsPostgreSQLRepository_UnDeleteAppByAppID(t *testing.T) {
 	}
 }
 
+func Test_appsPostgreSQLRepository_UpdateAppNameByAppID(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("Unexpected error opening a stub database connection: %v", err)
+	}
+
+	defer db.Close()
+
+	mockApps := helpers.GetMockApp()
+
+	cols := []string{"id", "app_id", "app_name"}
+
+	// Insert an app where the deleted_at column is set
+	sqlmock.NewRows(cols).AddRow(mockApps.ID, mockApps.AppID, mockApps.AppName)
+
+	// We should expected to get back only the apps which are not soft deleted
+	mock.ExpectExec(getUpdateAppNameByAppIDQueryString).WithArgs(mockApps.AppName, mockApps.AppID).WillReturnResult(sqlmock.NewResult(0, 1))
+	a := NewPostgreSQLRepository(db)
+
+	tests := []struct {
+		name    string
+		appId   string
+		appName string
+		wantErr bool
+	}{
+		{
+			name:    "Should return success when set app_name for an valid appID",
+			appId:   helpers.GetMockApp().AppID,
+			appName: helpers.GetMockApp().AppName,
+		},
+		{
+			name:    "Should return error when set app_name for an invalid appID",
+			appId:   "",
+			appName: helpers.GetMockApp().AppName,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		err = a.UpdateAppNameByAppID(tt.appId, tt.appName)
+
+		if err != nil && !tt.wantErr {
+			t.Fatalf("Got error trying to get app from database: %v", err)
+		}
+
+		if err == nil && tt.wantErr {
+			t.Fatalf("Not get expected error when was trying to create an app")
+		}
+	}
+}
+
 func Test_appsPostgreSQLRepository_GetDeviceByDeviceIDAndAppID(t *testing.T) {
 	db, mock, err := sqlmock.New()
 
@@ -831,17 +885,17 @@ func Test_appsPostgreSQLRepository_GetAppByAppID(t *testing.T) {
 
 	defer db.Close()
 
-	cols := []string{"id", "app_id", "app_name"}
+	cols := []string{"id", "app_id", "app_name", "deleted_at"}
 
 	mockApps := helpers.GetMockAppList()
 
 	for _, a := range mockApps {
-		sqlmock.NewRows(cols).AddRow(a.ID, a.AppID, a.AppName)
+		sqlmock.NewRows(cols).AddRow(a.ID, a.AppID, a.AppName, a.DeletedAt)
 	}
 
 	wantApp := helpers.GetMockApp()
 
-	wantRow := sqlmock.NewRows(cols).AddRow(wantApp.ID, wantApp.AppID, wantApp.AppName)
+	wantRow := sqlmock.NewRows(cols).AddRow(wantApp.ID, wantApp.AppID, wantApp.AppName, wantApp.DeletedAt)
 
 	type args struct {
 		appID string

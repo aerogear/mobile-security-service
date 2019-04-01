@@ -11,6 +11,9 @@ definitions:
       appName:
         type: string
         x-go-name: AppName
+      deletedAt:
+        type: string
+        x-go-name: DeletedAt
       deployedVersions:
         items:
           $ref: '#/definitions/Version'

@@ -22,6 +22,7 @@ var (
 	lockRepositoryMockGetVersionByAppIDAndVersion                 sync.RWMutex
 	lockRepositoryMockInsertDeviceOrUpdateVersionID               sync.RWMutex
 	lockRepositoryMockUnDeleteAppByAppID                          sync.RWMutex
+	lockRepositoryMockUpdateAppNameByAppID                        sync.RWMutex
 	lockRepositoryMockUpdateAppVersions                           sync.RWMutex
 	lockRepositoryMockUpsertVersionWithAppLaunchesAndLastLaunched sync.RWMutex
 )
@@ -75,6 +76,9 @@ var _ Repository = &RepositoryMock{}
 //             UnDeleteAppByAppIDFunc: func(appID string) error {
 // 	               panic("mock out the UnDeleteAppByAppID method")
 //             },
+//             UpdateAppNameByAppIDFunc: func(appId string, name string) error {
+// 	               panic("mock out the UpdateAppNameByAppID method")
+//             },
 //             UpdateAppVersionsFunc: func(versions []models.Version) error {
 // 	               panic("mock out the UpdateAppVersions method")
 //             },
@@ -126,6 +130,9 @@ type RepositoryMock struct {
 
 	// UnDeleteAppByAppIDFunc mocks the UnDeleteAppByAppID method.
 	UnDeleteAppByAppIDFunc func(appID string) error
+
+	// UpdateAppNameByAppIDFunc mocks the UpdateAppNameByAppID method.
+	UpdateAppNameByAppIDFunc func(appId string, name string) error
 
 	// UpdateAppVersionsFunc mocks the UpdateAppVersions method.
 	UpdateAppVersionsFunc func(versions []models.Version) error
@@ -209,6 +216,13 @@ type RepositoryMock struct {
 		UnDeleteAppByAppID []struct {
 			// AppID is the appID argument value.
 			AppID string
+		}
+		// UpdateAppNameByAppID holds details about calls to the UpdateAppNameByAppID method.
+		UpdateAppNameByAppID []struct {
+			// AppId is the appId argument value.
+			AppId string
+			// Name is the name argument value.
+			Name string
 		}
 		// UpdateAppVersions holds details about calls to the UpdateAppVersions method.
 		UpdateAppVersions []struct {
@@ -642,6 +656,41 @@ func (mock *RepositoryMock) UnDeleteAppByAppIDCalls() []struct {
 	lockRepositoryMockUnDeleteAppByAppID.RLock()
 	calls = mock.calls.UnDeleteAppByAppID
 	lockRepositoryMockUnDeleteAppByAppID.RUnlock()
+	return calls
+}
+
+// UpdateAppNameByAppID calls UpdateAppNameByAppIDFunc.
+func (mock *RepositoryMock) UpdateAppNameByAppID(appId string, name string) error {
+	if mock.UpdateAppNameByAppIDFunc == nil {
+		panic("RepositoryMock.UpdateAppNameByAppIDFunc: method is nil but Repository.UpdateAppNameByAppID was just called")
+	}
+	callInfo := struct {
+		AppId string
+		Name  string
+	}{
+		AppId: appId,
+		Name:  name,
+	}
+	lockRepositoryMockUpdateAppNameByAppID.Lock()
+	mock.calls.UpdateAppNameByAppID = append(mock.calls.UpdateAppNameByAppID, callInfo)
+	lockRepositoryMockUpdateAppNameByAppID.Unlock()
+	return mock.UpdateAppNameByAppIDFunc(appId, name)
+}
+
+// UpdateAppNameByAppIDCalls gets all the calls that were made to UpdateAppNameByAppID.
+// Check the length with:
+//     len(mockedRepository.UpdateAppNameByAppIDCalls())
+func (mock *RepositoryMock) UpdateAppNameByAppIDCalls() []struct {
+	AppId string
+	Name  string
+} {
+	var calls []struct {
+		AppId string
+		Name  string
+	}
+	lockRepositoryMockUpdateAppNameByAppID.RLock()
+	calls = mock.calls.UpdateAppNameByAppID
+	lockRepositoryMockUpdateAppNameByAppID.RUnlock()
 	return calls
 }
 
