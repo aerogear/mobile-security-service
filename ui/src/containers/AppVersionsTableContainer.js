@@ -28,8 +28,8 @@ export class AppVersionsTableContainer extends React.Component {
     const id = e.target.id;
     const isDisabled = e.target.checked;
     this.state.updatedVersions.forEach(version => {
-      if (version.getVersion() === id) {
-        version.setIsDisabled(isDisabled);
+      if (version.versionNum === id) {
+        version.isDisable = isDisabled;
       }
     });
     this.setState({
@@ -43,8 +43,8 @@ export class AppVersionsTableContainer extends React.Component {
     const id = e.target.id;
     const value = e.target.value;
     this.state.updatedVersions.map(version => {
-      if (version.getVersion() === id) {
-        version.setDisabledMessage(value);
+      if (version.versionNum === id) {
+        version.disabledMessage = value;
       }
       return version;
     });
@@ -91,17 +91,18 @@ export class AppVersionsTableContainer extends React.Component {
     const renderedRows = [];
     versions.map(version => {
       const tempRow = [];
-      tempRow[0] = version.getVersion();
-      tempRow[1] = version.getAppLaunches();
-      tempRow[2] = version.getInstalls();
-      const lastLaunched = version.getLastLaunchedAt();
+      const versionNum = version.versionNum;
+      tempRow[0] = versionNum;
+      tempRow[1] = version.numOfAppLaunches;
+      tempRow[2] = version.currentInstalls;
+      const lastLaunched = version.lastLaunchedAt;
       if (lastLaunched.isNullOrUndefined || lastLaunched === 'Never Launched') {
         tempRow[3] = 'Never Launched';
       } else {
         tempRow[3] = moment(lastLaunched).format(config.dateTimeFormat);
       }
-      tempRow[4] = this.createCheckbox(version.getVersion(), version.isDisabled());
-      tempRow[5] = this.createTextInput(version.getVersion(), version.getDisabledMessage());
+      tempRow[4] = this.createCheckbox(versionNum, version.isDisabled);
+      tempRow[5] = this.createTextInput(versionNum, version.disabledMessage);
       renderedRows.push(tempRow);
       return version;
     });
