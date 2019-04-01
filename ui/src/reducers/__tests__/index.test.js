@@ -10,7 +10,8 @@ import {
   APP_FAILURE,
   APP_VERSIONS_SORT,
   UPDATE_DISABLED_APP,
-  UPDATE_VERSION_CUSTOM_MESSAGE
+  UPDATE_VERSION_CUSTOM_MESSAGE,
+  TOGGLE_SAVE_APP_MODAL
 } from '../../actions/types.js';
 import { SortByDirection, sortable, cellWidth } from '@patternfly/react-table';
 
@@ -41,6 +42,7 @@ describe('reducer', () => {
       isOpen: false,
       targetLocation: undefined
     },
+    isSaveAppModalOpen: false,
     isAppDetailedDirty: false,
     app: {
       data: {},
@@ -225,6 +227,22 @@ describe('reducer', () => {
     });
     expect(newState.navigationModal.isOpen).toEqual(false);
     expect(newState.navigationModal.targetLocation).toEqual(undefined);
+  });
+
+  it('should handle close TOGGLE_SAVE_APP_MODAL', () => {
+    const newState = reducer(initialState, {
+      type: TOGGLE_SAVE_APP_MODAL,
+      payload: { isSaveAppModalOpen: false }
+    });
+    expect(newState.isSaveAppModalOpen).toEqual(false);
+  });
+
+  it('should handle open TOGGLE_SAVE_APP_MODAL', () => {
+    const newState = reducer(initialState, {
+      type: TOGGLE_SAVE_APP_MODAL,
+      payload: { isSaveAppModalOpen: true }
+    });
+    expect(newState.isSaveAppModalOpen).toEqual(true);
   });
 
   it('should handle TOGGLE_APP_DETAILED_IS_DIRTY', () => {

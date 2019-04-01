@@ -11,7 +11,8 @@ import {
   APP_FAILURE,
   APP_VERSIONS_SORT,
   UPDATE_DISABLED_APP,
-  UPDATE_VERSION_CUSTOM_MESSAGE
+  UPDATE_VERSION_CUSTOM_MESSAGE,
+  TOGGLE_SAVE_APP_MODAL
 } from '../actions/types.js';
 
 import { SortByDirection, sortable, cellWidth } from '@patternfly/react-table';
@@ -42,6 +43,7 @@ const initialState = {
     isOpen: false,
     targetLocation: undefined
   },
+  isSaveAppModalOpen: false,
   isAppDetailedDirty: false,
   app: {
     data: {},
@@ -197,6 +199,11 @@ export default (state = initialState, action) => {
           isOpen: action.payload.isOpen,
           targetLocation: targetLocation
         }
+      };
+    case TOGGLE_SAVE_APP_MODAL:
+      return {
+        ...state,
+        isSaveAppModalOpen: action.payload.isSaveAppModalOpen
       };
     case TOGGLE_APP_DETAILED_IS_DIRTY:
       return {

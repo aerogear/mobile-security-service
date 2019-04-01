@@ -3,7 +3,7 @@ import { Modal } from '@patternfly/react-core';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-export const LargeModal = ({ title, isOpen, onClose, actions, text }) => (
+export const LargeModal = ({ title, isOpen, onClose, actions, children }) => (
   <Modal
     isLarge
     title={title}
@@ -11,7 +11,7 @@ export const LargeModal = ({ title, isOpen, onClose, actions, text }) => (
     onClose={onClose}
     actions={actions}
   >
-    {text}
+    {children}
   </Modal>
 );
 
