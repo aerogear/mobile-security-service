@@ -44,6 +44,9 @@ var (
 		UnDeleteAppByAppIDFunc: func(appID string) error {
 			return nil
 		},
+		UpdateAppNameByAppIDFunc: func(appId string, name string) error {
+			return nil
+		},
 	}
 
 	mockRepositoryError = &RepositoryMock{
@@ -76,6 +79,9 @@ var (
 		},
 		UnDeleteAppByAppIDFunc: func(appID string) error {
 			return nil
+		},
+		UpdateAppNameByAppIDFunc: func(appId string, name string) error {
+			return models.ErrInternalServerError
 		},
 	}
 )
@@ -325,6 +331,41 @@ func Test_appsService_BindingApp(t *testing.T) {
 		},
 	}
 
+	mockRepositoryConflictErrorToCreateApp := &RepositoryMock{
+		GetAppByAppIDFunc: func(appID string) (*models.App, error) {
+			return helpers.GetMockApp(), nil
+		},
+		UnDeleteAppByAppIDFunc: func(appID string) error {
+			return nil
+		},
+		CreateAppFunc: func(id string, appId string, name string) error {
+			return models.ErrConflict
+		},
+		UpdateAppNameByAppIDFunc: func(appId string, name string) error {
+			return nil
+		},
+	}
+
+	mockRepositoryWithDisabledAppSuccessResults := &RepositoryMock{
+		UnDeleteAppByAppIDFunc: func(appID string) error {
+			return nil
+		},
+		GetAppByAppIDFunc: func(appID string) (*models.App, error) {
+			disabledApp := helpers.GetMockApp()
+			disabledApp.DeletedAt = "2019-02-15T09:38:33+00:00"
+			return disabledApp, nil
+		},
+		CreateAppFunc: func(id string, appId string, name string) error {
+			return nil
+		},
+		GetActiveAppByIDFunc: func(ID string) (*models.App, error) {
+			return helpers.GetMockApp(), nil
+		},
+		UpdateAppNameByAppIDFunc: func(appId string, name string) error {
+			return nil
+		},
+	}
+
 	type fields struct {
 		repository Repository
 	}
@@ -343,16 +384,22 @@ func Test_appsService_BindingApp(t *testing.T) {
 			repo:    *mockRepositoryWithNewBindingSuccessResults,
 		},
 		{
+			name:    "Should binding an app by app_id a new name",
+			appId:   helpers.GetMockApp().AppID,
+			nameApp: "New Name",
+			repo:    *mockRepositoryWithSuccessResults,
+		},
+		{
 			name:    "Should re-binding an app by app_id and name",
 			appId:   helpers.GetMockApp().AppID,
 			nameApp: helpers.GetMockApp().AppName,
-			repo:    *mockRepositoryWithSuccessResults,
+			repo:    *mockRepositoryWithDisabledAppSuccessResults,
 		},
 		{
 			name:    "Should return error to binding an new app by app_id and name",
 			appId:   helpers.GetMockApp().AppID,
 			nameApp: helpers.GetMockApp().AppName,
-			repo:    *mockRepositoryError,
+			repo:    *mockRepositoryConflictErrorToCreateApp,
 			wantErr: models.ErrConflict,
 		},
 		{

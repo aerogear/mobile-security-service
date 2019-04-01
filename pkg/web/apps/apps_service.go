@@ -119,12 +119,26 @@ func (a *appsService) BindingAppByApp(appId, name string) error {
 		return a.repository.CreateApp(id, appId, name)
 	}
 
+	// return error in the creation
 	if err != nil {
 		return err
 	}
 
-	// if is deleted so just reactive the existent app
-	return a.repository.UnDeleteAppByAppID(app.AppID)
+	// check if is disabled
+	if app.DeletedAt != "" {
+		// if is deleted so just reactive the existent app
+		if err := a.repository.UnDeleteAppByAppID(app.AppID); err != nil {
+			return err
+		}
+	}
+
+	// update the name if it was changed
+	if name != "" && app.AppName != name {
+		// Update the name of the app
+		return a.repository.UpdateAppNameByAppID(app.AppID, name)
+	}
+
+	return nil
 }
 
 // // InitClientApp returns information about the current state of the app - its disabled status

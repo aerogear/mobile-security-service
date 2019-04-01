@@ -128,6 +128,34 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	//   404:
 	//     description: App not found
 	r.POST("/apps/:id/versions/disable", appsHandler.DisableAllAppVersionsByAppID)
+
+	// Binding/Re-Binding an app
+	// ---
+	// summary:
+	// - Create an new app
+	// - Update deleted_at as NULL to re-binding the app if the app informed be disabled
+	// - Update the name if the name informed is not "" and is different of the name stored in the database for the appId
+	// operationId: BindingApp
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: appId
+	//   in: path
+	//   description: The appId of the app
+	//   required: true
+	//   type: string
+	// - name: body
+	//   in: body
+	//   description:
+	//   required: true
+	//   schema:
+	//     $ref: '#/definitions/App'
+	// responses:
+	//   200:
+	//     description: successful operation
+	//   400:
+	//     description: Invalid id supplied
+	r.POST("/apps/bind/:appId", appsHandler.BindingApp)
 }
 
 func SetInitRoutes(r *echo.Group, initHandler *initclient.HTTPHandler) {

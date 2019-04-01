@@ -17,6 +17,7 @@ type (
 		UpdateAppVersions(c echo.Context) error
 		DisableAllAppVersionsByAppID(c echo.Context) error
 		HealthCheck(c echo.Context) error
+		BindingApp(c echo.Context) error
 	}
 
 	// httpHandler instance
@@ -118,6 +119,31 @@ func (a *httpHandler) DisableAllAppVersionsByAppID(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, "")
+
+}
+
+func (a *httpHandler) BindingApp(c echo.Context) error {
+	appId := c.Param("appId")
+	if appId == "" {
+		return httperrors.BadRequest(c, "Invalid id supplied")
+	}
+
+	// Transform the body request in the version struct
+	app := models.App{}
+	errV := json.NewDecoder(c.Request().Body).Decode(&app)
+
+	// check if the data sent is in the correct format
+	if errV != nil {
+		return httperrors.BadRequest(c, "Invalid data")
+	}
+
+	err := a.Service.BindingAppByApp(appId, app.AppName)
+
+	if err != nil {
+		return httperrors.GetHTTPResponseFromErr(c, err)
+	}
+
+	return c.NoContent(http.StatusNoContent)
 
 }
 
