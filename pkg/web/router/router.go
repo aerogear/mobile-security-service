@@ -71,6 +71,30 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	//   404:
 	//     description: App not found
 	r.GET("/apps/:id", appsHandler.GetActiveAppByID)
+
+	// swagger:operation DELETE /apps/{id} App
+	//
+	// To do a a soft deleted at the App
+	// ---
+	// summary: Does a soft delete at in the App
+	// operationId: DeleteAppById
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: id
+	//   in: path
+	//   description: The id for the app that needs to be fetched.
+	//   required: true
+	//   type: string
+	// responses:
+	//   204:
+	//     description: successful operation
+	//   400:
+	//     description: Invalid id supplied
+	//   404:
+	//     description: App not found
+	r.DELETE("/apps/:id", appsHandler.DeleteAppById)
+
 	// swagger:operation PUT /apps/:id/versions Version
 	//
 	// Update all versions informed of an app using the app id, including updating version information

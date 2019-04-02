@@ -29,7 +29,7 @@ var (
 		DisableAllAppVersionsByAppIDFunc: func(id string, message string) error {
 			return nil
 		},
-		DeleteAppByAppIDFunc: func(appId string) error {
+		DeleteAppByIdFunc: func(id string) error {
 			return nil
 		},
 		CreateAppFunc: func(id string, appId string, name string) error {
@@ -62,7 +62,7 @@ var (
 		DisableAllAppVersionsByAppIDFunc: func(id string, message string) error {
 			return models.ErrNotFound
 		},
-		DeleteAppByAppIDFunc: func(appId string) error {
+		DeleteAppByIdFunc: func(id string) error {
 			return models.ErrNotFound
 		},
 		CreateAppFunc: func(id string, appId string, name string) error {
@@ -266,18 +266,18 @@ func Test_appsService_UnbindingAppByAppID(t *testing.T) {
 	tests := []struct {
 		name    string
 		fields  fields
-		appId   string
+		id      string
 		wantErr error
 		repo    RepositoryMock
 	}{
 		{
-			name:  "Should unbinding app by app_id",
-			appId: helpers.GetMockApp().AppID,
-			repo:  *mockRepositoryWithSuccessResults,
+			name: "Should unbinding app by id",
+			id:   helpers.GetMockApp().ID,
+			repo: *mockRepositoryWithSuccessResults,
 		},
 		{
-			name:    "Should return an error to unbinding app",
-			appId:   helpers.GetMockApp().AppID,
+			name:    "Should return an error to delete app",
+			id:      helpers.GetMockApp().ID,
 			repo:    *mockRepositoryError,
 			wantErr: models.ErrNotFound,
 		},
@@ -285,10 +285,10 @@ func Test_appsService_UnbindingAppByAppID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			a := NewService(&tt.repo)
-			err := a.UnbindingAppByAppID(tt.appId)
+			err := a.DeleteAppById(tt.id)
 
 			if (err != nil) && (tt.wantErr != err || tt.wantErr == nil) {
-				t.Errorf("appsService.DeleteAppByAppID() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("appsService.DeleteAppByID() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})

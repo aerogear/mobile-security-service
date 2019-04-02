@@ -302,12 +302,12 @@ func (a *appsPostgreSQLRepository) DisableAllAppVersionsByAppID(appID string, me
 	return nil
 }
 
-func (a *appsPostgreSQLRepository) DeleteAppByAppID(appId string) error {
+func (a *appsPostgreSQLRepository) DeleteAppById(id string) error {
 
 	_, err := a.db.Exec(`
 		UPDATE app
 		SET deleted_at=$1
-		WHERE app_id=$2;`, time.Now(), appId)
+		WHERE id=$2;`, time.Now(), id)
 
 	if err != nil {
 		log.Error(err)

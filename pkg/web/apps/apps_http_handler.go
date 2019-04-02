@@ -17,6 +17,7 @@ type (
 		UpdateAppVersions(c echo.Context) error
 		DisableAllAppVersionsByAppID(c echo.Context) error
 		HealthCheck(c echo.Context) error
+		DeleteAppById(c echo.Context) error
 	}
 
 	// httpHandler instance
@@ -123,4 +124,19 @@ func (a *httpHandler) DisableAllAppVersionsByAppID(c echo.Context) error {
 
 func (a *httpHandler) HealthCheck(c echo.Context) error {
 	return c.JSON(http.StatusOK, "OK")
+}
+
+func (a *httpHandler) DeleteAppById(c echo.Context) error {
+	id := c.Param("id")
+	if !helpers.IsValidUUID(id) {
+		return httperrors.BadRequest(c, "Invalid id supplied")
+	}
+
+	err := a.Service.DeleteAppById(id)
+
+	if err != nil {
+		return httperrors.GetHTTPResponseFromErr(c, err)
+	}
+
+	return c.NoContent(http.StatusNoContent)
 }
