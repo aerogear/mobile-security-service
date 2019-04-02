@@ -3,35 +3,35 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Checkbox, TextInput } from '@patternfly/react-core';
 import moment from 'moment';
-import { getApps, appDetailsSort, updateDisabledAppVersion, updateVersionCustomMessage } from '../actions/actions-ui';
+import { appDetailsSort, updateDisabledAppVersion, updateVersionCustomMessage } from '../actions/actions-ui';
 import AppsTable from '../components/AppsTable';
 import './TableContainer.css';
 import config from '../config/config';
 
-export class AppVersionsTableContainer extends React.Component {
-  handleDisableAppVersionChange = (_event, e) => {
+const AppVersionsTableContainer = ({ className, sortBy, columns, appVersions, appDetailsSort, updateDisabledAppVersion, updateVersionCustomMessage }) => {
+  const handleDisableAppVersionChange = (_event, e) => {
     const id = e.target.id;
     const isDisabled = e.target.checked;
-    this.props.updateDisabledAppVersion(id, isDisabled);
+    updateDisabledAppVersion(id, isDisabled);
   };
 
-  handleCustomMessageInputChange = (_event, e) => {
+  const handleCustomMessageInputChange = (_event, e) => {
     const id = e.target.id;
     const value = e.target.value;
-    this.props.updateVersionCustomMessage(id, value);
+    updateVersionCustomMessage(id, value);
   };
 
-  onSort = (_event, index, direction) => {
-    this.props.appDetailsSort(index, direction);
+  const onSort = (_event, index, direction) => {
+    appDetailsSort(index, direction);
   };
 
-  createCheckbox = (id, checked) => {
+  const createCheckbox = (id, checked) => {
     return (
       <React.Fragment>
         <Checkbox
           label=""
           isChecked={checked}
-          onChange={this.handleDisableAppVersionChange}
+          onChange={handleDisableAppVersionChange}
           aria-label="disable app checkbox"
           id={id}
         />
@@ -39,7 +39,7 @@ export class AppVersionsTableContainer extends React.Component {
     );
   };
 
-  createTextInput = (id, text) => {
+  const createTextInput = (id, text) => {
     return (
       <React.Fragment>
         <TextInput
@@ -47,14 +47,14 @@ export class AppVersionsTableContainer extends React.Component {
           type="text"
           placeholder="Add a custom message.."
           value={text}
-          onChange={this.handleCustomMessageInputChange}
+          onChange={handleCustomMessageInputChange}
           aria-label="Custom Disable Message"
         />
       </React.Fragment>
     );
   };
 
-  getTable = (versions = []) => {
+  const getTable = (versions = []) => {
     const renderedRows = [];
     for (let i = 0; i < versions.length; i++) {
       const tempRow = [];
@@ -66,39 +66,37 @@ export class AppVersionsTableContainer extends React.Component {
       } else {
         tempRow[3] = moment(versions[i][3]).format(config.dateTimeFormat);
       }
-      tempRow[4] = this.createCheckbox(versions[i][0].toString(), versions[i][4]);
-      tempRow[5] = this.createTextInput(versions[i][0], versions[i][5]);
+      tempRow[4] = createCheckbox(versions[i][0].toString(), versions[i][4]);
+      tempRow[5] = createTextInput(versions[i][0], versions[i][5]);
       renderedRows.push(tempRow);
     }
 
     return (
 
-      <div className={this.props.className}>
+      <div className={className}>
         <AppsTable
-          columns={this.props.columns}
+          columns={columns}
           rows={renderedRows}
-          sortBy={this.props.sortBy}
-          onSort={this.onSort}
-          onRowClick={this.onRowClick}
+          sortBy={sortBy}
+          onSort={onSort}
         />
       </div>
     );
   };
 
-  render () {
-    if (!this.props.appVersions || !this.props.appVersions.length) {
-      return (
-        <div className="no-versions">
-          <p>This app has no versions</p>
-        </div>
-      );
-    }
-
-    return this.getTable(this.props.appVersions);
+  if (!appVersions || !appVersions.length) {
+    return (
+      <div className="no-versions">
+        <p>This app has no versions</p>
+      </div>
+    );
   }
-}
+
+  return getTable(appVersions);
+};
 
 AppVersionsTableContainer.propTypes = {
+  className: PropTypes.string.isRequired,
   sortBy: PropTypes.object.isRequired,
   columns: PropTypes.array.isRequired,
   appVersions: PropTypes.array.isRequired
@@ -114,7 +112,6 @@ function mapStateToProps (state) {
 
 const mapDispatchToProps = {
   appDetailsSort,
-  getApps,
   updateDisabledAppVersion,
   updateVersionCustomMessage
 };

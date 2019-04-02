@@ -20,53 +20,51 @@ import { connect } from 'react-redux';
 import config from '../../config/config';
 import { toggleHeaderDropdown } from '../../actions/actions-ui';
 
-export class Header extends React.Component {
-  onTitleClick = () => {
-    this.props.history.push('/');
+const Header = ({ currentUser, isUserDropdownOpen, toggleHeaderDropdown, history }) => {
+  const onTitleClick = () => {
+    history.push('/');
   };
 
-  onUserDropdownToggle = () => {
-    this.props.toggleHeaderDropdown();
+  const onUserDropdownToggle = () => {
+    toggleHeaderDropdown();
   };
 
-  onUserDropdownSelect = () => {
-    this.onUserDropdownToggle();
+  const onUserDropdownSelect = () => {
+    onUserDropdownToggle();
   };
 
-  onLogoutUser = () => {
+  const onLogoutUser = () => {
     console.log('onLogoutUser()');
   };
 
-  render () {
-    const toolbar = (
-      <Toolbar>
-        <ToolbarGroup className={css(accessibleStyles.screenReader, accessibleStyles.visibleOnLg)}>
-          <UserIcon />
-          <ToolbarItem className={css(accessibleStyles.screenReader, accessibleStyles.visibleOnMd)}>
-            <Dropdown
-              isPlain
-              position="right"
-              onSelect={this.onUserDropdownSelect}
-              isOpen={this.props.isUserDropdownOpen}
-              toggle={<DropdownToggle onToggle={this.onUserDropdownToggle}>{this.props.currentUser}</DropdownToggle>}
-              dropdownItems={[
-                <DropdownItem key="logout" component="button" href="#logout" onClick={this.onLogoutUser}>
-                  Log out
-                </DropdownItem>
-              ]}
-            />
-          </ToolbarItem>
-        </ToolbarGroup>
-      </Toolbar>
-    );
+  const toolbar = (
+    <Toolbar>
+      <ToolbarGroup className={css(accessibleStyles.screenReader, accessibleStyles.visibleOnLg)}>
+        <UserIcon />
+        <ToolbarItem className={css(accessibleStyles.screenReader, accessibleStyles.visibleOnMd)}>
+          <Dropdown
+            isPlain
+            position="right"
+            onSelect={onUserDropdownSelect}
+            isOpen={isUserDropdownOpen}
+            toggle={<DropdownToggle onToggle={onUserDropdownToggle}>{currentUser}</DropdownToggle>}
+            dropdownItems={[
+              <DropdownItem key="logout" component="button" href="#logout" onClick={onLogoutUser}>
+                Log out
+              </DropdownItem>
+            ]}
+          />
+        </ToolbarItem>
+      </ToolbarGroup>
+    </Toolbar>
+  );
 
-    const Header = <PageHeader logo={config.app.name.toUpperCase()} logoProps={{ onClick: this.onTitleClick }} toolbar={toolbar} />;
+  const Header = <PageHeader logo={config.app.name.toUpperCase()} logoProps={{ onClick: onTitleClick }} toolbar={toolbar} />;
 
-    return (
-      <Page header={Header} className='mss-header'/>
-    );
-  }
-}
+  return (
+    <Page header={Header} className='mss-header'/>
+  );
+};
 
 Header.propTypes = {
   currentUser: PropTypes.string.isRequired,

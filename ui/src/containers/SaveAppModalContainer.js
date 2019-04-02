@@ -6,31 +6,23 @@ import { connect } from 'react-redux';
 import { toggleSaveAppModal } from '../actions/actions-ui';
 import ConfirmationModal from '../components/common/ConfirmationModal';
 
-class SaveAppModalContainer extends React.Component {
-  handleModalClose = () => {
-    this.props.toggleSaveAppModal(false);
+const SaveAppModalContainer = ({ isSaveAppModalOpen, title, children, onConfirm, toggleSaveAppModal }) => {
+  const handleModalClose = () => {
+    toggleSaveAppModal(false);
   };
 
-  handleOnConfirm = () => {
-    this.handleModalClose();
-  };
-
-  render () {
-    const { title, isSaveAppModalOpen, onConfirm, children } = this.props;
-
-    return (
-      <ConfirmationModal
-        title={title}
-        isOpen={isSaveAppModalOpen}
-        onClose={this.handleModalClose}
-        confirmAction={[<Button key="confirm" variant="primary" onClick={onConfirm}>
-            Confirm
-        </Button>]}>
-        {children}
-      </ConfirmationModal>
-    );
-  }
-}
+  return (
+    <ConfirmationModal
+      title={title}
+      isOpen={isSaveAppModalOpen}
+      onClose={handleModalClose}
+      confirmAction={[<Button key="confirm" variant="primary" onClick={onConfirm}>
+          Confirm
+      </Button>]}>
+      {children}
+    </ConfirmationModal>
+  );
+};
 
 SaveAppModalContainer.propTypes = {
   isSaveAppModalOpen: PropTypes.bool.isRequired,

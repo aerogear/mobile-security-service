@@ -4,32 +4,28 @@ import { Toolbar, ToolbarGroup, ToolbarItem, Breadcrumb, BreadcrumbItem, Button 
 import PropTypes from 'prop-types';
 import './AppDetailedToolbar.css';
 
-export class AppDetailedToolbar extends React.Component {
-  onHomeClick = () => {
-    this.props.history.push('/');
-  }
-
-  render () {
-    const { app, onSaveApp, onDisableApp } = this.props;
-
-    return (
-      <Toolbar className='details-toolbar'>
-        <ToolbarGroup>
-          <ToolbarItem>
-            <Breadcrumb>
-              <BreadcrumbItem className='home-breadcrumb breadcrumb' onClick={this.onHomeClick}>Home</BreadcrumbItem>
-              <BreadcrumbItem className='breadcrumb' isActive>{app.appName}</BreadcrumbItem>
-            </Breadcrumb>
-          </ToolbarItem>
-        </ToolbarGroup>
-        <ToolbarGroup className='toolbar-buttons'>
-          <Button className='toolbar-button' onClick={onDisableApp} variant="primary">Disable App</Button>
-          <Button className='toolbar-button' onClick={() => onSaveApp(true)} variant="primary">Save</Button>
-        </ToolbarGroup>
-      </Toolbar>
-    );
+const AppDetailedToolbar = ({ app, onSaveApp, onDisableApp, history }) => {
+  const onHomeClick = () => {
+    history.push('/');
   };
-}
+
+  return (
+    <Toolbar className='details-toolbar'>
+      <ToolbarGroup>
+        <ToolbarItem>
+          <Breadcrumb>
+            <BreadcrumbItem className='home-breadcrumb breadcrumb' onClick={onHomeClick}>Home</BreadcrumbItem>
+            <BreadcrumbItem className='breadcrumb' isActive>{app.appName}</BreadcrumbItem>
+          </Breadcrumb>
+        </ToolbarItem>
+      </ToolbarGroup>
+      <ToolbarGroup className='toolbar-buttons'>
+        <Button className='toolbar-button' onClick={onDisableApp} variant="primary">Disable App</Button>
+        <Button className='toolbar-button' onClick={() => onSaveApp(true)} variant="primary">Save</Button>
+      </ToolbarGroup>
+    </Toolbar>
+  );
+};
 
 AppDetailedToolbar.propTypes = {
   app: PropTypes.object.isRequired,
