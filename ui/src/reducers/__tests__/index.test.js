@@ -24,7 +24,6 @@ describe('reducer', () => {
     ],
     isAppsRequestFailed: false,
     currentUser: 'currentUser',
-    isUserDropdownOpen: false,
     navigationModal: {
       isOpen: false,
       targetLocation: undefined
@@ -190,12 +189,6 @@ describe('reducer', () => {
   it('should handle APP_FAILURE', () => {
     const newState = reducer(initialState, { type: actions.APP_FAILURE });
     expect(newState.isAppRequestFailed).toEqual(true);
-  });
-
-  it('should toggle header dropdown state', () => {
-    const dropdownBeforeToggle = initialState.isUserDropdownOpen;
-    const newState = reducer(initialState, { type: actions.TOGGLE_HEADER_DROPDOWN });
-    expect(newState.isUserDropdownOpen).toEqual(!dropdownBeforeToggle);
   });
 
   it('should handle open TOGGLE_NAVIGATION_MODAL', () => {

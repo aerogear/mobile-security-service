@@ -4,7 +4,6 @@ import {
   APP_VERSIONS_SORT,
   UPDATE_DISABLED_APP,
   UPDATE_VERSION_CUSTOM_MESSAGE,
-  TOGGLE_HEADER_DROPDOWN,
   TOGGLE_NAVIGATION_MODAL,
   TOGGLE_APP_DETAILED_IS_DIRTY
 } from '../types';
@@ -35,13 +34,6 @@ describe('actions', () => {
       }
     };
     expect(actions.appDetailsSort(index, direction)).toEqual(expectedAction);
-  });
-
-  it('should toggle the header dropdown', () => {
-    const expectedAction = {
-      type: TOGGLE_HEADER_DROPDOWN
-    };
-    expect(actions.toggleHeaderDropdown()).toEqual(expectedAction);
   });
 
   it('should toggle the navigational modal', () => {

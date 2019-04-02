@@ -3,7 +3,7 @@ import { mount, shallow } from 'enzyme';
 import { Header } from '../common/Header';
 
 describe('Header', () => {
-  const testProps = { currentUser: 'jdoe', isUserDropdownOpen: false, history: [] };
+  const testProps = { currentUser: 'jdoe', history: [] };
 
   it('renders the expected components without crashing', () => {
     const headerComponent = shallow(<Header {...testProps} />);
@@ -14,7 +14,6 @@ describe('Header', () => {
     const wrapper = mount(<Header {...testProps} />);
     const props = wrapper.props();
     expect(props.currentUser).toBeTruthy();
-    expect(props.isUserDropdownOpen).toBeDefined();
   });
 
   it('onTitleClick() works and pushes to page history prop', () => {
