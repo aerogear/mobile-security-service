@@ -165,6 +165,25 @@ paths:
           description: App not found
       summary: Disable all versions of an app
   /apps/{id}:
+    delete:
+      description: To do a a soft deleted at the App
+      operationId: DeleteAppById
+      parameters:
+      - description: The id for the app that needs to be fetched.
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: successful operation
+        "400":
+          description: Invalid id supplied
+        "404":
+          description: App not found
+      summary: Does a soft delete at in the App
     get:
       description: Retrieve all information for a single app including all child information
       operationId: GetActiveAppByID

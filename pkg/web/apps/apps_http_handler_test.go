@@ -34,6 +34,9 @@ var (
 		UpdateAppVersionsFunc: func(id string, versions []models.Version) error {
 			return nil
 		},
+		DeleteAppByIdFunc: func(id string) error {
+			return nil
+		},
 	}
 
 	// make and configure a mocked Service which will return the scenarios with errors
@@ -49,6 +52,9 @@ var (
 		},
 		UpdateAppVersionsFunc: func(id string, versions []models.Version) error {
 			return models.ErrNotFound
+		},
+		DeleteAppByIdFunc: func(id string) error {
+			return models.ErrInternalServerError
 		},
 	}
 )
@@ -104,6 +110,68 @@ func Test_HttpHandler_GetApps(t *testing.T) {
 			}
 			if rec.Code != tt.wantCode {
 				t.Errorf("HTTPHandler.GetApps() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
+			}
+		})
+	}
+}
+
+func Test_HttpHandler_DeleteAppById(t *testing.T) {
+	// make and configure a mocked Service which will return the scenarios with errors
+	mockedServiceWithErroNotFound := &ServiceMock{
+		DeleteAppByIdFunc: func(id string) error {
+			return models.ErrNotFound
+		},
+	}
+	type fields struct {
+		Service Service
+	}
+	tests := []struct {
+		name        string
+		id          string
+		fields      fields
+		wantErr     bool
+		wantCode    int
+		mockService ServiceMock
+	}{
+		{
+			name:        "Should return success to delete app by id",
+			wantErr:     false,
+			id:          helpers.GetMockApp().ID,
+			mockService: *mockedService,
+			wantCode:    204,
+		},
+		{
+			name:        "Should return error when no apps have been found",
+			wantErr:     true,
+			id:          helpers.GetMockApp().ID,
+			mockService: *mockedServiceWithErroNotFound,
+			wantCode:    404,
+		},
+		{
+			name:        "Should return error when an error occurs in the database",
+			wantErr:     true,
+			id:          helpers.GetMockApp().ID,
+			mockService: *mockedServiceWithError,
+			wantCode:    500,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Setup
+			e := echo.New()
+			req := httptest.NewRequest(http.MethodDelete, "/", nil)
+			rec := httptest.NewRecorder()
+			c := e.NewContext(req, rec)
+			c.SetPath("/api/apps")
+			c.SetParamNames("id")
+			c.SetParamValues(tt.id)
+			h := NewHTTPHandler(e, &tt.mockService)
+			err := h.DeleteAppById(c)
+			if err != nil {
+				t.Errorf("httpHandler.DeleteAppById() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if rec.Code != tt.wantCode {
+				t.Errorf("HTTPHandler.DeleteAppById() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
 			}
 		})
 	}

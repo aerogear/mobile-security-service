@@ -37,9 +37,9 @@ var (
 		SET disabled_message=\$1,disabled=\$2
 		WHERE ID=\$3`
 
-	getDeleteAppByAppIDQueryString = `UPDATE app
+	getDeleteAppByIDQueryString = `UPDATE app
 		SET deleted_at=\$1
-		WHERE app_id=\$2;`
+		WHERE id=\$2;`
 
 	getDisableAllAppVersionsByAppIDQueryString = `UPDATE version
 		SET disabled_message=\$1,disabled=True
@@ -409,7 +409,7 @@ func (e AnyTimestamp) Match(v driver.Value) bool {
 	return true
 }
 
-func Test_appsPostgreSQLRepository_DeleteAppByAppID(t *testing.T) {
+func Test_appsPostgreSQLRepository_DeleteAppByID(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatalf("Unexpected error opening a stub database connection: %v", err)
@@ -424,27 +424,27 @@ func Test_appsPostgreSQLRepository_DeleteAppByAppID(t *testing.T) {
 	sqlmock.NewRows(cols).AddRow(mockApps[0].ID, mockApps[0].AppID, mockApps[0].AppName)
 
 	// We should expected to get back only the apps which are not soft deleted
-	mock.ExpectExec(getDeleteAppByAppIDQueryString).WithArgs(AnyTimestamp{}, mockApps[0].AppID).WillReturnResult(sqlmock.NewResult(0, 1))
+	mock.ExpectExec(getDeleteAppByIDQueryString).WithArgs(AnyTimestamp{}, mockApps[0].ID).WillReturnResult(sqlmock.NewResult(0, 1))
 	a := NewPostgreSQLRepository(db)
 
 	tests := []struct {
 		name    string
-		appId   string
+		id      string
 		wantErr bool
 	}{
 		{
-			name:  "Should update the deleted_at of an app with a value with success",
-			appId: helpers.GetMockApp().AppID,
+			name: "Should update the deleted_at of an app with a value with success",
+			id:   mockApps[0].ID,
 		},
 		{
 			name:    "Should return an error when try to update the deleted_at of an app with a value",
-			appId:   helpers.GetMockApp().ID,
+			id:      "",
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 
-		err = a.DeleteAppByAppID(tt.appId)
+		err = a.DeleteAppById(tt.id)
 
 		if err != nil && !tt.wantErr {
 			t.Fatalf("Got error trying to update the deleted_at of an app with an value: %v", err)

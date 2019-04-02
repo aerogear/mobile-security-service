@@ -14,7 +14,7 @@ type (
 		GetActiveAppByID(ID string) (*models.App, error)
 		UpdateAppVersions(id string, versions []models.Version) error
 		DisableAllAppVersionsByAppID(id string, message string) error
-		UnbindingAppByAppID(appID string) error
+		DeleteAppById(id string) error
 		BindingAppByApp(appId, name string) error
 		InitClientApp(deviceInfo *models.Device) (*models.Version, error)
 	}
@@ -100,8 +100,8 @@ func (a *appsService) DisableAllAppVersionsByAppID(id string, message string) er
 	return a.repository.DisableAllAppVersionsByAppID(app.AppID, message)
 }
 
-func (a *appsService) UnbindingAppByAppID(appID string) error {
-	err := a.repository.DeleteAppByAppID(appID)
+func (a *appsService) DeleteAppById(id string) error {
+	err := a.repository.DeleteAppById(id)
 	if err != nil {
 		return err
 	}

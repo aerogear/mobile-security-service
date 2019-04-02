@@ -10,11 +10,11 @@ import (
 
 var (
 	lockServiceMockBindingAppByApp              sync.RWMutex
+	lockServiceMockDeleteAppById                sync.RWMutex
 	lockServiceMockDisableAllAppVersionsByAppID sync.RWMutex
 	lockServiceMockGetActiveAppByID             sync.RWMutex
 	lockServiceMockGetApps                      sync.RWMutex
 	lockServiceMockInitClientApp                sync.RWMutex
-	lockServiceMockUnbindingAppByAppID          sync.RWMutex
 	lockServiceMockUpdateAppVersions            sync.RWMutex
 )
 
@@ -31,6 +31,9 @@ var _ Service = &ServiceMock{}
 //             BindingAppByAppFunc: func(appId string, name string) error {
 // 	               panic("mock out the BindingAppByApp method")
 //             },
+//             DeleteAppByIdFunc: func(id string) error {
+// 	               panic("mock out the DeleteAppById method")
+//             },
 //             DisableAllAppVersionsByAppIDFunc: func(id string, message string) error {
 // 	               panic("mock out the DisableAllAppVersionsByAppID method")
 //             },
@@ -42,9 +45,6 @@ var _ Service = &ServiceMock{}
 //             },
 //             InitClientAppFunc: func(deviceInfo *models.Device) (*models.Version, error) {
 // 	               panic("mock out the InitClientApp method")
-//             },
-//             UnbindingAppByAppIDFunc: func(appID string) error {
-// 	               panic("mock out the UnbindingAppByAppID method")
 //             },
 //             UpdateAppVersionsFunc: func(id string, versions []models.Version) error {
 // 	               panic("mock out the UpdateAppVersions method")
@@ -59,6 +59,9 @@ type ServiceMock struct {
 	// BindingAppByAppFunc mocks the BindingAppByApp method.
 	BindingAppByAppFunc func(appId string, name string) error
 
+	// DeleteAppByIdFunc mocks the DeleteAppById method.
+	DeleteAppByIdFunc func(id string) error
+
 	// DisableAllAppVersionsByAppIDFunc mocks the DisableAllAppVersionsByAppID method.
 	DisableAllAppVersionsByAppIDFunc func(id string, message string) error
 
@@ -71,9 +74,6 @@ type ServiceMock struct {
 	// InitClientAppFunc mocks the InitClientApp method.
 	InitClientAppFunc func(deviceInfo *models.Device) (*models.Version, error)
 
-	// UnbindingAppByAppIDFunc mocks the UnbindingAppByAppID method.
-	UnbindingAppByAppIDFunc func(appID string) error
-
 	// UpdateAppVersionsFunc mocks the UpdateAppVersions method.
 	UpdateAppVersionsFunc func(id string, versions []models.Version) error
 
@@ -85,6 +85,11 @@ type ServiceMock struct {
 			AppId string
 			// Name is the name argument value.
 			Name string
+		}
+		// DeleteAppById holds details about calls to the DeleteAppById method.
+		DeleteAppById []struct {
+			// ID is the id argument value.
+			ID string
 		}
 		// DisableAllAppVersionsByAppID holds details about calls to the DisableAllAppVersionsByAppID method.
 		DisableAllAppVersionsByAppID []struct {
@@ -105,11 +110,6 @@ type ServiceMock struct {
 		InitClientApp []struct {
 			// DeviceInfo is the deviceInfo argument value.
 			DeviceInfo *models.Device
-		}
-		// UnbindingAppByAppID holds details about calls to the UnbindingAppByAppID method.
-		UnbindingAppByAppID []struct {
-			// AppID is the appID argument value.
-			AppID string
 		}
 		// UpdateAppVersions holds details about calls to the UpdateAppVersions method.
 		UpdateAppVersions []struct {
@@ -153,6 +153,37 @@ func (mock *ServiceMock) BindingAppByAppCalls() []struct {
 	lockServiceMockBindingAppByApp.RLock()
 	calls = mock.calls.BindingAppByApp
 	lockServiceMockBindingAppByApp.RUnlock()
+	return calls
+}
+
+// DeleteAppById calls DeleteAppByIdFunc.
+func (mock *ServiceMock) DeleteAppById(id string) error {
+	if mock.DeleteAppByIdFunc == nil {
+		panic("ServiceMock.DeleteAppByIdFunc: method is nil but Service.DeleteAppById was just called")
+	}
+	callInfo := struct {
+		ID string
+	}{
+		ID: id,
+	}
+	lockServiceMockDeleteAppById.Lock()
+	mock.calls.DeleteAppById = append(mock.calls.DeleteAppById, callInfo)
+	lockServiceMockDeleteAppById.Unlock()
+	return mock.DeleteAppByIdFunc(id)
+}
+
+// DeleteAppByIdCalls gets all the calls that were made to DeleteAppById.
+// Check the length with:
+//     len(mockedService.DeleteAppByIdCalls())
+func (mock *ServiceMock) DeleteAppByIdCalls() []struct {
+	ID string
+} {
+	var calls []struct {
+		ID string
+	}
+	lockServiceMockDeleteAppById.RLock()
+	calls = mock.calls.DeleteAppById
+	lockServiceMockDeleteAppById.RUnlock()
 	return calls
 }
 
@@ -276,37 +307,6 @@ func (mock *ServiceMock) InitClientAppCalls() []struct {
 	lockServiceMockInitClientApp.RLock()
 	calls = mock.calls.InitClientApp
 	lockServiceMockInitClientApp.RUnlock()
-	return calls
-}
-
-// UnbindingAppByAppID calls UnbindingAppByAppIDFunc.
-func (mock *ServiceMock) UnbindingAppByAppID(appID string) error {
-	if mock.UnbindingAppByAppIDFunc == nil {
-		panic("ServiceMock.UnbindingAppByAppIDFunc: method is nil but Service.UnbindingAppByAppID was just called")
-	}
-	callInfo := struct {
-		AppID string
-	}{
-		AppID: appID,
-	}
-	lockServiceMockUnbindingAppByAppID.Lock()
-	mock.calls.UnbindingAppByAppID = append(mock.calls.UnbindingAppByAppID, callInfo)
-	lockServiceMockUnbindingAppByAppID.Unlock()
-	return mock.UnbindingAppByAppIDFunc(appID)
-}
-
-// UnbindingAppByAppIDCalls gets all the calls that were made to UnbindingAppByAppID.
-// Check the length with:
-//     len(mockedService.UnbindingAppByAppIDCalls())
-func (mock *ServiceMock) UnbindingAppByAppIDCalls() []struct {
-	AppID string
-} {
-	var calls []struct {
-		AppID string
-	}
-	lockServiceMockUnbindingAppByAppID.RLock()
-	calls = mock.calls.UnbindingAppByAppID
-	lockServiceMockUnbindingAppByAppID.RUnlock()
 	return calls
 }
 
