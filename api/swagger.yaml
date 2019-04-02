@@ -107,6 +107,11 @@ paths:
     get:
       description: Returns root level information for all apps
       operationId: getApps
+      parameters:
+      - description: The app_id to filter the app by appId
+        in: query
+        name: appId
+        type: string
       produces:
       - application/json
       responses:
@@ -114,6 +119,10 @@ paths:
           description: successful operation
           schema:
             $ref: '#/definitions/App'
+        "204":
+          description: successful operation by no apps were found
+        "404":
+          description: App not found
       summary: Retrieve list of apps
   /apps/:id/versions:
     put:

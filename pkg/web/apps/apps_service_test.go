@@ -38,14 +38,18 @@ var (
 		GetAppByAppIDFunc: func(appID string) (*models.App, error) {
 			return nil, models.ErrNotFound
 		},
-		GetActiveAppByAppIDFunc: func(appID string) (*models.App, error) {
-			return nil, models.ErrNotFound
-		},
 		UnDeleteAppByAppIDFunc: func(appID string) error {
 			return nil
 		},
 		UpdateAppNameByAppIDFunc: func(appId string, name string) error {
 			return nil
+		},
+		GetActiveAppByAppIDFunc: func(appId string) (*models.App, error) {
+			app := helpers.GetMockApp()
+			if app.AppID == appId {
+				return app, nil
+			}
+			return nil, models.ErrNotFound
 		},
 	}
 
@@ -74,14 +78,14 @@ var (
 		GetAppByAppIDFunc: func(appID string) (*models.App, error) {
 			return helpers.GetMockApp(), nil
 		},
-		GetActiveAppByAppIDFunc: func(appID string) (*models.App, error) {
-			return nil, models.ErrNotFound
-		},
 		UnDeleteAppByAppIDFunc: func(appID string) error {
 			return nil
 		},
 		UpdateAppNameByAppIDFunc: func(appId string, name string) error {
 			return models.ErrInternalServerError
+		},
+		GetActiveAppByAppIDFunc: func(appId string) (*models.App, error) {
+			return nil, models.ErrNotFound
 		},
 	}
 )
@@ -170,6 +174,51 @@ func Test_appsService_GetActiveAppByID(t *testing.T) {
 			}
 			if (err != nil) && (tt.wantErr != err || tt.wantErr == nil) {
 				t.Errorf("appsService.GetActiveAppByID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+func Test_appsService_GetActiveAppByAppID(t *testing.T) {
+	type fields struct {
+		repository Repository
+	}
+	tests := []struct {
+		name     string
+		fields   fields
+		appId    string
+		want     *models.App
+		wantErr  error
+		mockRepo RepositoryMock
+	}{
+		{
+			name:     "Get app by appId",
+			appId:    helpers.GetMockApp().AppID,
+			want:     helpers.GetMockApp(),
+			mockRepo: *mockRepositoryWithSuccessResults,
+		},
+		{
+			name:     "Return an error an app was not found",
+			appId:    helpers.GetMockApp().AppID,
+			want:     nil,
+			wantErr:  models.ErrNotFound,
+			mockRepo: *mockRepositoryError,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			a := NewService(&tt.mockRepo)
+			got, err := a.GetActiveAppByAppID(tt.appId)
+			if (err != nil) && tt.wantErr == nil {
+				t.Errorf("appsService.GetActiveAppByAppID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("appsService.GetActiveAppByAppID() = %v, want %v", got, tt.want)
+			}
+			if (err != nil) && (tt.wantErr != err || tt.wantErr == nil) {
+				t.Errorf("appsService.GetActiveAppByAppID() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})
@@ -267,7 +316,7 @@ func Test_appsService_UpdateAppVersions(t *testing.T) {
 
 func Test_appsService_CreateUpdateApp(t *testing.T) {
 	// make and configure a mocked Repository
-	mockRepositoryWithNewAppSuccessResults := &RepositoryMock{
+	mockRepositoryWithNewBindingSuccessResults := &RepositoryMock{
 		UnDeleteAppByAppIDFunc: func(appID string) error {
 			return nil
 		},
@@ -353,7 +402,7 @@ func Test_appsService_CreateUpdateApp(t *testing.T) {
 		{
 			name: "Should  create/update an new app by app_id and name",
 			data: helpers.GetMockApp(),
-			repo: *mockRepositoryWithNewAppSuccessResults,
+			repo: *mockRepositoryWithNewBindingSuccessResults,
 		},
 		{
 			name: "Should create/update an app by app_id a new name",

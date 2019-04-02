@@ -12,6 +12,7 @@ type (
 	Service interface {
 		GetApps() (*[]models.App, error)
 		GetActiveAppByID(ID string) (*models.App, error)
+		GetActiveAppByAppID(appId string) (*models.App, error)
 		UpdateAppVersions(id string, versions []models.Version) error
 		DisableAllAppVersionsByAppID(id string, message string) error
 		DeleteAppById(id string) error
@@ -59,6 +60,18 @@ func (a *appsService) GetActiveAppByID(id string) (*models.App, error) {
 	}
 
 	app.DeployedVersions = deployedVersions
+
+	return app, nil
+}
+
+// GetActiveAppByID retrieves app by id from the repository where the deleted_at is NULL
+func (a *appsService) GetActiveAppByAppID(appId string) (*models.App, error) {
+
+	app, err := a.repository.GetActiveAppByAppID(appId)
+
+	if err != nil {
+		return nil, err
+	}
 
 	return app, nil
 }

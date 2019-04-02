@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"testing"
 
@@ -22,6 +23,13 @@ var (
 		GetActiveAppByIDFunc: func(ID string) (*models.App, error) {
 			app := helpers.GetMockApp()
 			if app.ID == ID {
+				return app, nil
+			}
+			return nil, models.ErrNotFound
+		},
+		GetActiveAppByAppIDFunc: func(appId string) (*models.App, error) {
+			app := helpers.GetMockApp()
+			if app.AppID == appId {
 				return app, nil
 			}
 			return nil, models.ErrNotFound
@@ -49,6 +57,9 @@ var (
 		},
 		GetActiveAppByIDFunc: func(ID string) (*models.App, error) {
 			return nil, models.ErrInternalServerError
+		},
+		GetActiveAppByAppIDFunc: func(appId string) (*models.App, error) {
+			return nil, models.ErrNotFound
 		},
 		GetAppsFunc: func() (*[]models.App, error) {
 			return nil, models.ErrNotFound
@@ -106,6 +117,68 @@ func Test_HttpHandler_GetApps(t *testing.T) {
 			// Setup
 			e := echo.New()
 			req := httptest.NewRequest(http.MethodGet, "/", nil)
+			rec := httptest.NewRecorder()
+			c := e.NewContext(req, rec)
+			c.SetPath("/api/apps")
+			h := NewHTTPHandler(e, &tt.mockService)
+			err := h.GetApps(c)
+			if err != nil {
+				t.Errorf("httpHandler.GetApps() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if rec.Code != tt.wantCode {
+				t.Errorf("HTTPHandler.GetApps() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
+			}
+		})
+	}
+}
+
+func Test_HttpHandler_GetAppsWithQueryParameter(t *testing.T) {
+	mockedServiceWithInternalError := &ServiceMock{
+		GetActiveAppByAppIDFunc: func(appId string) (*models.App, error) {
+			return nil, models.ErrInternalServerError
+		},
+	}
+
+	type fields struct {
+		Service Service
+	}
+	tests := []struct {
+		name        string
+		fields      fields
+		appId       string
+		wantErr     bool
+		wantCode    int
+		mockService ServiceMock
+	}{
+		{
+			name:        "Should return success to get the app by appId",
+			wantErr:     false,
+			appId:       helpers.GetMockApp().AppID,
+			mockService: *mockedService,
+			wantCode:    200,
+		},
+		{
+			name:        "Should return when no app by appId have been found, return a HTTP Status code of 204 with no response body",
+			wantErr:     true,
+			appId:       helpers.GetMockApp().AppID,
+			mockService: *mockedServiceWithError,
+			wantCode:    404,
+		},
+		{
+			name:        "Should return error when an error occurs in the database",
+			wantErr:     true,
+			appId:       helpers.GetMockApp().AppID,
+			mockService: *mockedServiceWithInternalError,
+			wantCode:    500,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Setup
+			e := echo.New()
+			q := make(url.Values)
+			q.Set("appId", tt.appId)
+			req := httptest.NewRequest(http.MethodGet, "/?"+q.Encode(), nil)
 			rec := httptest.NewRecorder()
 			c := e.NewContext(req, rec)
 			c.SetPath("/api/apps")

@@ -36,11 +36,17 @@ func NewHTTPHandler(e *echo.Echo, s Service) HTTPHandler {
 
 // GetApps returns all apps as JSON from the AppService
 func (a *httpHandler) GetApps(c echo.Context) error {
-	apps, err := a.Service.GetApps()
+	hasAppId := len(c.QueryParam("appId")) > 0
+	apps, err := a.HandleGetApp(c)
 
 	// If no apps have been found, return a HTTP Status code of 204 with no response body
-	if err == models.ErrNotFound {
+	if err == models.ErrNotFound && !hasAppId {
 		return c.NoContent(http.StatusNoContent)
+	}
+
+	// If the appId was informed than it should return 404
+	if err == models.ErrNotFound && hasAppId {
+		return c.NoContent(http.StatusNotFound)
 	}
 
 	if err != nil {
@@ -48,6 +54,23 @@ func (a *httpHandler) GetApps(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, apps)
+}
+
+// HandleGetApp will return handle the request according to the data provided
+func (a *httpHandler) HandleGetApp(c echo.Context) (*[]models.App, error) {
+	appId := c.QueryParam("appId")
+	var apps *[]models.App
+	var err error
+	if len(appId) > 1 {
+		var app *models.App
+		app, err = a.Service.GetActiveAppByAppID(appId)
+		if app != nil {
+			apps = &[]models.App{*app}
+		}
+	} else {
+		apps, err = a.Service.GetApps()
+	}
+	return apps, err
 }
 
 // GetActiveAppByID returns apps by id as JSON from the AppService
