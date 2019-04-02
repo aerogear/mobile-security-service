@@ -1,19 +1,4 @@
-import {
-  APPS_FAILURE,
-  APPS_SUCCESS,
-  APPS_REQUEST,
-  APPS_SORT,
-  TOGGLE_HEADER_DROPDOWN,
-  TOGGLE_NAVIGATION_MODAL,
-  TOGGLE_APP_DETAILED_IS_DIRTY,
-  APP_SUCCESS,
-  APP_REQUEST,
-  APP_FAILURE,
-  APP_VERSIONS_SORT,
-  UPDATE_DISABLED_APP,
-  UPDATE_VERSION_CUSTOM_MESSAGE,
-  TOGGLE_SAVE_APP_MODAL
-} from '../actions/types.js';
+import * as actions from '../actions/types.js';
 
 import { SortByDirection, sortable, cellWidth } from '@patternfly/react-table';
 
@@ -49,7 +34,12 @@ const initialState = {
     data: {},
     versionsRows: []
   },
-  isAppRequestFailed: false
+  isAppRequestFailed: false,
+  modals: {
+    disableApp: {
+      isOpen: false
+    }
+  }
 };
 
 // returns a new array sorted in preferred direction
@@ -97,7 +87,7 @@ const areColumnValuesEqual = (rows, index) => {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case APPS_SORT:
+    case actions.APPS_SORT:
       const direction = action.payload.direction;
       const index = action.payload.index;
       const sortedRows = sortRows(state.apps.rows, index, direction);
@@ -112,7 +102,7 @@ export default (state = initialState, action) => {
           data: state.apps.data
         }
       };
-    case APP_VERSIONS_SORT:
+    case actions.APP_VERSIONS_SORT:
       const versionDirection = action.payload.direction;
       const versionIndex = action.payload.index;
       const sortedAppVersions = sortRows(state.app.versionsRows, versionIndex, versionDirection);
@@ -128,11 +118,11 @@ export default (state = initialState, action) => {
 
       return newState;
 
-    case APPS_REQUEST:
+    case actions.APPS_REQUEST:
       return {
         ...state
       };
-    case APPS_SUCCESS:
+    case actions.APPS_SUCCESS:
       const fetchedApps = [];
       action.result.forEach((app) => {
         const temp = [];
@@ -150,16 +140,16 @@ export default (state = initialState, action) => {
           data: action.result
         }
       };
-    case APPS_FAILURE:
+    case actions.APPS_FAILURE:
       return {
         ...state,
         isAppsRequestFailed: true
       };
-    case APP_REQUEST:
+    case actions.APP_REQUEST:
       return {
         ...state
       };
-    case APP_SUCCESS:
+    case actions.APP_SUCCESS:
       const fetchedVersions = [];
       action.result.deployedVersions.forEach((version) => {
         const temp = [];
@@ -180,18 +170,18 @@ export default (state = initialState, action) => {
           versionsRows: fetchedVersions
         }
       };
-    case APP_FAILURE:
+    case actions.APP_FAILURE:
       return {
         ...state,
         isAppRequestFailed: true
       };
-    case TOGGLE_HEADER_DROPDOWN:
+    case actions.TOGGLE_HEADER_DROPDOWN:
       const isUserDropdownOpen = state.isUserDropdownOpen;
       return {
         ...state,
         isUserDropdownOpen: !isUserDropdownOpen
       };
-    case TOGGLE_NAVIGATION_MODAL:
+    case actions.TOGGLE_NAVIGATION_MODAL:
       const targetLocation = action.payload.targetLocation || undefined;
       return {
         ...state,
@@ -200,17 +190,27 @@ export default (state = initialState, action) => {
           targetLocation: targetLocation
         }
       };
-    case TOGGLE_SAVE_APP_MODAL:
+    case actions.TOGGLE_SAVE_APP_MODAL:
       return {
         ...state,
         isSaveAppModalOpen: action.payload.isSaveAppModalOpen
       };
-    case TOGGLE_APP_DETAILED_IS_DIRTY:
+    case actions.TOGGLE_APP_DETAILED_IS_DIRTY:
       return {
         ...state,
         isAppDetailedDirty: !state.isAppDetailedDirty
       };
-    case UPDATE_DISABLED_APP:
+    case actions.TOGGLE_DISABLE_APP_MODAL:
+      return {
+        ...state,
+        modals: {
+          ...state,
+          disableApp: {
+            isOpen: !state.modals.disableApp.isOpen
+          }
+        }
+      };
+    case actions.UPDATE_DISABLED_APP:
       const id = action.payload.id;
       const isDisabled = action.payload.isDisabled;
       const updatedVersions = state.app.versionsRows.map((version) => {
@@ -226,7 +226,7 @@ export default (state = initialState, action) => {
           versionsRows: [ ...updatedVersions ]
         }
       };
-    case UPDATE_VERSION_CUSTOM_MESSAGE:
+    case actions.UPDATE_VERSION_CUSTOM_MESSAGE:
       const versionId = action.payload.id;
       const value = action.payload.value;
       const updatedVersionsRows = state.app.versionsRows.map((version) => {

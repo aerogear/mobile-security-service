@@ -24,7 +24,7 @@ export class AppDetailedToolbar extends React.Component {
         </ToolbarGroup>
         <ToolbarGroup className='toolbar-buttons'>
           <Button className='toolbar-button' onClick={onDisableApp} variant="primary">Disable App</Button>
-          <Button className='toolbar-button' onClick={onSaveApp} variant="primary">Save</Button>
+          <Button className='toolbar-button' onClick={() => onSaveApp(true)} variant="primary">Save</Button>
         </ToolbarGroup>
       </Toolbar>
     );
