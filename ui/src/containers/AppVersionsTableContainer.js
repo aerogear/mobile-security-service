@@ -9,20 +9,48 @@ import './TableContainer.css';
 import config from '../config/config';
 
 export class AppVersionsTableContainer extends React.Component {
+  state = {
+    canUpdateComponent: true
+  }
+
+  shouldComponentUpdate () {
+    return this.state.canUpdateComponent;
+  }
+
+  componentDidUpdate () {
+    this.setState({
+      canUpdateComponent: false
+    });
+  }
+
   handleDisableAppVersionChange = (_event, e) => {
     const id = e.target.id;
     const isDisabled = e.target.checked;
-    this.props.updateDisabledAppVersion(id, isDisabled);
+
+    this.setState({
+      canUpdateComponent: false
+    }, () => {
+      this.props.updateDisabledAppVersion(id, isDisabled);
+    });
   };
 
-  handleCustomMessageInputChange = (_event, e) => {
+  handleCustomMessageInputChange = (e) => {
     const id = e.target.id;
     const value = e.target.value;
-    this.props.updateVersionCustomMessage(id, value);
+
+    this.setState({
+      canUpdateComponent: false
+    }, () => {
+      this.props.updateVersionCustomMessage(id, value);
+    });
   };
 
   onSort = (_event, index, direction) => {
-    this.props.appDetailsSort(index, direction);
+    this.setState({
+      canUpdateComponent: true
+    }, () => {
+      this.props.appDetailsSort(index, direction);
+    });
   };
 
   createCheckbox = (id, checked) => {
@@ -46,8 +74,8 @@ export class AppVersionsTableContainer extends React.Component {
           id={id}
           type="text"
           placeholder="Add a custom message.."
-          value={text}
-          onChange={this.handleCustomMessageInputChange}
+          defaultValue={text}
+          onBlur={this.handleCustomMessageInputChange}
           aria-label="Custom Disable Message"
         />
       </React.Fragment>
@@ -94,7 +122,7 @@ export class AppVersionsTableContainer extends React.Component {
       );
     }
 
-    return this.getTable(this.props.appVersions);
+    return this.getTable([...this.props.appVersions]);
   }
 }
 
