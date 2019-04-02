@@ -5,9 +5,13 @@ import { connect } from 'react-redux';
 import { toggleDisableAppModal } from '../actions/actions-ui';
 
 const DisableAppModalContainer = ({ isOpen, toggleDisableAppModal }) => {
-  function handleDisableAppSave () {
+  const handleDisableAppSave = () => {
     // TODO: This needs to send a request to the backend and update the client state
     // this.props.toggleDisableAppModal();
+  };
+
+  const onChangeDisableTextInput = (value) => {
+    setDisableMessage(value);
   };
 
   const [disableMessage, setDisableMessage] = useState('');
@@ -40,7 +44,7 @@ const DisableAppModalContainer = ({ isOpen, toggleDisableAppModal }) => {
             >
               <TextInput
                 value={disableMessage}
-                onChange={(value) => setDisableMessage(value)}
+                onChange={onChangeDisableTextInput}
                 placeholder="Enter disabled message"
                 type="text"
                 id="horizontal-form-disable-message"

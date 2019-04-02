@@ -5,38 +5,36 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { toggleNavigationModal, toggleAppDetailedIsDirty } from '../actions/actions-ui';
 
-class NavigationModalContainer extends React.Component {
-  handleModalClose = () => {
-    this.props.toggleNavigationModal(false);
+const NavigationModalContainer = ({ isOpen, targetLocation, title, unblockHistory, children, history, toggleNavigationModal, toggleAppDetailedIsDirty }) => {
+  const handleModalClose = () => {
+    toggleNavigationModal(false);
   };
 
-  handleLeaveClick = () => {
-    this.props.toggleAppDetailedIsDirty();
-    this.props.unblockHistory();
-    this.props.history.push(this.props.targetLocation);
-    this.handleModalClose();
+  const handleLeaveClick = () => {
+    toggleAppDetailedIsDirty();
+    unblockHistory();
+    history.push(targetLocation);
+    handleModalClose();
   };
 
-  render () {
-    return (
-      <Modal
-        isLarge
-        title={this.props.title}
-        isOpen={this.props.isOpen}
-        onClose={this.handleModalClose}
-        actions={[
-          <Button key="leave" variant="danger" onClick={this.handleLeaveClick}>
-            Leave
-          </Button>,
-          <Button key="stay" variant="primary" onClick={this.handleModalClose}>
-            Stay
-          </Button>
-        ]}>
-        {this.props.children}
-      </Modal>
-    );
-  }
-}
+  return (
+    <Modal
+      isLarge
+      title={title}
+      isOpen={isOpen}
+      onClose={handleModalClose}
+      actions={[
+        <Button key="leave" variant="danger" onClick={handleLeaveClick}>
+          Leave
+        </Button>,
+        <Button key="stay" variant="primary" onClick={handleModalClose}>
+          Stay
+        </Button>
+      ]}>
+      {children}
+    </Modal>
+  );
+};
 
 NavigationModalContainer.propTypes = {
   isOpen: PropTypes.bool.isRequired,

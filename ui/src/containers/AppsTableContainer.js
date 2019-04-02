@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AppsTable from '../components/AppsTable';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -6,60 +6,55 @@ import { connect } from 'react-redux';
 import { getApps, appsTableSort } from '../actions/actions-ui';
 import './TableContainer.css';
 
-export class AppsTableContainer extends React.Component {
-  constructor (props) {
-    super(props);
-    this.onSort = this.onSort.bind(this);
-    this.onRowClick = this.onRowClick.bind(this);
-    this.getTable = this.getTable.bind(this);
-  }
-  componentWillMount () {
-    this.props.getApps();
-  }
-  onRowClick (_event, rowId) {
-    var app = this.props.apps.data.filter((app) => {
+const AppsTableContainer = ({ apps, sortBy, columns, isAppsRequestFailed, getApps, appsTableSort, history, className }) => {
+  useEffect(() => {
+    getApps();
+  }, []);
+
+  const onRowClick = (_event, rowId) => {
+    var app = apps.data.filter((app) => {
       return app.appName === rowId[0];
     });
     const id = app[0].id;
     const path = '/apps/' + id;
-    this.props.history.push(path);
-  }
-  onSort (_event, index, direction) {
-    this.props.appsTableSort(index, direction);
-  }
+    history.push(path);
+  };
 
-  getTable () {
+  const onSort = (_event, index, direction) => {
+    appsTableSort(index, direction);
+  };
+
+  const getTable = () => {
     return (
-      <div className={this.props.className}>
+      <div className={className}>
         <AppsTable
-          columns={this.props.columns}
-          rows={this.props.apps.rows}
-          sortBy={this.props.sortBy}
-          onSort={this.onSort}
-          onRowClick={this.onRowClick}
+          columns={columns}
+          rows={apps.rows}
+          sortBy={sortBy}
+          onSort={onSort}
+          onRowClick={onRowClick}
         />
       </div>
     );
-  }
+  };
 
-  render () {
-    if (this.props.isAppsRequestFailed) {
-      return (
-        <div className="no-apps">
-          <p>Unable to fetch any apps :/</p>
-        </div>
-      );
-    }
-    return this.getTable();
+  if (isAppsRequestFailed) {
+    return (
+      <div className="no-apps">
+        <p>Unable to fetch any apps :/</p>
+      </div>
+    );
   }
-}
+  return getTable();
+};
 
 AppsTableContainer.propTypes = {
   apps: PropTypes.object.isRequired,
   sortBy: PropTypes.object.isRequired,
   columns: PropTypes.array.isRequired,
   isAppsRequestFailed: PropTypes.bool.isRequired,
-  getApps: PropTypes.func.isRequired
+  getApps: PropTypes.func.isRequired,
+  className: PropTypes.string.isRequired
 };
 
 function mapStateToProps (state) {
