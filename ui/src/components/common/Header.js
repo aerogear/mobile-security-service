@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   Dropdown,
@@ -18,19 +18,16 @@ import './Header.css';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import config from '../../config/config';
-import { toggleHeaderDropdown } from '../../actions/actions-ui';
 
-const Header = ({ currentUser, isUserDropdownOpen, toggleHeaderDropdown, history }) => {
+const Header = ({ currentUser, history }) => {
+  const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+
   const onTitleClick = () => {
     history.push('/');
   };
 
   const onUserDropdownToggle = () => {
-    toggleHeaderDropdown();
-  };
-
-  const onUserDropdownSelect = () => {
-    onUserDropdownToggle();
+    setIsDropDownOpen(!isDropDownOpen);
   };
 
   const onLogoutUser = () => {
@@ -45,8 +42,8 @@ const Header = ({ currentUser, isUserDropdownOpen, toggleHeaderDropdown, history
           <Dropdown
             isPlain
             position="right"
-            onSelect={onUserDropdownSelect}
-            isOpen={isUserDropdownOpen}
+            onSelect={onUserDropdownToggle}
+            isOpen={isDropDownOpen}
             toggle={<DropdownToggle onToggle={onUserDropdownToggle}>{currentUser}</DropdownToggle>}
             dropdownItems={[
               <DropdownItem key="logout" component="button" href="#logout" onClick={onLogoutUser}>
@@ -67,15 +64,13 @@ const Header = ({ currentUser, isUserDropdownOpen, toggleHeaderDropdown, history
 };
 
 Header.propTypes = {
-  currentUser: PropTypes.string.isRequired,
-  isUserDropdownOpen: PropTypes.bool.isRequired
+  currentUser: PropTypes.string.isRequired
 };
 
 function mapStateToProps (state) {
   return {
-    currentUser: state.currentUser,
-    isUserDropdownOpen: state.isUserDropdownOpen
+    currentUser: state.currentUser
   };
 }
 
-export default withRouter(connect(mapStateToProps, { toggleHeaderDropdown })(Header));
+export default withRouter(connect(mapStateToProps)(Header));

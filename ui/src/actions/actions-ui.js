@@ -22,12 +22,6 @@ export const appDetailsSort = (index, direction) => {
   };
 };
 
-export const toggleHeaderDropdown = () => {
-  return {
-    type: actions.TOGGLE_HEADER_DROPDOWN
-  };
-};
-
 export const toggleNavigationModal = (isOpen, targetLocation) => {
   return {
     type: actions.TOGGLE_NAVIGATION_MODAL,

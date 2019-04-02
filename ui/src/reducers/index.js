@@ -23,7 +23,6 @@ const initialState = {
   ],
   isAppsRequestFailed: false,
   currentUser: 'currentUser',
-  isUserDropdownOpen: false,
   navigationModal: {
     isOpen: false,
     targetLocation: undefined
@@ -174,12 +173,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isAppRequestFailed: true
-      };
-    case actions.TOGGLE_HEADER_DROPDOWN:
-      const isUserDropdownOpen = state.isUserDropdownOpen;
-      return {
-        ...state,
-        isUserDropdownOpen: !isUserDropdownOpen
       };
     case actions.TOGGLE_NAVIGATION_MODAL:
       const targetLocation = action.payload.targetLocation || undefined;
