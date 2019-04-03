@@ -3,7 +3,7 @@ import * as actions from '../actions/types.js';
 import { SortByDirection, sortable, cellWidth } from '@patternfly/react-table';
 
 const initialState = {
-  apps: { rows: [], data: {} },
+  apps: { rows: [], data: [] },
   sortBy: { direction: SortByDirection.asc, index: 0 },
   appVersionsSortDirection: { direction: SortByDirection.asc, index: 0 },
   columns: [

@@ -62,15 +62,25 @@ class AppDetailedView extends React.Component {
 }
 
 AppDetailedView.propTypes = {
-  app: PropTypes.object.isRequired,
+  app: PropTypes.shape({
+    data: PropTypes.shape({
+      id: PropTypes.string,
+      appId: PropTypes.string,
+      appName: PropTypes.string,
+      deployedVersions: PropTypes.arrayOf(PropTypes.object)
+    }),
+    versionsRows: PropTypes.array
+  }),
+  isDirty: PropTypes.bool,
   getAppById: PropTypes.func.isRequired,
-  isDirty: PropTypes.bool
+  toggleNavigationModal: PropTypes.func.isRequired,
+  toggleSaveAppModal: PropTypes.func.isRequired,
+  toggleDisableAppModal: PropTypes.func.isRequired
 };
 
 function mapStateToProps (state) {
   return {
     app: state.app.data,
-    getAppById: PropTypes.func.isRequired,
     isDirty: state.isAppDetailedDirty
   };
 };

@@ -19,6 +19,7 @@ const AppOverview = ({ className, app }) => {
 };
 
 AppOverview.propTypes = {
+  className: PropTypes.string.isRequired,
   app: PropTypes.object.isRequired
 };
 

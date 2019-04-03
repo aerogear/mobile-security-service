@@ -32,8 +32,11 @@ const HeaderContainer = ({ currentUser, history }) => {
   );
 };
 
-Header.propTypes = {
-  currentUser: PropTypes.string.isRequired
+HeaderContainer.propTypes = {
+  currentUser: PropTypes.string.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired
+  }).isRequired
 };
 
 function mapStateToProps (state) {

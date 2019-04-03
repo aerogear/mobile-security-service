@@ -97,9 +97,15 @@ const AppVersionsTableContainer = ({ className, sortBy, columns, appVersions, ap
 
 AppVersionsTableContainer.propTypes = {
   className: PropTypes.string.isRequired,
-  sortBy: PropTypes.object.isRequired,
+  sortBy: PropTypes.shape({
+    direction: PropTypes.string.isRequired,
+    index: PropTypes.number.isRequired
+  }).isRequired,
   columns: PropTypes.array.isRequired,
-  appVersions: PropTypes.array.isRequired
+  appVersions: PropTypes.array.isRequired,
+  appDetailsSort: PropTypes.func.isRequired,
+  updateDisabledAppVersion: PropTypes.func.isRequired,
+  updateVersionCustomMessage: PropTypes.func.isRequired
 };
 
 function mapStateToProps (state) {
