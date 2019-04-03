@@ -16,7 +16,6 @@ type (
 		GetActiveAppByID(c echo.Context) error
 		UpdateAppVersions(c echo.Context) error
 		DisableAllAppVersionsByAppID(c echo.Context) error
-		HealthCheck(c echo.Context) error
 		DeleteAppById(c echo.Context) error
 		CreateApp(c echo.Context) error
 		UpdateAppNameByID(c echo.Context) error
@@ -184,10 +183,6 @@ func (a *httpHandler) CreateApp(c echo.Context) error {
 
 	return c.NoContent(http.StatusCreated)
 
-}
-
-func (a *httpHandler) HealthCheck(c echo.Context) error {
-	return c.JSON(http.StatusOK, "OK")
 }
 
 func (a *httpHandler) DeleteAppById(c echo.Context) error {

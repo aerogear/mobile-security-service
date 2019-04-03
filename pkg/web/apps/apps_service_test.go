@@ -135,7 +135,6 @@ func Test_appsService_GetApps(t *testing.T) {
 	}
 }
 
-
 func Test_appsService_UpdateAppNameByID(t *testing.T) {
 	type fields struct {
 		repository Repository
