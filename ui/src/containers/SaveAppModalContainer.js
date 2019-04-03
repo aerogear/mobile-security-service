@@ -6,16 +6,12 @@ import { connect } from 'react-redux';
 import { toggleSaveAppModal } from '../actions/actions-ui';
 import ConfirmationModal from '../components/common/ConfirmationModal';
 
-const SaveAppModalContainer = ({ isSaveAppModalOpen, title, children, onConfirm, toggleSaveAppModal }) => {
-  const handleModalClose = () => {
-    toggleSaveAppModal(false);
-  };
-
+const SaveAppModalContainer = ({ isOpen, title, children, onConfirm, toggleSaveAppModal }) => {
   return (
     <ConfirmationModal
       title={title}
-      isOpen={isSaveAppModalOpen}
-      onClose={handleModalClose}
+      isOpen={isOpen}
+      onClose={toggleSaveAppModal}
       confirmAction={[<Button key="confirm" variant="primary" onClick={onConfirm}>
           Confirm
       </Button>]}>
@@ -25,7 +21,7 @@ const SaveAppModalContainer = ({ isSaveAppModalOpen, title, children, onConfirm,
 };
 
 SaveAppModalContainer.propTypes = {
-  isSaveAppModalOpen: PropTypes.bool.isRequired,
+  isOpen: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
   children: PropTypes.node.isRequired,
   onConfirm: PropTypes.func.isRequired,
@@ -34,7 +30,7 @@ SaveAppModalContainer.propTypes = {
 
 function mapStateToProps (state) {
   return {
-    isSaveAppModalOpen: state.isSaveAppModalOpen
+    isOpen: state.modals.saveApp.isOpen
   };
 }
 

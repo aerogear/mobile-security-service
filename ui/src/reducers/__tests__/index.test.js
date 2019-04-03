@@ -24,11 +24,6 @@ describe('reducer', () => {
     ],
     isAppsRequestFailed: false,
     currentUser: 'currentUser',
-    navigationModal: {
-      isOpen: false,
-      targetLocation: undefined
-    },
-    isSaveAppModalOpen: false,
     isAppDetailedDirty: false,
     app: {
       data: {},
@@ -38,6 +33,13 @@ describe('reducer', () => {
     modals: {
       disableApp: {
         isOpen: false
+      },
+      saveApp: {
+        isOpen: false
+      },
+      navigationModal: {
+        isOpen: false,
+        targetLocation: undefined
       }
     }
   };
@@ -199,8 +201,8 @@ describe('reducer', () => {
         targetLocation: '/'
       }
     });
-    expect(newState.navigationModal.isOpen).toEqual(true);
-    expect(newState.navigationModal.targetLocation).toEqual('/');
+    expect(newState.modals.navigationModal.isOpen).toEqual(true);
+    expect(newState.modals.navigationModal.targetLocation).toEqual('/');
   });
 
   it('should handle close TOGGLE_NAVIGATION_MODAL', () => {
@@ -210,24 +212,14 @@ describe('reducer', () => {
         isOpen: false
       }
     });
-    expect(newState.navigationModal.isOpen).toEqual(false);
-    expect(newState.navigationModal.targetLocation).toEqual(undefined);
+    expect(newState.modals.navigationModal.isOpen).toEqual(false);
+    expect(newState.modals.navigationModal.targetLocation).toEqual(undefined);
   });
 
   it('should handle close TOGGLE_SAVE_APP_MODAL', () => {
-    const newState = reducer(initialState, {
-      type: actions.TOGGLE_SAVE_APP_MODAL,
-      payload: { isSaveAppModalOpen: false }
-    });
-    expect(newState.isSaveAppModalOpen).toEqual(false);
-  });
-
-  it('should handle open TOGGLE_SAVE_APP_MODAL', () => {
-    const newState = reducer(initialState, {
-      type: actions.TOGGLE_SAVE_APP_MODAL,
-      payload: { isSaveAppModalOpen: true }
-    });
-    expect(newState.isSaveAppModalOpen).toEqual(true);
+    const isOpen = initialState.modals.saveApp.isOpen;
+    const newState = reducer(initialState, { type: actions.TOGGLE_SAVE_APP_MODAL });
+    expect(newState.modals.saveApp.isOpen).toEqual(!isOpen);
   });
 
   it('should toggle TOGGLE_DISABLE_APP_MODAL', () => {

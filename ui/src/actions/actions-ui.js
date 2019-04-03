@@ -32,10 +32,9 @@ export const toggleNavigationModal = (isOpen, targetLocation) => {
   };
 };
 
-export const toggleSaveAppModal = isSaveAppModalOpen => {
+export const toggleSaveAppModal = () => {
   return {
-    type: actions.TOGGLE_SAVE_APP_MODAL,
-    payload: { isSaveAppModalOpen }
+    type: actions.TOGGLE_SAVE_APP_MODAL
   };
 };
 
