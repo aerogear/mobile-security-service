@@ -18,7 +18,7 @@ type (
 		DisableAllAppVersionsByAppID(c echo.Context) error
 		HealthCheck(c echo.Context) error
 		DeleteAppById(c echo.Context) error
-		PostApp(c echo.Context) error
+		CreateApp(c echo.Context) error
 	}
 
 	// httpHandler instance
@@ -146,7 +146,7 @@ func (a *httpHandler) DisableAllAppVersionsByAppID(c echo.Context) error {
 
 }
 
-func (a *httpHandler) PostApp(c echo.Context) error {
+func (a *httpHandler) CreateApp(c echo.Context) error {
 
 	// Transform the body request in the version struct
 	app := models.App{}
@@ -157,7 +157,7 @@ func (a *httpHandler) PostApp(c echo.Context) error {
 		return httperrors.BadRequest(c, "Invalid data")
 	}
 
-	err := a.Service.CreateUpdateApp(app)
+	err := a.Service.CreateApp(app)
 
 	if err != nil {
 		return httperrors.GetHTTPResponseFromErr(c, err)

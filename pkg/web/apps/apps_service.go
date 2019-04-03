@@ -16,7 +16,7 @@ type (
 		UpdateAppVersions(id string, versions []models.Version) error
 		DisableAllAppVersionsByAppID(id string, message string) error
 		DeleteAppById(id string) error
-		CreateUpdateApp(app models.App) error
+		CreateApp(app models.App) error
 		InitClientApp(deviceInfo *models.Device) (*models.Version, error)
 	}
 
@@ -121,7 +121,7 @@ func (a *appsService) DeleteAppById(id string) error {
 	return nil
 }
 
-func (a *appsService) CreateUpdateApp(app models.App) error {
+func (a *appsService) CreateApp(app models.App) error {
 
 	// Check if it exist
 	appStored, err := a.repository.GetAppByAppID(app.AppID)

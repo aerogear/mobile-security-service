@@ -135,6 +135,42 @@ func Test_appsService_GetApps(t *testing.T) {
 	}
 }
 
+func Test_appsService_DeleteAppById(t *testing.T) {
+	type fields struct {
+		repository Repository
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		id      string
+		wantErr error
+		repo    RepositoryMock
+	}{
+		{
+			name: "Should unbinding app by id",
+			id:   helpers.GetMockApp().ID,
+			repo: *mockRepositoryWithSuccessResults,
+		},
+		{
+			name:    "Should return an error to delete app",
+			id:      helpers.GetMockApp().ID,
+			repo:    *mockRepositoryError,
+			wantErr: models.ErrNotFound,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			a := NewService(&tt.repo)
+			err := a.DeleteAppById(tt.id)
+
+			if (err != nil) && (tt.wantErr != err || tt.wantErr == nil) {
+				t.Errorf("appsService.DeleteAppByID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
 func Test_appsService_GetActiveAppByID(t *testing.T) {
 	type fields struct {
 		repository Repository
@@ -441,7 +477,7 @@ func Test_appsService_CreateUpdateApp(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			a := NewService(&tt.repo)
-			err := a.CreateUpdateApp(*tt.data)
+			err := a.CreateApp(*tt.data)
 
 			if (err != nil) && (tt.wantErr != err || tt.wantErr == nil) {
 				t.Errorf("appsService.BindingAppByApp() error = %v, wantErr %v", err, tt.wantErr)

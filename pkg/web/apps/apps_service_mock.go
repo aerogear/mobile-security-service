@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	lockServiceMockCreateUpdateApp              sync.RWMutex
+	lockServiceMockCreateApp                    sync.RWMutex
 	lockServiceMockDeleteAppById                sync.RWMutex
 	lockServiceMockDisableAllAppVersionsByAppID sync.RWMutex
 	lockServiceMockGetActiveAppByAppID          sync.RWMutex
@@ -29,8 +29,8 @@ var _ Service = &ServiceMock{}
 //
 //         // make and configure a mocked Service
 //         mockedService := &ServiceMock{
-//             CreateUpdateAppFunc: func(app models.App) error {
-// 	               panic("mock out the CreateUpdateApp method")
+//             CreateAppFunc: func(app models.App) error {
+// 	               panic("mock out the CreateApp method")
 //             },
 //             DeleteAppByIdFunc: func(id string) error {
 // 	               panic("mock out the DeleteAppById method")
@@ -60,8 +60,8 @@ var _ Service = &ServiceMock{}
 //
 //     }
 type ServiceMock struct {
-	// CreateUpdateAppFunc mocks the CreateUpdateApp method.
-	CreateUpdateAppFunc func(app models.App) error
+	// CreateAppFunc mocks the CreateApp method.
+	CreateAppFunc func(app models.App) error
 
 	// DeleteAppByIdFunc mocks the DeleteAppById method.
 	DeleteAppByIdFunc func(id string) error
@@ -86,8 +86,8 @@ type ServiceMock struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// CreateUpdateApp holds details about calls to the CreateUpdateApp method.
-		CreateUpdateApp []struct {
+		// CreateApp holds details about calls to the CreateApp method.
+		CreateApp []struct {
 			// App is the app argument value.
 			App models.App
 		}
@@ -131,34 +131,34 @@ type ServiceMock struct {
 	}
 }
 
-// CreateUpdateApp calls CreateUpdateAppFunc.
-func (mock *ServiceMock) CreateUpdateApp(app models.App) error {
-	if mock.CreateUpdateAppFunc == nil {
-		panic("ServiceMock.CreateUpdateAppFunc: method is nil but Service.CreateUpdateApp was just called")
+// CreateApp calls CreateAppFunc.
+func (mock *ServiceMock) CreateApp(app models.App) error {
+	if mock.CreateAppFunc == nil {
+		panic("ServiceMock.CreateAppFunc: method is nil but Service.CreateApp was just called")
 	}
 	callInfo := struct {
 		App models.App
 	}{
 		App: app,
 	}
-	lockServiceMockCreateUpdateApp.Lock()
-	mock.calls.CreateUpdateApp = append(mock.calls.CreateUpdateApp, callInfo)
-	lockServiceMockCreateUpdateApp.Unlock()
-	return mock.CreateUpdateAppFunc(app)
+	lockServiceMockCreateApp.Lock()
+	mock.calls.CreateApp = append(mock.calls.CreateApp, callInfo)
+	lockServiceMockCreateApp.Unlock()
+	return mock.CreateAppFunc(app)
 }
 
-// CreateUpdateAppCalls gets all the calls that were made to CreateUpdateApp.
+// CreateAppCalls gets all the calls that were made to CreateApp.
 // Check the length with:
-//     len(mockedService.CreateUpdateAppCalls())
-func (mock *ServiceMock) CreateUpdateAppCalls() []struct {
+//     len(mockedService.CreateAppCalls())
+func (mock *ServiceMock) CreateAppCalls() []struct {
 	App models.App
 } {
 	var calls []struct {
 		App models.App
 	}
-	lockServiceMockCreateUpdateApp.RLock()
-	calls = mock.calls.CreateUpdateApp
-	lockServiceMockCreateUpdateApp.RUnlock()
+	lockServiceMockCreateApp.RLock()
+	calls = mock.calls.CreateApp
+	lockServiceMockCreateApp.RUnlock()
 	return calls
 }
 

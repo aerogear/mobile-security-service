@@ -45,7 +45,7 @@ var (
 		DeleteAppByIdFunc: func(id string) error {
 			return nil
 		},
-		CreateUpdateAppFunc: func(app models.App) error {
+		CreateAppFunc: func(app models.App) error {
 			return nil
 		},
 	}
@@ -70,7 +70,7 @@ var (
 		DeleteAppByIdFunc: func(id string) error {
 			return models.ErrInternalServerError
 		},
-		CreateUpdateAppFunc: func(app models.App) error {
+		CreateAppFunc: func(app models.App) error {
 			return models.ErrInternalServerError
 		},
 	}
@@ -522,7 +522,7 @@ func Test_httpHandler_GetActiveAppByID(t *testing.T) {
 	}
 }
 
-func Test_HttpHandler_PostApp(t *testing.T) {
+func Test_HttpHandler_CreateApp(t *testing.T) {
 	mockAppWithoutName := &models.App{
 		AppID: "com.aerogear.mobile_app_one",
 	}
@@ -547,21 +547,21 @@ func Test_HttpHandler_PostApp(t *testing.T) {
 		mockService ServiceMock
 	}{
 		{
-			name:        "Post with appId and name should return success",
+			name:        "Create with appId and name should return success",
 			data:        helpers.GetMockApp(),
 			want:        http.StatusNoContent,
 			mockService: *mockedService,
 			wantCode:    201,
 		},
 		{
-			name:        "Post with just appId should return success",
+			name:        "Create with just appId should return success",
 			data:        mockAppWithoutName,
 			want:        http.StatusNoContent,
 			mockService: *mockedService,
 			wantCode:    201,
 		},
 		{
-			name:        "Post app without appId should return error",
+			name:        "Create app without appId should return error",
 			data:        mockAppWithoutID,
 			want:        http.StatusBadRequest,
 			mockService: *mockedService,
@@ -585,9 +585,9 @@ func Test_HttpHandler_PostApp(t *testing.T) {
 		h := NewHTTPHandler(e, &tt.mockService)
 
 		t.Run(tt.name, func(t *testing.T) {
-			h.PostApp(c)
+			h.CreateApp(c)
 			if rec.Code != tt.wantCode {
-				t.Errorf("HTTPHandler.DisableAllAppVersionsByAppID() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
+				t.Errorf("HTTPHandler.CreateApp() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
 			}
 		})
 	}
