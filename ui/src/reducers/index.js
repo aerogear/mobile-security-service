@@ -23,11 +23,6 @@ const initialState = {
   ],
   isAppsRequestFailed: false,
   currentUser: 'currentUser',
-  navigationModal: {
-    isOpen: false,
-    targetLocation: undefined
-  },
-  isSaveAppModalOpen: false,
   isAppDetailedDirty: false,
   app: {
     data: {},
@@ -37,6 +32,13 @@ const initialState = {
   modals: {
     disableApp: {
       isOpen: false
+    },
+    saveApp: {
+      isOpen: false
+    },
+    navigationModal: {
+      isOpen: false,
+      targetLocation: undefined
     }
   }
 };
@@ -178,30 +180,38 @@ export default (state = initialState, action) => {
       const targetLocation = action.payload.targetLocation || undefined;
       return {
         ...state,
-        navigationModal: {
-          isOpen: action.payload.isOpen,
-          targetLocation: targetLocation
+        modals: {
+          ...state.modals,
+          navigationModal: {
+            isOpen: action.payload.isOpen,
+            targetLocation: targetLocation
+          }
         }
       };
     case actions.TOGGLE_SAVE_APP_MODAL:
       return {
         ...state,
-        isSaveAppModalOpen: action.payload.isSaveAppModalOpen
-      };
-    case actions.TOGGLE_APP_DETAILED_IS_DIRTY:
-      return {
-        ...state,
-        isAppDetailedDirty: !state.isAppDetailedDirty
+        modals: {
+          ...state.modals,
+          saveApp: {
+            isOpen: !state.modals.saveApp.isOpen
+          }
+        }
       };
     case actions.TOGGLE_DISABLE_APP_MODAL:
       return {
         ...state,
         modals: {
-          ...state,
+          ...state.modals,
           disableApp: {
             isOpen: !state.modals.disableApp.isOpen
           }
         }
+      };
+    case actions.TOGGLE_APP_DETAILED_IS_DIRTY:
+      return {
+        ...state,
+        isAppDetailedDirty: !state.isAppDetailedDirty
       };
     case actions.UPDATE_DISABLED_APP:
       const id = action.payload.id;

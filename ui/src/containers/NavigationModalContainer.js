@@ -46,8 +46,8 @@ NavigationModalContainer.propTypes = {
 
 function mapStateToProps (state) {
   return {
-    isOpen: state.navigationModal.isOpen,
-    targetLocation: state.navigationModal.targetLocation
+    isOpen: state.modals.navigationModal.isOpen,
+    targetLocation: state.modals.navigationModal.targetLocation
   };
 }
 

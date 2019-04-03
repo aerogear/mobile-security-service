@@ -32,7 +32,7 @@ class AppDetailedView extends React.Component {
   }
 
   onConfirmSaveApp () {
-    this.props.toggleSaveAppModal(false);
+    this.props.toggleSaveAppModal();
     // TODO: Make a PUT request to API
     // to update the App versions
   }
@@ -41,7 +41,7 @@ class AppDetailedView extends React.Component {
     return (
       <div className="app-detailed-view">
         <HeaderContainer />
-        <AppDetailedToolbar app={this.props.app} onSaveApp={this.props.toggleSaveAppModal} onDisableApp={this.props.toggleDisableAppModal}/>
+        <AppDetailedToolbar app={this.props.app} onSaveAppClick={this.props.toggleSaveAppModal} onDisableAppClick={this.props.toggleDisableAppModal}/>
         <Content className="container">
           <AppOverview app={this.props.app} className='app-overview' />
           <Title className="table-title" size="2xl">
