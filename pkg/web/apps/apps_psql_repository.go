@@ -347,12 +347,12 @@ func (a *appsPostgreSQLRepository) UnDeleteAppByAppID(appId string) error {
 	return nil
 }
 
-func (a *appsPostgreSQLRepository) UpdateAppNameByAppID(appId string, name string) error {
+func (a *appsPostgreSQLRepository) UpdateAppNameByID(id, name string) error {
 
 	_, err := a.db.Exec(`
 		UPDATE app
 		SET app_name=$1
-		WHERE app_id=$2;`, name, appId)
+		WHERE id=$2;`, name, id)
 
 	if err != nil {
 		log.Error(err)

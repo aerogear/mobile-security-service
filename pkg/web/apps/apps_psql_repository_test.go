@@ -49,9 +49,9 @@ var (
 		SET deleted_at=NULL
 		WHERE app_id=\$1;`
 
-	getUpdateAppNameByAppIDQueryString = `UPDATE app
+	getUpdateAppNameByIDQueryString = `UPDATE app
 		SET app_name=\$1
-		WHERE app_id=\$2;`
+		WHERE id=\$2;`
 
 	getDeviceByDeviceIDQuery = `SELECT id,version_id,app_id,device_id,device_type,device_version
 	FROM devicei
@@ -507,7 +507,7 @@ func Test_appsPostgreSQLRepository_UnDeleteAppByAppID(t *testing.T) {
 	}
 }
 
-func Test_appsPostgreSQLRepository_UpdateAppNameByAppID(t *testing.T) {
+func Test_appsPostgreSQLRepository_UpdateAppNameByID(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatalf("Unexpected error opening a stub database connection: %v", err)
@@ -523,29 +523,29 @@ func Test_appsPostgreSQLRepository_UpdateAppNameByAppID(t *testing.T) {
 	sqlmock.NewRows(cols).AddRow(mockApps.ID, mockApps.AppID, mockApps.AppName)
 
 	// We should expected to get back only the apps which are not soft deleted
-	mock.ExpectExec(getUpdateAppNameByAppIDQueryString).WithArgs(mockApps.AppName, mockApps.AppID).WillReturnResult(sqlmock.NewResult(0, 1))
+	mock.ExpectExec(getUpdateAppNameByIDQueryString).WithArgs(mockApps.AppName, mockApps.ID).WillReturnResult(sqlmock.NewResult(0, 1))
 	a := NewPostgreSQLRepository(db)
 
 	tests := []struct {
 		name    string
-		appId   string
+		id      string
 		appName string
 		wantErr bool
 	}{
 		{
 			name:    "Should return success when set app_name for an valid appID",
-			appId:   helpers.GetMockApp().AppID,
+			id:      helpers.GetMockApp().ID,
 			appName: helpers.GetMockApp().AppName,
 		},
 		{
 			name:    "Should return error when set app_name for an invalid appID",
-			appId:   "",
+			id:      "",
 			appName: helpers.GetMockApp().AppName,
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
-		err = a.UpdateAppNameByAppID(tt.appId, tt.appName)
+		err = a.UpdateAppNameByID(tt.id, tt.appName)
 
 		if err != nil && !tt.wantErr {
 			t.Fatalf("Got error trying to get app from database: %v", err)

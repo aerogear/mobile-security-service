@@ -17,6 +17,7 @@ type (
 		DisableAllAppVersionsByAppID(id string, message string) error
 		DeleteAppById(id string) error
 		CreateApp(app models.App) error
+		UpdateAppNameByID(id, name string) error
 		InitClientApp(deviceInfo *models.Device) (*models.Version, error)
 	}
 
@@ -145,10 +146,22 @@ func (a *appsService) CreateApp(app models.App) error {
 		}
 	}
 
+	return nil
+}
+
+func (a *appsService) UpdateAppNameByID(id, name string) error {
+
+	// Check if it exist
+	app, err := a.repository.GetActiveAppByID(id)
+
+	if err != nil {
+		return err
+	}
+
 	// update the name if it was changed
-	if app.AppName != "" && appStored.AppName != app.AppName {
+	if name != "" && app.AppName != name {
 		// Update the name of the app
-		return a.repository.UpdateAppNameByAppID(app.AppID, app.AppName)
+		return a.repository.UpdateAppNameByID(id, name)
 	}
 
 	return nil

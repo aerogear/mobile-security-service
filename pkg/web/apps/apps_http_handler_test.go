@@ -48,6 +48,9 @@ var (
 		CreateAppFunc: func(app models.App) error {
 			return nil
 		},
+		UpdateAppNameByIDFunc: func(id string, name string) error {
+			return nil
+		},
 	}
 
 	// make and configure a mocked Service which will return the scenarios with errors
@@ -72,6 +75,9 @@ var (
 		},
 		CreateAppFunc: func(app models.App) error {
 			return models.ErrInternalServerError
+		},
+		UpdateAppNameByIDFunc: func(id string, name string) error {
+			return models.ErrNotFound
 		},
 	}
 )
@@ -162,7 +168,7 @@ func Test_HttpHandler_GetAppsWithQueryParameter(t *testing.T) {
 			wantErr:     true,
 			appId:       helpers.GetMockApp().AppID,
 			mockService: *mockedServiceWithError,
-			wantCode:    404,
+			wantCode:    204,
 		},
 		{
 			name:        "Should return error when an error occurs in the database",
@@ -322,6 +328,61 @@ func Test_httpHandler_UpdateAllAppVersionsByAppID(t *testing.T) {
 			}
 			if rec.Code != tt.wantCode {
 				t.Errorf("HTTPHandler.UpdateAppVersions() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
+			}
+		})
+	}
+}
+
+func Test_httpHandler_UpdateAppNameByID(t *testing.T) {
+	config := config.Get()
+	APIRoutePrefix := config.APIRoutePrefix
+	type fields struct {
+		Service Service
+	}
+	tests := []struct {
+		name        string
+		fields      fields
+		id          string
+		wantErr     bool
+		wantCode    int
+		data        models.App
+		mockService ServiceMock
+	}{
+		{
+			name:        "Should update the name with success",
+			id:          helpers.GetMockApp().ID,
+			data:        *helpers.GetMockApp(),
+			wantErr:     false,
+			mockService: *mockedService,
+			wantCode:    204,
+		},
+		{
+			name:        "Should return error since it is an invalid id",
+			id:          "invalid",
+			data:        *helpers.GetMockApp(),
+			wantErr:     true,
+			mockService: *mockedService,
+			wantCode:    400,
+		},
+	}
+	for _, tt := range tests {
+		e := echo.New()
+		app, _ := json.Marshal(tt.data)
+		req := httptest.NewRequest(http.MethodPatch, "/", strings.NewReader(string(app)))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath(APIRoutePrefix + "/apps/:id")
+		c.SetParamNames("id")
+		h := NewHTTPHandler(e, &tt.mockService)
+		c.SetParamValues(tt.id)
+		t.Run(tt.name, func(t *testing.T) {
+			err := h.UpdateAppNameByID(c)
+			if err != nil {
+				t.Errorf("httpHandler.UpdateAppNameByID() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if rec.Code != tt.wantCode {
+				t.Errorf("HTTPHandler.UpdateAppNameByID() statusCode = %v, wantCode = %v", rec.Code, tt.wantCode)
 			}
 		})
 	}

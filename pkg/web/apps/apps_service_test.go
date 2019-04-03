@@ -41,7 +41,7 @@ var (
 		UnDeleteAppByAppIDFunc: func(appID string) error {
 			return nil
 		},
-		UpdateAppNameByAppIDFunc: func(appId string, name string) error {
+		UpdateAppNameByIDFunc: func(appId string, name string) error {
 			return nil
 		},
 		GetActiveAppByAppIDFunc: func(appId string) (*models.App, error) {
@@ -81,7 +81,7 @@ var (
 		UnDeleteAppByAppIDFunc: func(appID string) error {
 			return nil
 		},
-		UpdateAppNameByAppIDFunc: func(appId string, name string) error {
+		UpdateAppNameByIDFunc: func(appId string, name string) error {
 			return models.ErrInternalServerError
 		},
 		GetActiveAppByAppIDFunc: func(appId string) (*models.App, error) {
@@ -129,6 +129,49 @@ func Test_appsService_GetApps(t *testing.T) {
 			}
 			if (err != nil) && (tt.wantErr != err || tt.wantErr == nil) {
 				t.Errorf("appsService.GetApps() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+
+func Test_appsService_UpdateAppNameByID(t *testing.T) {
+	type fields struct {
+		repository Repository
+	}
+	tests := []struct {
+		name     string
+		fields   fields
+		id       string
+		appName  string
+		wantErr  error
+		mockRepo RepositoryMock
+	}{
+		{
+			name:     "Should update the name with success",
+			id:       helpers.GetMockApp().ID,
+			appName:  helpers.GetMockApp().AppName,
+			mockRepo: *mockRepositoryWithSuccessResults,
+		},
+		{
+			name:     "Should return error when app is not found",
+			id:       "invalid",
+			appName:  helpers.GetMockApp().AppName,
+			wantErr:  models.ErrNotFound,
+			mockRepo: *mockRepositoryError,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			a := NewService(&tt.mockRepo)
+			err := a.UpdateAppNameByID(tt.id, tt.appName)
+			if (err != nil) && tt.wantErr == nil {
+				t.Errorf("appsService.UpdateAppNameByID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if (err != nil) && (tt.wantErr != err || tt.wantErr == nil) {
+				t.Errorf("appsService.UpdateAppNameByID() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})
@@ -390,7 +433,7 @@ func Test_appsService_CreateUpdateApp(t *testing.T) {
 		CreateAppFunc: func(id string, appId string, name string) error {
 			return models.ErrConflict
 		},
-		UpdateAppNameByAppIDFunc: func(appId string, name string) error {
+		UpdateAppNameByIDFunc: func(appId string, name string) error {
 			return nil
 		},
 	}
@@ -410,7 +453,7 @@ func Test_appsService_CreateUpdateApp(t *testing.T) {
 		GetActiveAppByIDFunc: func(ID string) (*models.App, error) {
 			return helpers.GetMockApp(), nil
 		},
-		UpdateAppNameByAppIDFunc: func(appId string, name string) error {
+		UpdateAppNameByIDFunc: func(appId string, name string) error {
 			return nil
 		},
 	}

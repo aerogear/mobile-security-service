@@ -16,6 +16,7 @@ var (
 	lockServiceMockGetActiveAppByID             sync.RWMutex
 	lockServiceMockGetApps                      sync.RWMutex
 	lockServiceMockInitClientApp                sync.RWMutex
+	lockServiceMockUpdateAppNameByID            sync.RWMutex
 	lockServiceMockUpdateAppVersions            sync.RWMutex
 )
 
@@ -50,6 +51,9 @@ var _ Service = &ServiceMock{}
 //             InitClientAppFunc: func(deviceInfo *models.Device) (*models.Version, error) {
 // 	               panic("mock out the InitClientApp method")
 //             },
+//             UpdateAppNameByIDFunc: func(id string, name string) error {
+// 	               panic("mock out the UpdateAppNameByID method")
+//             },
 //             UpdateAppVersionsFunc: func(id string, versions []models.Version) error {
 // 	               panic("mock out the UpdateAppVersions method")
 //             },
@@ -80,6 +84,9 @@ type ServiceMock struct {
 
 	// InitClientAppFunc mocks the InitClientApp method.
 	InitClientAppFunc func(deviceInfo *models.Device) (*models.Version, error)
+
+	// UpdateAppNameByIDFunc mocks the UpdateAppNameByID method.
+	UpdateAppNameByIDFunc func(id string, name string) error
 
 	// UpdateAppVersionsFunc mocks the UpdateAppVersions method.
 	UpdateAppVersionsFunc func(id string, versions []models.Version) error
@@ -120,6 +127,13 @@ type ServiceMock struct {
 		InitClientApp []struct {
 			// DeviceInfo is the deviceInfo argument value.
 			DeviceInfo *models.Device
+		}
+		// UpdateAppNameByID holds details about calls to the UpdateAppNameByID method.
+		UpdateAppNameByID []struct {
+			// ID is the id argument value.
+			ID string
+			// Name is the name argument value.
+			Name string
 		}
 		// UpdateAppVersions holds details about calls to the UpdateAppVersions method.
 		UpdateAppVersions []struct {
@@ -344,6 +358,41 @@ func (mock *ServiceMock) InitClientAppCalls() []struct {
 	lockServiceMockInitClientApp.RLock()
 	calls = mock.calls.InitClientApp
 	lockServiceMockInitClientApp.RUnlock()
+	return calls
+}
+
+// UpdateAppNameByID calls UpdateAppNameByIDFunc.
+func (mock *ServiceMock) UpdateAppNameByID(id string, name string) error {
+	if mock.UpdateAppNameByIDFunc == nil {
+		panic("ServiceMock.UpdateAppNameByIDFunc: method is nil but Service.UpdateAppNameByID was just called")
+	}
+	callInfo := struct {
+		ID   string
+		Name string
+	}{
+		ID:   id,
+		Name: name,
+	}
+	lockServiceMockUpdateAppNameByID.Lock()
+	mock.calls.UpdateAppNameByID = append(mock.calls.UpdateAppNameByID, callInfo)
+	lockServiceMockUpdateAppNameByID.Unlock()
+	return mock.UpdateAppNameByIDFunc(id, name)
+}
+
+// UpdateAppNameByIDCalls gets all the calls that were made to UpdateAppNameByID.
+// Check the length with:
+//     len(mockedService.UpdateAppNameByIDCalls())
+func (mock *ServiceMock) UpdateAppNameByIDCalls() []struct {
+	ID   string
+	Name string
+} {
+	var calls []struct {
+		ID   string
+		Name string
+	}
+	lockServiceMockUpdateAppNameByID.RLock()
+	calls = mock.calls.UpdateAppNameByID
+	lockServiceMockUpdateAppNameByID.RUnlock()
 	return calls
 }
 

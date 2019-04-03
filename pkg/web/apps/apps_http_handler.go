@@ -19,6 +19,7 @@ type (
 		HealthCheck(c echo.Context) error
 		DeleteAppById(c echo.Context) error
 		CreateApp(c echo.Context) error
+		UpdateAppNameByID(c echo.Context) error
 	}
 
 	// httpHandler instance
@@ -36,17 +37,11 @@ func NewHTTPHandler(e *echo.Echo, s Service) HTTPHandler {
 
 // GetApps returns all apps as JSON from the AppService
 func (a *httpHandler) GetApps(c echo.Context) error {
-	hasAppId := len(c.QueryParam("appId")) > 0
 	apps, err := a.HandleGetApp(c)
 
 	// If no apps have been found, return a HTTP Status code of 204 with no response body
-	if err == models.ErrNotFound && !hasAppId {
+	if err == models.ErrNotFound {
 		return c.NoContent(http.StatusNoContent)
-	}
-
-	// If the appId was informed than it should return 404
-	if err == models.ErrNotFound && hasAppId {
-		return c.NoContent(http.StatusNotFound)
 	}
 
 	if err != nil {
@@ -88,6 +83,30 @@ func (a *httpHandler) GetActiveAppByID(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, apps)
 
+}
+
+func (a *httpHandler) UpdateAppNameByID(c echo.Context) error {
+
+	id := c.Param("id")
+	if !helpers.IsValidUUID(id) {
+		return httperrors.BadRequest(c, "Invalid id supplied")
+	}
+
+	// Transform the body request in the version struct
+	app := models.App{}
+	errV := json.NewDecoder(c.Request().Body).Decode(&app)
+
+	// check if the data sent is in the correct format
+	if errV != nil || len(app.AppID) < 1 {
+		return httperrors.BadRequest(c, "Invalid data")
+	}
+
+	err := a.Service.UpdateAppNameByID(id, app.AppName)
+	if err != nil {
+		return httperrors.GetHTTPResponseFromErr(c, err)
+	}
+
+	return c.NoContent(http.StatusNoContent)
 }
 
 //UpdateApp returns a app updated with the ID in JSON format from the AppService
