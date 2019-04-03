@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
   Dropdown,
@@ -10,30 +10,13 @@ import {
   ToolbarGroup,
   ToolbarItem
 } from '@patternfly/react-core';
-import { withRouter } from 'react-router-dom';
 import { UserIcon } from '@patternfly/react-icons';
 import accessibleStyles from '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
 import { css } from '@patternfly/react-styles';
 import './Header.css';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import config from '../../config/config';
 
-const Header = ({ currentUser, history }) => {
-  const [isDropDownOpen, setIsDropDownOpen] = useState(false);
-
-  const onTitleClick = () => {
-    history.push('/');
-  };
-
-  const onUserDropdownToggle = () => {
-    setIsDropDownOpen(!isDropDownOpen);
-  };
-
-  const onLogoutUser = () => {
-    console.log('onLogoutUser()');
-  };
-
+const Header = ({ currentUser, appName, isDropDownOpen, onUserDropdownToggle, onTitleClick, onLogoutUser }) => {
   const toolbar = (
     <Toolbar>
       <ToolbarGroup className={css(accessibleStyles.screenReader, accessibleStyles.visibleOnLg)}>
@@ -44,7 +27,11 @@ const Header = ({ currentUser, history }) => {
             position="right"
             onSelect={onUserDropdownToggle}
             isOpen={isDropDownOpen}
-            toggle={<DropdownToggle onToggle={onUserDropdownToggle}>{currentUser}</DropdownToggle>}
+            toggle={
+              <DropdownToggle onToggle={onUserDropdownToggle}>
+                {currentUser}
+              </DropdownToggle>
+            }
             dropdownItems={[
               <DropdownItem key="logout" component="button" href="#logout" onClick={onLogoutUser}>
                 Log out
@@ -56,7 +43,7 @@ const Header = ({ currentUser, history }) => {
     </Toolbar>
   );
 
-  const Header = <PageHeader logo={config.app.name.toUpperCase()} logoProps={{ onClick: onTitleClick }} toolbar={toolbar} />;
+  const Header = <PageHeader logo={appName} logoProps={{ onClick: onTitleClick }} toolbar={toolbar} />;
 
   return (
     <Page header={Header} className='mss-header'/>
@@ -64,13 +51,12 @@ const Header = ({ currentUser, history }) => {
 };
 
 Header.propTypes = {
-  currentUser: PropTypes.string.isRequired
+  currentUser: PropTypes.string.isRequired,
+  appName: PropTypes.string.isRequired,
+  isDropDownOpen: PropTypes.bool.isRequired,
+  onUserDropdownToggle: PropTypes.func.isRequired,
+  onTitleClick: PropTypes.func.isRequired,
+  onLogoutUser: PropTypes.func.isRequired
 };
 
-function mapStateToProps (state) {
-  return {
-    currentUser: state.currentUser
-  };
-}
-
-export default withRouter(connect(mapStateToProps)(Header));
+export default Header;

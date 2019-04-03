@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Title } from '@patternfly/react-core';
-import Header from './common/Header';
+import HeaderContainer from '../containers/common/HeaderContainer';
 import AppOverview from './AppOverview';
 import Content from './common/Content';
 import AppDetailedToolbar from './AppDetailedToolbar';
@@ -40,7 +40,7 @@ class AppDetailedView extends React.Component {
   render () {
     return (
       <div className="app-detailed-view">
-        <Header />
+        <HeaderContainer />
         <AppDetailedToolbar app={this.props.app} onSaveApp={this.props.toggleSaveAppModal} onDisableApp={this.props.toggleDisableAppModal}/>
         <Content className="container">
           <AppOverview app={this.props.app} className='app-overview' />
