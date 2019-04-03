@@ -12,10 +12,12 @@ type (
 	Service interface {
 		GetApps() (*[]models.App, error)
 		GetActiveAppByID(ID string) (*models.App, error)
+		GetActiveAppByAppID(appId string) (*models.App, error)
 		UpdateAppVersions(id string, versions []models.Version) error
 		DisableAllAppVersionsByAppID(id string, message string) error
 		DeleteAppById(id string) error
-		BindingAppByApp(appId, name string) error
+		CreateApp(app models.App) error
+		UpdateAppNameByID(id, name string) error
 		InitClientApp(deviceInfo *models.Device) (*models.Version, error)
 	}
 
@@ -59,6 +61,18 @@ func (a *appsService) GetActiveAppByID(id string) (*models.App, error) {
 	}
 
 	app.DeployedVersions = deployedVersions
+
+	return app, nil
+}
+
+// GetActiveAppByID retrieves app by id from the repository where the deleted_at is NULL
+func (a *appsService) GetActiveAppByAppID(appId string) (*models.App, error) {
+
+	app, err := a.repository.GetActiveAppByAppID(appId)
+
+	if err != nil {
+		return nil, err
+	}
 
 	return app, nil
 }
@@ -108,23 +122,49 @@ func (a *appsService) DeleteAppById(id string) error {
 	return nil
 }
 
-func (a *appsService) BindingAppByApp(appId, name string) error {
+func (a *appsService) CreateApp(app models.App) error {
 
 	// Check if it exist
-	app, err := a.repository.GetAppByAppID(appId)
+	appStored, err := a.repository.GetAppByAppID(app.AppID)
 
 	// If it is new then create an app
 	if err != nil && err == models.ErrNotFound {
 		id := helpers.GetUUID()
-		return a.repository.CreateApp(id, appId, name)
+		return a.repository.CreateApp(id, app.AppID, app.AppName)
 	}
+
+	// return error in the creation
+	if err != nil {
+		return err
+	}
+
+	// check if is disabled
+	if appStored.DeletedAt != "" {
+		// if is deleted so just reactive the existent app
+		if err := a.repository.UnDeleteAppByAppID(app.AppID); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (a *appsService) UpdateAppNameByID(id, name string) error {
+
+	// Check if it exist
+	app, err := a.repository.GetActiveAppByID(id)
 
 	if err != nil {
 		return err
 	}
 
-	// if is deleted so just reactive the existent app
-	return a.repository.UnDeleteAppByAppID(app.AppID)
+	// update the name if it was changed
+	if name != "" && app.AppName != name {
+		// Update the name of the app
+		return a.repository.UpdateAppNameByID(id, name)
+	}
+
+	return nil
 }
 
 // // InitClientApp returns information about the current state of the app - its disabled status

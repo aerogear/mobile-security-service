@@ -39,12 +39,21 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	// operationId: getApps
 	// produces:
 	// - application/json
-	// parameters: []
+	// parameters:
+	// - name: appId
+	//   in: query
+	//   description: The app_id to filter the app by appId
+	//   required: false
+	//   type: string
 	// responses:
 	//   200:
 	//     description: successful operation
 	//     schema:
 	//       $ref: '#/definitions/App'
+	//   204:
+	//     description: successful operation by no apps were found
+	//   404:
+	//     description: App not found
 	r.GET("/apps", appsHandler.GetApps)
 
 	// swagger:operation GET /apps/{id} App
@@ -152,6 +161,53 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	//   404:
 	//     description: App not found
 	r.POST("/apps/:id/versions/disable", appsHandler.DisableAllAppVersionsByAppID)
+
+	// Create an app
+	// ---
+	// summary:
+	// - Create an new app
+	// - Update the deleted_at field of an app when the appId already exist
+	// operationId: CreateApp
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: body
+	//   in: body
+	//   description:
+	//   required: true
+	//   schema:
+	//     $ref: '#/definitions/App'
+	// responses:
+	//   201:
+	//     description: successful operation
+	//   400:
+	//     description: Invalid data supplied
+	r.POST("/apps", appsHandler.CreateApp)
+
+	// Update an app
+	// ---
+	// summary: Update the app name of an app
+	// operationId: UpdateAppNameByID
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: id
+	//   in: path
+	//   description: The id for the app that will have all its versions updated
+	//   required: true
+	//   type: string
+	// - name: body
+	//   in: body
+	//   description:
+	//   required: true
+	//   schema:
+	//     $ref: '#/definitions/App'
+	// responses:
+	//   201:
+	//     description: successful operation
+	//   400:
+	//     description: Invalid data supplied
+	r.PATCH("/apps/:id", appsHandler.UpdateAppNameByID)
 }
 
 func SetInitRoutes(r *echo.Group, initHandler *initclient.HTTPHandler) {

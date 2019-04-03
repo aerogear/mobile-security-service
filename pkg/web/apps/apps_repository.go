@@ -16,6 +16,7 @@ type Repository interface {
 	GetAppByAppID(appID string) (*models.App, error)
 	GetActiveAppByAppID(appID string) (*models.App, error)
 	UnDeleteAppByAppID(appID string) error
+	UpdateAppNameByID(id string, name string) error
 	GetVersionByAppIDAndVersion(appID string, versionNumber string) (*models.Version, error)
 	GetDeviceByDeviceIDAndAppID(deviceID string, appID string) (*models.Device, error)
 	GetDeviceByVersionAndAppID(versionID string, appID string) (*models.Device, error)
