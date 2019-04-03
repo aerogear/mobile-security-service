@@ -27,8 +27,9 @@ const SaveAppModalContainer = ({ isSaveAppModalOpen, title, children, onConfirm,
 SaveAppModalContainer.propTypes = {
   isSaveAppModalOpen: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
-  children: PropTypes.string.isRequired,
-  onConfirm: PropTypes.func.isRequired
+  children: PropTypes.node.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  toggleSaveAppModal: PropTypes.func.isRequired
 };
 
 function mapStateToProps (state) {

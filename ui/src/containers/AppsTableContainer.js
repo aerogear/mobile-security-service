@@ -49,12 +49,24 @@ const AppsTableContainer = ({ apps, sortBy, columns, isAppsRequestFailed, getApp
 };
 
 AppsTableContainer.propTypes = {
-  apps: PropTypes.object.isRequired,
+  apps: PropTypes.shape({
+    data: PropTypes.arrayOf(PropTypes.shape({
+      appId: PropTypes.string.isRequired,
+      appName: PropTypes.string.isRequired,
+      id: PropTypes.string.isRequired,
+      numOfAppLaunches: PropTypes.number.isRequired,
+      numOfCurrentInstalls: PropTypes.number.isRequired,
+      numOfDeployedVersions: PropTypes.number.isRequired
+    }))
+  }),
   sortBy: PropTypes.object.isRequired,
   columns: PropTypes.array.isRequired,
   isAppsRequestFailed: PropTypes.bool.isRequired,
   getApps: PropTypes.func.isRequired,
-  className: PropTypes.string.isRequired
+  className: PropTypes.string.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired
+  }).isRequired
 };
 
 function mapStateToProps (state) {

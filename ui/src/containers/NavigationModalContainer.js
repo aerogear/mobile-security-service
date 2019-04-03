@@ -41,7 +41,7 @@ NavigationModalContainer.propTypes = {
   targetLocation: PropTypes.string,
   title: PropTypes.string.isRequired,
   unblockHistory: PropTypes.func.isRequired,
-  children: PropTypes.string.isRequired
+  children: PropTypes.node.isRequired
 };
 
 function mapStateToProps (state) {

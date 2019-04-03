@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, Button } from '@patternfly/react-core';
+import PropTypes from 'prop-types';
 
 const ConfirmationModal = ({ title, isOpen, onClose, confirmAction, children }) => {
   return (
@@ -17,6 +18,14 @@ const ConfirmationModal = ({ title, isOpen, onClose, confirmAction, children }) 
       {children}
     </Modal>
   );
+};
+
+ConfirmationModal.propTypes = {
+  title: PropTypes.string.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  confirmAction: PropTypes.array.isRequired,
+  children: PropTypes.node.isRequired
 };
 
 export default ConfirmationModal;

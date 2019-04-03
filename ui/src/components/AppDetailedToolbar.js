@@ -9,6 +9,10 @@ const AppDetailedToolbar = ({ app, onSaveApp, onDisableApp, history }) => {
     history.push('/');
   };
 
+  const onSaveAppClick = () => {
+    onSaveApp(true);
+  };
+
   return (
     <Toolbar className='details-toolbar'>
       <ToolbarGroup>
@@ -21,7 +25,7 @@ const AppDetailedToolbar = ({ app, onSaveApp, onDisableApp, history }) => {
       </ToolbarGroup>
       <ToolbarGroup className='toolbar-buttons'>
         <Button className='toolbar-button' onClick={onDisableApp} variant="primary">Disable App</Button>
-        <Button className='toolbar-button' onClick={() => onSaveApp(true)} variant="primary">Save</Button>
+        <Button className='toolbar-button' onClick={onSaveAppClick} variant="primary">Save</Button>
       </ToolbarGroup>
     </Toolbar>
   );
@@ -30,7 +34,10 @@ const AppDetailedToolbar = ({ app, onSaveApp, onDisableApp, history }) => {
 AppDetailedToolbar.propTypes = {
   app: PropTypes.object.isRequired,
   onSaveApp: PropTypes.func.isRequired,
-  onDisableApp: PropTypes.func.isRequired
+  onDisableApp: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired
+  }).isRequired
 };
 
 export default withRouter(AppDetailedToolbar);
