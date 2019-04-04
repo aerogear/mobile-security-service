@@ -6,7 +6,7 @@ import { sortable, cellWidth } from '@patternfly/react-table';
 import moment from 'moment';
 import { appDetailsSort, updateDisabledAppVersion, updateVersionCustomMessage } from '../actions/actions-ui';
 import AppsTable from '../components/AppsTable';
-import { getAppVersionTableRows, getSortedTableRows } from '../reducers/index';
+import { getAppVersionTableRows, getSortedTableRows } from '../reducers/app';
 import './TableContainer.css';
 import config from '../config/config';
 
