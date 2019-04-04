@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import { Header } from '../common/Header';
+import { Header } from '../Header';
 
 describe('Header', () => {
   const testProps = { currentUser: 'jdoe', history: [] };

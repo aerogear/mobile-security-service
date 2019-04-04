@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import DisableAppModalContainer from '../DisableAppModalContainer';
+import DisableAppModalContainer from '../appView/DisableAppModalContainer';
 
 const props = { isOpen: true };
 

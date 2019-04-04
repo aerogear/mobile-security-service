@@ -2,7 +2,7 @@ import * as actions from '../actions/types.js';
 import DataService from '../DataService';
 import fetchAction from './fetch';
 
-export const appsTableSort = (index, direction) => {
+export const appsTableSort = (_event, index, direction) => {
   return {
     type: actions.APPS_SORT,
     payload: {
@@ -12,7 +12,7 @@ export const appsTableSort = (index, direction) => {
   };
 };
 
-export const appDetailsSort = (index, direction) => {
+export const appDetailsSort = (_event, index, direction) => {
   return {
     type: actions.APP_VERSIONS_SORT,
     payload: {

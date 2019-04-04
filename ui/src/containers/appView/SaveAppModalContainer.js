@@ -3,8 +3,8 @@ import { Button } from '@patternfly/react-core';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { toggleSaveAppModal } from '../actions/actions-ui';
-import ConfirmationModal from '../components/common/ConfirmationModal';
+import { toggleSaveAppModal } from '../../actions/actions-ui';
+import ConfirmationModal from '../../components/common/ConfirmationModal';
 
 const SaveAppModalContainer = ({ isOpen, title, children, onConfirm, toggleSaveAppModal }) => {
   return (

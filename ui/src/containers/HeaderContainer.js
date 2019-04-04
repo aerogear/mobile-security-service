@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import config from '../../config/config';
-import Header from '../../components/common/Header';
+import config from '../config/config';
+import Header from '../components/Header';
 
 const HeaderContainer = ({ currentUser, history }) => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);

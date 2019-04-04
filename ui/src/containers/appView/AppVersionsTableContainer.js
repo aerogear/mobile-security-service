@@ -4,11 +4,10 @@ import { connect } from 'react-redux';
 import { Checkbox, TextInput } from '@patternfly/react-core';
 import { sortable, cellWidth } from '@patternfly/react-table';
 import moment from 'moment';
-import { appDetailsSort, updateDisabledAppVersion, updateVersionCustomMessage } from '../actions/actions-ui';
-import AppsTable from '../components/AppsTable';
-import { getSortedAppVersionTableRows } from '../selectors/index';
-import './TableContainer.css';
-import config from '../config/config';
+import { appDetailsSort, updateDisabledAppVersion, updateVersionCustomMessage } from '../../actions/actions-ui';
+import TableView from '../../components/common/TableView';
+import { getSortedAppVersionTableRows } from '../../selectors/index';
+import config from '../../config/config';
 
 const AppVersionsTableContainer = ({ className, sortBy, appVersionRows, appDetailsSort, updateDisabledAppVersion, updateVersionCustomMessage }) => {
   const columns = [
@@ -28,10 +27,6 @@ const AppVersionsTableContainer = ({ className, sortBy, appVersionRows, appDetai
   const handleCustomMessageInputChange = (value, e) => {
     const id = e.target.id;
     updateVersionCustomMessage(id, value);
-  };
-
-  const onSort = (_event, index, direction) => {
-    appDetailsSort(index, direction);
   };
 
   const createCheckbox = (id, checked) => {
@@ -82,11 +77,11 @@ const AppVersionsTableContainer = ({ className, sortBy, appVersionRows, appDetai
 
     return (
       <div className={className}>
-        <AppsTable
+        <TableView
           columns={columns}
           rows={renderedRows}
           sortBy={sortBy}
-          onSort={onSort}
+          onSort={appDetailsSort}
         />
       </div>
     );
@@ -118,7 +113,7 @@ AppVersionsTableContainer.propTypes = {
 function mapStateToProps (state) {
   return {
     sortBy: state.app.sortBy,
-    appVersionRows: getSortedAppVersionTableRows(state, state.app.sortBy, state.app.sortBy)
+    appVersionRows: getSortedAppVersionTableRows(state, state.app.sortBy)
   };
 }
 
