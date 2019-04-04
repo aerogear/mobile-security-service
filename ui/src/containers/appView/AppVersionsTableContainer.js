@@ -24,8 +24,9 @@ const AppVersionsTableContainer = ({ className, sortBy, appVersionRows, appDetai
     updateDisabledAppVersion(id, value);
   };
 
-  const handleCustomMessageInputChange = (value, e) => {
+  const handleCustomMessageInputChange = (e) => {
     const id = e.target.id;
+    const value = e.target.value;
     updateVersionCustomMessage(id, value);
   };
 
@@ -50,8 +51,8 @@ const AppVersionsTableContainer = ({ className, sortBy, appVersionRows, appDetai
           id={id}
           type="text"
           placeholder="Add a custom message.."
-          value={text}
-          onChange={handleCustomMessageInputChange}
+          defaultValue={text}
+          onBlur={handleCustomMessageInputChange}
           aria-label="Custom Disable Message"
         />
       </React.Fragment>
