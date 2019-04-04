@@ -5,7 +5,7 @@ import {
   UPDATE_DISABLED_APP,
   UPDATE_VERSION_CUSTOM_MESSAGE,
   TOGGLE_NAVIGATION_MODAL,
-  TOGGLE_APP_DETAILED_IS_DIRTY
+  APP_DETAILED_IS_DIRTY
 } from '../types';
 import { SortByDirection } from '@patternfly/react-table';
 
@@ -51,7 +51,7 @@ describe('actions', () => {
 
   it('should toggle whether app detail view is dirty', () => {
     const expectedAction = {
-      type: TOGGLE_APP_DETAILED_IS_DIRTY
+      type: APP_DETAILED_IS_DIRTY
     };
     expect(actions.toggleAppDetailedIsDirty()).toEqual(expectedAction);
   });

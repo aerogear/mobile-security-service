@@ -11,11 +11,13 @@ import AppVersionsTableContainer from './AppVersionsTableContainer';
 import DisableAppModalContainer from './DisableAppModalContainer';
 import NavigationModalContainer from './NavigationModalContainer';
 import SaveAppModalContainer from './SaveAppModalContainer';
-import { getAppById, toggleNavigationModal, toggleSaveAppModal, toggleDisableAppModal } from '../../actions/actions-ui';
+import { getAppById, toggleNavigationModal, toggleSaveAppModal, toggleDisableAppModal, setAppDetailedIsDirty } from '../../actions/actions-ui';
 
 class AppViewContainer extends React.Component {
   componentWillMount () {
     this.props.getAppById(this.props.match.params.id);
+
+    this.props.setAppDetailedIsDirty(this.isAppVersionsDirty());
 
     this.unblockHistory = this.props.history.block(targetLocation => {
       // If the view has a dirty state, display the popup
@@ -24,6 +26,10 @@ class AppViewContainer extends React.Component {
         return false;
       }
     });
+  }
+
+  componentDidUpdate () {
+    this.props.setAppDetailedIsDirty(this.isAppVersionsDirty());
   }
 
   componentWillUnmount () {
@@ -36,11 +42,30 @@ class AppViewContainer extends React.Component {
     // to update the App versions
   }
 
+  isAppVersionsDirty () {
+    const currentVersions = this.props.app.deployedVersions;
+    const savedVersions = this.props.savedData.deployedVersions;
+
+    var isDirty = false;
+
+    for (var i = 0; i < currentVersions.length; i++) {
+      var currentVersionValues = Object.values(currentVersions[ i ]).toString();
+      var savedVersionValues = Object.values(savedVersions[ i ]).toString();
+
+      if (currentVersionValues !== savedVersionValues) {
+        isDirty = true;
+        break;
+      }
+    }
+
+    return isDirty;
+  };
+
   render () {
     return (
       <div className="app-detailed-view">
         <HeaderContainer />
-        <AppToolbar app={this.props.app} onSaveAppClick={this.props.toggleSaveAppModal} onDisableAppClick={this.props.toggleDisableAppModal}/>
+        <AppToolbar app={this.props.app} onSaveAppClick={this.props.toggleSaveAppModal} onDisableAppClick={this.props.toggleDisableAppModal} isViewDirty={this.props.isDirty}/>
         <Content className="container">
           <AppOverview app={this.props.app} className='app-overview' />
           <Title className="table-title" size="2xl">
@@ -79,6 +104,7 @@ AppViewContainer.propTypes = {
 function mapStateToProps (state) {
   return {
     app: state.app.data,
+    savedData: state.app.savedData,
     isDirty: state.app.isDirty
   };
 };
@@ -87,7 +113,8 @@ const mapDispatchToProps = {
   getAppById,
   toggleNavigationModal,
   toggleSaveAppModal,
-  toggleDisableAppModal
+  toggleDisableAppModal,
+  setAppDetailedIsDirty
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AppViewContainer));

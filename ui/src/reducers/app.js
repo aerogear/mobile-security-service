@@ -3,7 +3,7 @@ import {
   APP_REQUEST,
   APP_SUCCESS,
   APP_FAILURE,
-  TOGGLE_APP_DETAILED_IS_DIRTY,
+  APP_DETAILED_IS_DIRTY,
   UPDATE_DISABLED_APP,
   UPDATE_VERSION_CUSTOM_MESSAGE
 } from '../actions/types.js';
@@ -20,6 +20,15 @@ const initialState = {
   sortBy: { direction: SortByDirection.asc, index: 0 },
   isAppRequestFailed: false,
   isDirty: false
+};
+
+export const cloneAppData = (appData) => {
+  return {
+    ...appData,
+    deployedVersions: [
+      ...appData.deployedVersions
+    ].map(version => ({ ...version }))
+  };
 };
 
 export default (state = initialState, action) => {
@@ -39,18 +48,18 @@ export default (state = initialState, action) => {
     case APP_SUCCESS:
       return {
         ...state,
-        data: action.result,
-        savedData: action.result
+        data: cloneAppData(action.result),
+        savedData: cloneAppData(action.result)
       };
     case APP_FAILURE:
       return {
         ...state,
         isAppRequestFailed: true
       };
-    case TOGGLE_APP_DETAILED_IS_DIRTY:
+    case APP_DETAILED_IS_DIRTY:
       return {
         ...state,
-        isDirty: !state.isDirty
+        isDirty: action.payload.isDirty
       };
     case UPDATE_DISABLED_APP:
       const updatedVersions = state.data.deployedVersions.map((version) => {

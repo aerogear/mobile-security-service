@@ -4,7 +4,7 @@ import { Toolbar, ToolbarGroup, ToolbarItem, Breadcrumb, BreadcrumbItem, Button 
 import PropTypes from 'prop-types';
 import './AppToolbar.css';
 
-const AppToolbar = ({ app, onSaveAppClick, onDisableAppClick, history }) => {
+const AppToolbar = ({ app, onSaveAppClick, onDisableAppClick, history, isViewDirty }) => {
   const onHomeClick = () => {
     history.push('/');
   };
@@ -21,7 +21,7 @@ const AppToolbar = ({ app, onSaveAppClick, onDisableAppClick, history }) => {
       </ToolbarGroup>
       <ToolbarGroup className='toolbar-buttons'>
         <Button className='toolbar-button' onClick={onDisableAppClick} variant="primary">Disable App</Button>
-        <Button className='toolbar-button' onClick={onSaveAppClick} variant="primary">Save</Button>
+        <Button className='toolbar-button' onClick={onSaveAppClick} isDisabled={!isViewDirty} variant="primary">Save</Button>
       </ToolbarGroup>
     </Toolbar>
   );
@@ -31,6 +31,7 @@ AppToolbar.propTypes = {
   app: PropTypes.object.isRequired,
   onSaveAppClick: PropTypes.func.isRequired,
   onDisableAppClick: PropTypes.func.isRequired,
+  isViewDirty: PropTypes.bool.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired
   }).isRequired

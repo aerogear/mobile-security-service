@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import { SortByDirection } from '@patternfly/react-table';
 
 // returns a new array sorted in preferred direction
-export const getSortedTableRows = (rows, index, direction) => {
+const getSortedTableRows = (rows, index, direction) => {
   // sort in ascending direction
   const sortedRows = [ ...rows ].sort((a, b) => (a[index] < b[index] ? -1 : a[index] > b[index] ? 1 : 0));
 

@@ -228,9 +228,9 @@ describe('reducer', () => {
     expect(newState.modals.disableApp.isOpen).toEqual(!isOpen);
   });
 
-  it('should handle TOGGLE_APP_DETAILED_IS_DIRTY', () => {
+  it('should handle APP_DETAILED_IS_DIRTY', () => {
     const appDetailedDirtyBeforeToggle = initialState.isAppDetailedDirty;
-    const newState = reducer(initialState, { type: actions.TOGGLE_APP_DETAILED_IS_DIRTY });
+    const newState = reducer(initialState, { type: actions.APP_DETAILED_IS_DIRTY });
     expect(newState.isAppDetailedDirty).toEqual(!appDetailedDirtyBeforeToggle);
   });
 
