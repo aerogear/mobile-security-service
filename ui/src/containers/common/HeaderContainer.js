@@ -41,7 +41,7 @@ HeaderContainer.propTypes = {
 
 function mapStateToProps (state) {
   return {
-    currentUser: state.currentUser
+    currentUser: state.header.currentUser
   };
 }
 
