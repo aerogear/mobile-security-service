@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
-import AppsTable from '../components/AppsTable';
+import TableView from '../components/common/TableView';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { sortable } from '@patternfly/react-table';
 import { getApps, appsTableSort } from '../actions/actions-ui';
 import { getSortedAppsTableRows } from '../selectors/index';
-import './TableContainer.css';
 
 const AppsTableContainer = ({ apps, appRows, sortBy, isAppsRequestFailed, getApps, appsTableSort, history, className }) => {
   const columns = [
@@ -30,18 +29,14 @@ const AppsTableContainer = ({ apps, appRows, sortBy, isAppsRequestFailed, getApp
     history.push(path);
   };
 
-  const onSort = (_event, index, direction) => {
-    appsTableSort(index, direction);
-  };
-
   const getTable = () => {
     return (
       <div className={className}>
-        <AppsTable
+        <TableView
           columns={columns}
           rows={appRows}
           sortBy={sortBy}
-          onSort={onSort}
+          onSort={appsTableSort}
           onRowClick={onRowClick}
         />
       </div>

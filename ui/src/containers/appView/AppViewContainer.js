@@ -3,18 +3,17 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Title } from '@patternfly/react-core';
-import HeaderContainer from '../containers/common/HeaderContainer';
-import AppOverview from './AppOverview';
-import Content from './common/Content';
-import AppDetailedToolbar from './AppDetailedToolbar';
-import AppVersionsTableContainer from '../containers/AppVersionsTableContainer';
-import DisableAppModalContainer from '../containers/DisableAppModalContainer';
-import NavigationModalContainer from '../containers/NavigationModalContainer';
-import SaveAppModalContainer from '../containers/SaveAppModalContainer';
-import './AppDetailedView.css';
-import { getAppById, toggleNavigationModal, toggleSaveAppModal, toggleDisableAppModal } from '../actions/actions-ui';
+import AppOverview from '../../components/appView/AppOverview';
+import Content from '../../components/common/Content';
+import AppToolbar from '../../components/appView/AppToolbar';
+import HeaderContainer from '../HeaderContainer';
+import AppVersionsTableContainer from './AppVersionsTableContainer';
+import DisableAppModalContainer from './DisableAppModalContainer';
+import NavigationModalContainer from './NavigationModalContainer';
+import SaveAppModalContainer from './SaveAppModalContainer';
+import { getAppById, toggleNavigationModal, toggleSaveAppModal, toggleDisableAppModal } from '../../actions/actions-ui';
 
-class AppDetailedView extends React.Component {
+class AppViewContainer extends React.Component {
   componentWillMount () {
     this.props.getAppById(this.props.match.params.id);
 
@@ -41,7 +40,7 @@ class AppDetailedView extends React.Component {
     return (
       <div className="app-detailed-view">
         <HeaderContainer />
-        <AppDetailedToolbar app={this.props.app} onSaveAppClick={this.props.toggleSaveAppModal} onDisableAppClick={this.props.toggleDisableAppModal}/>
+        <AppToolbar app={this.props.app} onSaveAppClick={this.props.toggleSaveAppModal} onDisableAppClick={this.props.toggleDisableAppModal}/>
         <Content className="container">
           <AppOverview app={this.props.app} className='app-overview' />
           <Title className="table-title" size="2xl">
@@ -61,7 +60,7 @@ class AppDetailedView extends React.Component {
   }
 }
 
-AppDetailedView.propTypes = {
+AppViewContainer.propTypes = {
   app: PropTypes.shape({
     data: PropTypes.shape({
       id: PropTypes.string,
@@ -91,4 +90,4 @@ const mapDispatchToProps = {
   toggleDisableAppModal
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AppDetailedView));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AppViewContainer));

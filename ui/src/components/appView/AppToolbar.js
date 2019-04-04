@@ -2,9 +2,9 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Toolbar, ToolbarGroup, ToolbarItem, Breadcrumb, BreadcrumbItem, Button } from '@patternfly/react-core';
 import PropTypes from 'prop-types';
-import './AppDetailedToolbar.css';
+import './AppToolbar.css';
 
-const AppDetailedToolbar = ({ app, onSaveAppClick, onDisableAppClick, history }) => {
+const AppToolbar = ({ app, onSaveAppClick, onDisableAppClick, history }) => {
   const onHomeClick = () => {
     history.push('/');
   };
@@ -27,7 +27,7 @@ const AppDetailedToolbar = ({ app, onSaveAppClick, onDisableAppClick, history })
   );
 };
 
-AppDetailedToolbar.propTypes = {
+AppToolbar.propTypes = {
   app: PropTypes.object.isRequired,
   onSaveAppClick: PropTypes.func.isRequired,
   onDisableAppClick: PropTypes.func.isRequired,
@@ -36,4 +36,4 @@ AppDetailedToolbar.propTypes = {
   }).isRequired
 };
 
-export default withRouter(AppDetailedToolbar);
+export default withRouter(AppToolbar);

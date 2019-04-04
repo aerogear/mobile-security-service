@@ -1,6 +1,6 @@
 import React from 'react';
 import { Title } from '@patternfly/react-core';
-import HeaderContainer from '../containers/common/HeaderContainer';
+import HeaderContainer from '../containers/HeaderContainer';
 import AppsTableContainer from '../containers/AppsTableContainer';
 import './LandingPage.css';
 import Content from './common/Content';

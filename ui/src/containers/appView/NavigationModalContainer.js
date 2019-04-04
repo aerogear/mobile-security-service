@@ -3,7 +3,7 @@ import { Button, Modal } from '@patternfly/react-core';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { toggleNavigationModal, toggleAppDetailedIsDirty } from '../actions/actions-ui';
+import { toggleNavigationModal, toggleAppDetailedIsDirty } from '../../actions/actions-ui';
 
 const NavigationModalContainer = ({ isOpen, targetLocation, title, unblockHistory, children, history, toggleNavigationModal, toggleAppDetailedIsDirty }) => {
   const handleModalClose = () => {

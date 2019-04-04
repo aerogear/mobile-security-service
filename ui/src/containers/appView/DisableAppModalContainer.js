@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, TextInput, Form, FormGroup, Stack, StackItem, Modal } from '@patternfly/react-core';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { toggleDisableAppModal } from '../actions/actions-ui';
+import { toggleDisableAppModal } from '../../actions/actions-ui';
 
 const DisableAppModalContainer = ({ isOpen, toggleDisableAppModal }) => {
   const handleDisableAppSave = () => {
