@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { sortable } from '@patternfly/react-table';
 import { getApps, appsTableSort } from '../actions/actions-ui';
-import { getAppsTableRows, getSortedTableRows } from '../reducers/apps';
+import { getSortedAppsTableRows } from '../selectors/index';
 import './TableContainer.css';
 
 const AppsTableContainer = ({ apps, appRows, sortBy, isAppsRequestFailed, getApps, appsTableSort, history, className }) => {
@@ -78,10 +78,10 @@ AppsTableContainer.propTypes = {
   }).isRequired
 };
 
-function mapStateToProps (state) {
+function mapStateToProps (state, props) {
   return {
     apps: state.apps,
-    appRows: getSortedTableRows(getAppsTableRows(state.apps.data), state.apps.sortBy.index, state.apps.sortBy.direction),
+    appRows: getSortedAppsTableRows(state, state.apps.sortBy),
     sortBy: state.apps.sortBy,
     isAppsRequestFailed: state.apps.isAppsRequestFailed
   };
