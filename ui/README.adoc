@@ -37,6 +37,12 @@ To run the app in the development mode on localhost:3000 run:
 npm start
 ----
 
+Running the server and the web UI together from the Mobile-Security-Service project root run
+[source,shell]
+----
+make serve
+----
+
 === Run in VSCode debug mode
 
 The following steps are specific to VSCode, however you can run the project in any editor:
