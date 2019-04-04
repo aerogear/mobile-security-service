@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { sortable } from '@patternfly/react-table';
 import { getApps, appsTableSort } from '../actions/actions-ui';
-import { getAppsTableRows, getSortedTableRows } from '../reducers/index';
+import { getAppsTableRows, getSortedTableRows } from '../reducers/apps';
 import './TableContainer.css';
 
 const AppsTableContainer = ({ apps, appRows, sortBy, isAppsRequestFailed, getApps, appsTableSort, history, className }) => {
