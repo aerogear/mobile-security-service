@@ -6,7 +6,7 @@ import { sortable, cellWidth } from '@patternfly/react-table';
 import moment from 'moment';
 import { appDetailsSort, updateDisabledAppVersion, updateVersionCustomMessage } from '../actions/actions-ui';
 import AppsTable from '../components/AppsTable';
-import { getAppVersionTableRows, getSortedTableRows } from '../reducers/app';
+import { getSortedAppVersionTableRows } from '../selectors/index';
 import './TableContainer.css';
 import config from '../config/config';
 
@@ -118,7 +118,7 @@ AppVersionsTableContainer.propTypes = {
 function mapStateToProps (state) {
   return {
     sortBy: state.app.sortBy,
-    appVersionRows: getSortedTableRows(getAppVersionTableRows(state.app.data.deployedVersions), state.app.sortBy.direction, state.app.sortBy.index)
+    appVersionRows: getSortedAppVersionTableRows(state, state.app.sortBy, state.app.sortBy)
   };
 }
 
