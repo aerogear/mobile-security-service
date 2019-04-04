@@ -7,7 +7,7 @@ type Version struct {
 	Version              string   `json:"version"`
 	AppID                string   `json:"appId"`
 	Disabled             bool     `json:"disabled"`
-	DisabledMessage      string   `json:"disabledMessage,omitempty"`
+	DisabledMessage      string   `json:"disabledMessage"`
 	NumOfCurrentInstalls int64    `json:"numOfCurrentInstalls,omitempty"`
 	NumOfAppLaunches     int64    `json:"numOfAppLaunches"`
 	LastLaunchedAt       string   `json:"lastLaunchedAt,omitempty"`
