@@ -2,22 +2,31 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Checkbox, TextInput } from '@patternfly/react-core';
+import { sortable, cellWidth } from '@patternfly/react-table';
 import moment from 'moment';
 import { appDetailsSort, updateDisabledAppVersion, updateVersionCustomMessage } from '../actions/actions-ui';
 import AppsTable from '../components/AppsTable';
+import { getAppVersionTableRows, getSortedTableRows } from '../reducers/index';
 import './TableContainer.css';
 import config from '../config/config';
 
-const AppVersionsTableContainer = ({ className, sortBy, columns, appVersions, appDetailsSort, updateDisabledAppVersion, updateVersionCustomMessage }) => {
-  const handleDisableAppVersionChange = (_event, e) => {
+const AppVersionsTableContainer = ({ className, sortBy, appVersionRows, appDetailsSort, updateDisabledAppVersion, updateVersionCustomMessage }) => {
+  const columns = [
+    { title: 'APP VERSION', transforms: [sortable, cellWidth(10)] },
+    { title: 'CURRENT INSTALLS', transforms: [sortable, cellWidth(10)] },
+    { title: 'LAUNCHES', transforms: [sortable, cellWidth(10)] },
+    { title: 'LAST LAUNCHED', transforms: [sortable, cellWidth(15)] },
+    { title: 'DISABLE ON STARTUP', transforms: [sortable, cellWidth(10)] },
+    { title: 'CUSTOM DISABLE MESSAGE', transforms: [sortable, cellWidth('max')] }
+  ];
+
+  const handleDisableAppVersionChange = (value, e) => {
     const id = e.target.id;
-    const isDisabled = e.target.checked;
-    updateDisabledAppVersion(id, isDisabled);
+    updateDisabledAppVersion(id, value);
   };
 
-  const handleCustomMessageInputChange = (_event, e) => {
+  const handleCustomMessageInputChange = (value, e) => {
     const id = e.target.id;
-    const value = e.target.value;
     updateVersionCustomMessage(id, value);
   };
 
@@ -66,13 +75,12 @@ const AppVersionsTableContainer = ({ className, sortBy, columns, appVersions, ap
       } else {
         tempRow[3] = moment(versions[i][3]).format(config.dateTimeFormat);
       }
-      tempRow[4] = createCheckbox(versions[i][0].toString(), versions[i][4]);
-      tempRow[5] = createTextInput(versions[i][0], versions[i][5]);
+      tempRow[4] = createCheckbox(versions[i][6].toString(), versions[i][4]);
+      tempRow[5] = createTextInput(versions[i][6], versions[i][5]);
       renderedRows.push(tempRow);
     }
 
     return (
-
       <div className={className}>
         <AppsTable
           columns={columns}
@@ -84,7 +92,7 @@ const AppVersionsTableContainer = ({ className, sortBy, columns, appVersions, ap
     );
   };
 
-  if (!appVersions || !appVersions.length) {
+  if (!appVersionRows || !appVersionRows.length) {
     return (
       <div className="no-versions">
         <p>This app has no versions</p>
@@ -92,7 +100,7 @@ const AppVersionsTableContainer = ({ className, sortBy, columns, appVersions, ap
     );
   }
 
-  return getTable(appVersions);
+  return getTable(appVersionRows);
 };
 
 AppVersionsTableContainer.propTypes = {
@@ -101,8 +109,7 @@ AppVersionsTableContainer.propTypes = {
     direction: PropTypes.string.isRequired,
     index: PropTypes.number.isRequired
   }).isRequired,
-  columns: PropTypes.array.isRequired,
-  appVersions: PropTypes.array.isRequired,
+  appVersionRows: PropTypes.array.isRequired,
   appDetailsSort: PropTypes.func.isRequired,
   updateDisabledAppVersion: PropTypes.func.isRequired,
   updateVersionCustomMessage: PropTypes.func.isRequired
@@ -110,9 +117,8 @@ AppVersionsTableContainer.propTypes = {
 
 function mapStateToProps (state) {
   return {
-    sortBy: state.appVersionsSortDirection,
-    columns: state.appVersionsColumns,
-    appVersions: state.app.versionsRows
+    sortBy: state.app.sortBy,
+    appVersionRows: getSortedTableRows(getAppVersionTableRows(state.app.data.deployedVersions), state.app.sortBy.direction, state.app.sortBy.index)
   };
 }
 

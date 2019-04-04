@@ -3,10 +3,20 @@ import AppsTable from '../components/AppsTable';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { sortable } from '@patternfly/react-table';
 import { getApps, appsTableSort } from '../actions/actions-ui';
+import { getAppsTableRows, getSortedTableRows } from '../reducers/index';
 import './TableContainer.css';
 
-const AppsTableContainer = ({ apps, sortBy, columns, isAppsRequestFailed, getApps, appsTableSort, history, className }) => {
+const AppsTableContainer = ({ apps, appRows, sortBy, isAppsRequestFailed, getApps, appsTableSort, history, className }) => {
+  const columns = [
+    { title: 'APP NAME', transforms: [sortable] },
+    { title: 'APP ID', transforms: [sortable] },
+    { title: 'DEPLOYED VERSIONS', transforms: [sortable] },
+    { title: 'CURRENT INSTALLS', transforms: [sortable] },
+    { title: 'LAUNCHES', transforms: [sortable] }
+  ];
+
   useEffect(() => {
     getApps();
   }, []);
@@ -29,7 +39,7 @@ const AppsTableContainer = ({ apps, sortBy, columns, isAppsRequestFailed, getApp
       <div className={className}>
         <AppsTable
           columns={columns}
-          rows={apps.rows}
+          rows={appRows}
           sortBy={sortBy}
           onSort={onSort}
           onRowClick={onRowClick}
@@ -60,7 +70,6 @@ AppsTableContainer.propTypes = {
     }))
   }),
   sortBy: PropTypes.object.isRequired,
-  columns: PropTypes.array.isRequired,
   isAppsRequestFailed: PropTypes.bool.isRequired,
   getApps: PropTypes.func.isRequired,
   className: PropTypes.string.isRequired,
@@ -72,9 +81,9 @@ AppsTableContainer.propTypes = {
 function mapStateToProps (state) {
   return {
     apps: state.apps,
-    sortBy: state.sortBy,
-    columns: state.columns,
-    isAppsRequestFailed: state.isAppsRequestFailed
+    appRows: getSortedTableRows(getAppsTableRows(state.apps.data), state.apps.sortBy.index, state.apps.sortBy.direction),
+    sortBy: state.apps.sortBy,
+    isAppsRequestFailed: state.apps.isAppsRequestFailed
   };
 }
 

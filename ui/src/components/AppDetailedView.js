@@ -68,8 +68,7 @@ AppDetailedView.propTypes = {
       appId: PropTypes.string,
       appName: PropTypes.string,
       deployedVersions: PropTypes.arrayOf(PropTypes.object)
-    }),
-    versionsRows: PropTypes.array
+    })
   }),
   isDirty: PropTypes.bool,
   getAppById: PropTypes.func.isRequired,
@@ -81,7 +80,7 @@ AppDetailedView.propTypes = {
 function mapStateToProps (state) {
   return {
     app: state.app.data,
-    isDirty: state.isAppDetailedDirty
+    isDirty: state.app.isDirty
   };
 };
 

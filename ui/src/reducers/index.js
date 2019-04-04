@@ -1,34 +1,27 @@
 import * as actions from '../actions/types.js';
 
-import { SortByDirection, sortable, cellWidth } from '@patternfly/react-table';
+import { SortByDirection } from '@patternfly/react-table';
 
 const initialState = {
-  apps: { rows: [], data: [] },
-  sortBy: { direction: SortByDirection.asc, index: 0 },
-  appVersionsSortDirection: { direction: SortByDirection.asc, index: 0 },
-  columns: [
-    { title: 'APP NAME', transforms: [sortable] },
-    { title: 'APP ID', transforms: [sortable] },
-    { title: 'DEPLOYED VERSIONS', transforms: [sortable] },
-    { title: 'CURRENT INSTALLS', transforms: [sortable] },
-    { title: 'LAUNCHES', transforms: [sortable] }
-  ],
-  appVersionsColumns: [
-    { title: 'APP VERSION', transforms: [sortable, cellWidth(10)] },
-    { title: 'CURRENT INSTALLS', transforms: [sortable, cellWidth(10)] },
-    { title: 'LAUNCHES', transforms: [sortable, cellWidth(10)] },
-    { title: 'LAST LAUNCHED', transforms: [sortable, cellWidth(15)] },
-    { title: 'DISABLE ON STARTUP', transforms: [sortable, cellWidth(10)] },
-    { title: 'CUSTOM DISABLE MESSAGE', transforms: [sortable, cellWidth('max')] }
-  ],
-  isAppsRequestFailed: false,
-  currentUser: 'currentUser',
-  isAppDetailedDirty: false,
-  app: {
-    data: {},
-    versionsRows: []
+  header: {
+    currentUser: 'currentUser'
   },
-  isAppRequestFailed: false,
+  apps: {
+    data: [],
+    sortBy: { direction: SortByDirection.asc, index: 0 },
+    isAppsRequestFailed: false
+  },
+  app: {
+    savedData: {
+      deployedVersions: []
+    },
+    data: {
+      deployedVersions: []
+    },
+    sortBy: { direction: SortByDirection.asc, index: 0 },
+    isAppRequestFailed: false,
+    isDirty: false
+  },
   modals: {
     disableApp: {
       isOpen: false
@@ -44,7 +37,7 @@ const initialState = {
 };
 
 // returns a new array sorted in preferred direction
-const sortRows = (rows, index, direction) => {
+export const getSortedTableRows = (rows, index, direction) => {
   // sort in ascending direction
   const sortedRows = [ ...rows ].sort((a, b) => (a[index] < b[index] ? -1 : a[index] > b[index] ? 1 : 0));
 
@@ -52,7 +45,7 @@ const sortRows = (rows, index, direction) => {
     return rows;
   }
 
-  // reverse if descending direction is preferred
+  // reverse if descending direction is selected
   if (direction !== SortByDirection.asc) {
     sortedRows.reverse();
   }
@@ -86,95 +79,101 @@ const areColumnValuesEqual = (rows, index) => {
   });
 };
 
+/**
+ * Selector to convert app objects to array of app values
+ *
+ * @param {Array} apps - Array of app objects
+ */
+export const getAppsTableRows = (apps) => {
+  return apps.map(app => {
+    return [
+      app.appName,
+      app.appId,
+      app.numOfDeployedVersions,
+      app.numOfCurrentInstalls,
+      app.numOfAppLaunches
+    ];
+  });
+};
+
+export const getAppVersionTableRows = (versions) => {
+  return versions.map(version => {
+    return [
+      version['version'],
+      version['numOfCurrentInstalls'] || 0,
+      version['numOfAppLaunches'] || 0,
+      version['lastLaunchedAt'] || 'Never Launched',
+      version['disabled'],
+      version['disabledMessage'] || '',
+      version['id']
+    ];
+  });
+};
+
 export default (state = initialState, action) => {
   switch (action.type) {
     case actions.APPS_SORT:
-      const direction = action.payload.direction;
-      const index = action.payload.index;
-      const sortedRows = sortRows(state.apps.rows, index, direction);
       return {
         ...state,
-        sortBy: {
-          direction: direction,
-          index: index
-        },
         apps: {
-          rows: sortedRows,
-          data: state.apps.data
+          ...state.apps,
+          sortBy: {
+            direction: action.payload.direction,
+            index: action.payload.index
+          }
         }
       };
     case actions.APP_VERSIONS_SORT:
-      const versionDirection = action.payload.direction;
-      const versionIndex = action.payload.index;
-      const sortedAppVersions = sortRows(state.app.versionsRows, versionIndex, versionDirection);
-      const newState = {
+      return {
         ...state,
-        appVersionsSortDirection: {
-          direction: versionDirection,
-          index: versionIndex
+        app: {
+          ...state.app,
+          sortBy: {
+            direction: action.payload.direction,
+            index: action.payload.index
+          }
         }
       };
-
-      newState.app.versionsRows = sortedAppVersions;
-
-      return newState;
-
     case actions.APPS_REQUEST:
       return {
         ...state
       };
     case actions.APPS_SUCCESS:
-      const fetchedApps = [];
-      action.result.forEach((app) => {
-        const temp = [];
-        temp[0] = app.appName;
-        temp[1] = app.appId;
-        temp[2] = app.numOfDeployedVersions;
-        temp[3] = app.numOfCurrentInstalls;
-        temp[4] = app.numOfAppLaunches;
-        fetchedApps.push(temp);
-      });
       return {
         ...state,
         apps: {
-          rows: fetchedApps,
+          ...state.apps,
           data: action.result
         }
       };
     case actions.APPS_FAILURE:
       return {
         ...state,
-        isAppsRequestFailed: true
+        apps: {
+          ...state.apps,
+          isAppsRequestFailed: true
+        }
       };
     case actions.APP_REQUEST:
       return {
         ...state
       };
     case actions.APP_SUCCESS:
-      const fetchedVersions = [];
-      action.result.deployedVersions.forEach((version) => {
-        const temp = [];
-        temp[0] = version['version'];
-        temp[1] = version['numOfCurrentInstalls'] || 0;
-        temp[2] = version['numOfAppLaunches'] || 0;
-        temp[3] = version['lastLaunchedAt'] || 'Never Launched';
-        temp[4] = version['disabled'];
-        temp[5] = version['disabledMessage'] || '';
-
-        fetchedVersions.push(temp);
-      });
-
       return {
         ...state,
         app: {
+          ...state.app,
           data: action.result,
-          versionsRows: fetchedVersions
+          savedData: action.result
         }
       };
     case actions.APP_FAILURE:
       return {
         ...state,
-        isAppRequestFailed: true
+        app: {
+          ...state.app,
+          isAppRequestFailed: true
+        }
       };
     case actions.TOGGLE_NAVIGATION_MODAL:
       const targetLocation = action.payload.targetLocation || undefined;
@@ -211,38 +210,45 @@ export default (state = initialState, action) => {
     case actions.TOGGLE_APP_DETAILED_IS_DIRTY:
       return {
         ...state,
-        isAppDetailedDirty: !state.isAppDetailedDirty
+        app: {
+          ...state.app,
+          isDirty: !state.app.isDirty
+        }
       };
     case actions.UPDATE_DISABLED_APP:
-      const id = action.payload.id;
-      const isDisabled = action.payload.isDisabled;
-      const updatedVersions = state.app.versionsRows.map((version) => {
-        if (version[0] === id) {
-          version[4] = isDisabled;
+      const updatedVersions = state.app.data.deployedVersions.map((version) => {
+        if (version.id === action.payload.id) {
+          version.disabled = action.payload.isDisabled;
         }
         return version;
       });
+
       return {
         ...state,
         app: {
-          data: state.app.data,
-          versionsRows: [ ...updatedVersions ]
+          ...state.app,
+          data: {
+            ...state.app.data,
+            deployedVersions: updatedVersions
+          }
         }
       };
     case actions.UPDATE_VERSION_CUSTOM_MESSAGE:
-      const versionId = action.payload.id;
-      const value = action.payload.value;
-      const updatedVersionsRows = state.app.versionsRows.map((version) => {
-        if (version[0] === versionId) {
-          version[5] = value;
+      const updatedVersions2 = state.app.data.deployedVersions.map((version) => {
+        if (version.id === action.payload.id) {
+          version.disabledMessage = action.payload.value;
         }
         return version;
       });
+
       return {
         ...state,
         app: {
-          data: state.app.data,
-          versionsRows: [ ...updatedVersionsRows ]
+          ...state.app,
+          data: {
+            ...state.app.data,
+            deployedVersions: updatedVersions2
+          }
         }
       };
     default:
