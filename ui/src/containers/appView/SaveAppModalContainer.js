@@ -6,6 +6,15 @@ import { connect } from 'react-redux';
 import { toggleSaveAppModal } from '../../actions/actions-ui';
 import ConfirmationModal from '../../components/common/ConfirmationModal';
 
+/**
+ * Redux container for the Save App Modal
+ *
+ * @param {boolean} props.isOpen - The open/closed state of the modal.
+ * @param {string} props.title - The title to display on the modal.
+ * @param {*} props.children - The child props of this component.
+ * @param {*} props.onConfirm - The action to execute when `Confirm` is clicked.
+ * @param {boolean} props.toggleSaveAppModal - The action to open or close the modal.
+ */
 const SaveAppModalContainer = ({ isOpen, title, children, onConfirm, toggleSaveAppModal }) => {
   return (
     <ConfirmationModal

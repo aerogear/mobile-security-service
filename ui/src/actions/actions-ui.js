@@ -77,3 +77,8 @@ export const getApps = fetchAction([ actions.APPS_REQUEST, actions.APPS_SUCCESS,
 
 export const getAppById = (appId) =>
   fetchAction([ actions.APP_REQUEST, actions.APP_SUCCESS, actions.APP_FAILURE ], async () => DataService.getAppById(appId))();
+
+export const saveAppVersions = (id, versions) =>
+  fetchAction([actions.SAVE_APP_VERSIONS,
+    actions.SAVE_APP_VERSIONS_SUCCESS,
+    actions.SAVE_APP_VERSIONS_FAILURE], async () => DataService.updateAppVersions(id, versions))();
