@@ -16,8 +16,8 @@ const HeaderContainer = ({ currentUser, history }) => {
     history.push('/');
   };
 
-  const onLogoutUser = () => {
-    console.log('onLogoutUser()');
+  const logout = () => {
+    window.location.replace('/oauth/sign_in');
   };
 
   return (
@@ -27,7 +27,7 @@ const HeaderContainer = ({ currentUser, history }) => {
       isDropDownOpen={isDropDownOpen}
       onUserDropdownToggle={onUserDropdownToggle}
       onTitleClick={onTitleClick}
-      onLogoutUser={onLogoutUser}
+      logout={logout}
     />
   );
 };
