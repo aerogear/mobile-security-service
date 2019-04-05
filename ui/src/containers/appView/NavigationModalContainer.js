@@ -3,15 +3,15 @@ import { Button, Modal } from '@patternfly/react-core';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { toggleNavigationModal, setAppDetailedIsDirty } from '../../actions/actions-ui';
+import { toggleNavigationModal, setAppDetailedDirtyState } from '../../actions/actions-ui';
 
-const NavigationModalContainer = ({ isOpen, targetLocation, title, unblockHistory, children, history, toggleNavigationModal, setAppDetailedIsDirty }) => {
+const NavigationModalContainer = ({ isOpen, targetLocation, title, unblockHistory, children, history, toggleNavigationModal, setAppDetailedDirtyState }) => {
   const handleModalClose = () => {
     toggleNavigationModal(false);
   };
 
   const handleLeaveClick = () => {
-    setAppDetailedIsDirty();
+    setAppDetailedDirtyState();
     unblockHistory();
     history.push(targetLocation);
     handleModalClose();
@@ -51,4 +51,4 @@ function mapStateToProps (state) {
   };
 }
 
-export default withRouter(connect(mapStateToProps, { toggleNavigationModal, setAppDetailedIsDirty })(NavigationModalContainer));
+export default withRouter(connect(mapStateToProps, { toggleNavigationModal, setAppDetailedDirtyState })(NavigationModalContainer));

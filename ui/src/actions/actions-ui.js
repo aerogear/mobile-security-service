@@ -48,7 +48,7 @@ export const updateDisabledAppVersion = (id, isDisabled) => {
   };
 };
 
-export const setAppDetailedIsDirty = (isDirty) => {
+export const setAppDetailedDirtyState = (isDirty) => {
   return {
     type: actions.APP_DETAILED_IS_DIRTY,
     payload: {

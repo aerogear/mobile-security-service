@@ -11,13 +11,13 @@ import AppVersionsTableContainer from './AppVersionsTableContainer';
 import DisableAppModalContainer from './DisableAppModalContainer';
 import NavigationModalContainer from './NavigationModalContainer';
 import SaveAppModalContainer from './SaveAppModalContainer';
-import { getAppById, toggleNavigationModal, toggleSaveAppModal, toggleDisableAppModal, setAppDetailedIsDirty } from '../../actions/actions-ui';
+import { getAppById, toggleNavigationModal, toggleSaveAppModal, toggleDisableAppModal, setAppDetailedDirtyState } from '../../actions/actions-ui';
 
-class AppViewContainer extends React.Component {
+class AppPageContainer extends React.Component {
   componentWillMount () {
     this.props.getAppById(this.props.match.params.id);
 
-    this.props.setAppDetailedIsDirty(this.isAppVersionsDirty());
+    this.props.setAppDetailedDirtyState(this.isAppVersionsDirty());
 
     this.unblockHistory = this.props.history.block(targetLocation => {
       // If the view has a dirty state, display the popup
@@ -29,7 +29,7 @@ class AppViewContainer extends React.Component {
   }
 
   componentDidUpdate () {
-    this.props.setAppDetailedIsDirty(this.isAppVersionsDirty());
+    this.props.setAppDetailedDirtyState(this.isAppVersionsDirty());
   }
 
   componentWillUnmount () {
@@ -85,7 +85,7 @@ class AppViewContainer extends React.Component {
   }
 }
 
-AppViewContainer.propTypes = {
+AppPageContainer.propTypes = {
   app: PropTypes.shape({
     data: PropTypes.shape({
       id: PropTypes.string,
@@ -101,7 +101,7 @@ AppViewContainer.propTypes = {
   toggleDisableAppModal: PropTypes.func.isRequired
 };
 
-function mapStateToProps (state) {
+const mapStateToProps = (state) => {
   return {
     app: state.app.data,
     savedData: state.app.savedData,
@@ -114,7 +114,7 @@ const mapDispatchToProps = {
   toggleNavigationModal,
   toggleSaveAppModal,
   toggleDisableAppModal,
-  setAppDetailedIsDirty
+  setAppDetailedDirtyState
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AppViewContainer));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AppPageContainer));
