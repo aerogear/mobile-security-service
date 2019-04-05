@@ -3,9 +3,13 @@ import {
   APP_VERSIONS_SORT,
   APP_SUCCESS,
   APP_FAILURE,
+  SAVE_APP_VERSIONS_SUCCESS,
+  SAVE_APP_VERSIONS_FAILURE,
   SET_APP_DETAILED_DIRTY,
   UPDATE_DISABLED_APP,
-  UPDATE_VERSION_CUSTOM_MESSAGE
+  UPDATE_VERSION_CUSTOM_MESSAGE,
+  DISABLE_APP_SUCCESS,
+  DISABLE_APP_FAILURE
 } from '../actions/types.js';
 import { SortByDirection } from '@patternfly/react-table';
 
@@ -19,6 +23,8 @@ describe('appReducer', () => {
     },
     sortBy: { direction: SortByDirection.asc, index: 0 },
     isAppRequestFailed: false,
+    isSaveAppRequestFailed: false,
+    isDisableAppRequestFailed: false,
     isDirty: false
   };
 
@@ -84,6 +90,53 @@ describe('appReducer', () => {
   it('should handle APP_FAILURE', () => {
     const newState = appReducer(initialState, { type: APP_FAILURE });
     expect(newState.isAppRequestFailed).toEqual(true);
+  });
+
+  it('should handle SAVE_APP_VERSIONS_SUCCESS', () => {
+    const initialSaveAppVersionsState = {
+      ...initialState,
+      data: resultApp
+    };
+
+    const newState = appReducer(initialSaveAppVersionsState, { type: SAVE_APP_VERSIONS_SUCCESS });
+
+    expect(newState.isSaveAppRequestFailed).toEqual(false);
+    expect(newState.isDirty).toEqual(false);
+    expect(newState.savedData).toEqual(resultApp);
+  });
+
+  it('should handle SAVE_APP_VERSIONS_FAILURE', () => {
+    const newState = appReducer(initialState, { type: SAVE_APP_VERSIONS_FAILURE });
+    expect(newState.isSaveAppRequestFailed).toEqual(true);
+  });
+
+  it('should handle DISABLE_APP_SUCCESS', () => {
+    const initialDisableAppVersionsState = {
+      ...initialState,
+      data: resultApp
+    };
+
+    const newState = appReducer(initialDisableAppVersionsState, { type: DISABLE_APP_SUCCESS, result: 'custom message' });
+
+    const newAppData = {
+      ...initialDisableAppVersionsState.data,
+      deployedVersions: initialDisableAppVersionsState.data.deployedVersions.map((version) => {
+        return {
+          ...version,
+          disabledMessage: 'custom message',
+          disabled: true
+        };
+      })
+    };
+
+    expect(newState.isDisableAppRequestFailed).toEqual(false);
+    expect(newState.data).toEqual(newAppData);
+    expect(newState.savedData).toEqual(newAppData);
+  });
+
+  it('should handle DISABLE_APP_FAILURE', () => {
+    const newState = appReducer(initialState, { type: DISABLE_APP_FAILURE });
+    expect(newState.isDisableAppRequestFailed).toEqual(true);
   });
 
   it('should handle SET_APP_DETAILED_DIRTY', () => {

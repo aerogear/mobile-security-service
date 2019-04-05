@@ -146,10 +146,7 @@ export default (state = initialState, action) => {
     case DISABLE_APP_FAILURE: {
       return {
         ...state,
-        data: {
-          ...state.data,
-          isDisableAppRequestFailed: true
-        }
+        isDisableAppRequestFailed: true
       };
     }
     default: {

@@ -1,10 +1,11 @@
 import * as types from './types';
 import * as actions from './actions-ui';
+import { SortByDirection } from '@patternfly/react-table';
 
 describe('actions', () => {
   it('appsTableSort should create APPS_SORT action', () => {
     const index = 0;
-    const direction = 'ASC';
+    const direction = SortByDirection.asc;
     expect(actions.appsTableSort(null, index, direction)).toEqual({
       type: types.APPS_SORT,
       payload: {
@@ -16,7 +17,7 @@ describe('actions', () => {
 
   it('appVersionsTableSort should create APP_VERSIONS_SORT action', () => {
     const index = 1;
-    const direction = 'DESC';
+    const direction = SortByDirection.desc;
     expect(actions.appVersionsTableSort(null, index, direction)).toEqual({
       type: types.APP_VERSIONS_SORT,
       payload: {
@@ -81,6 +82,16 @@ describe('actions', () => {
   it('toggleDisableAppModal should create TOGGLE_DISABLE_APP_MODAL action', () => {
     expect(actions.toggleDisableAppModal()).toEqual({
       type: types.TOGGLE_DISABLE_APP_MODAL
+    });
+  });
+
+  it('setAllAppVersionsDisabled should create SET_ALL_APP_VERSIONS_DISABLED action', () => {
+    const customMessage = 'my custom message';
+    expect(actions.setAllAppVersionsDisabled(customMessage)).toEqual({
+      type: types.SET_ALL_APP_VERSIONS_DISABLED,
+      payload: {
+        customMessage: customMessage
+      }
     });
   });
 });

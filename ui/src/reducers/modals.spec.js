@@ -2,7 +2,8 @@ import modalsReducer from './modals';
 import {
   TOGGLE_NAVIGATION_MODAL,
   TOGGLE_SAVE_APP_MODAL,
-  TOGGLE_DISABLE_APP_MODAL
+  TOGGLE_DISABLE_APP_MODAL,
+  DISABLE_APP_SUCCESS
 } from '../actions/types.js';
 
 describe('modalsReducer', () => {
@@ -57,6 +58,13 @@ describe('modalsReducer', () => {
     const isOpen = initialState.saveApp.isOpen;
     const newState = modalsReducer(initialState, { type: TOGGLE_SAVE_APP_MODAL });
     expect(newState.saveApp.isOpen).toEqual(!isOpen);
+  });
+
+  it('should handle DISABLE_APP_SUCCESS', () => {
+    const newState = modalsReducer(initialState, {
+      type: DISABLE_APP_SUCCESS
+    });
+    expect(newState.disableApp.isOpen).toEqual(false);
   });
 
   it('should handle TOGGLE_DISABLE_APP_MODAL', () => {
