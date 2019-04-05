@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   Dropdown,
   DropdownToggle,
@@ -16,7 +15,7 @@ import { css } from '@patternfly/react-styles';
 import './Header.css';
 import PropTypes from 'prop-types';
 
-const Header = ({ currentUser, appName, isDropDownOpen, onUserDropdownToggle, onTitleClick, onLogoutUser }) => {
+const Header = ({ currentUser, appName, isDropDownOpen, onUserDropdownToggle, onTitleClick, logout }) => {
   const toolbar = (
     <Toolbar>
       <ToolbarGroup className={css(accessibleStyles.screenReader, accessibleStyles.visibleOnLg)}>
@@ -25,7 +24,6 @@ const Header = ({ currentUser, appName, isDropDownOpen, onUserDropdownToggle, on
           <Dropdown
             isPlain
             position="right"
-            onSelect={onUserDropdownToggle}
             isOpen={isDropDownOpen}
             toggle={
               <DropdownToggle onToggle={onUserDropdownToggle}>
@@ -33,8 +31,8 @@ const Header = ({ currentUser, appName, isDropDownOpen, onUserDropdownToggle, on
               </DropdownToggle>
             }
             dropdownItems={[
-              <DropdownItem key="logout" component="button" href="#logout" onClick={onLogoutUser}>
-                Log out
+              <DropdownItem key="logout" component="button" onClick={logout}>
+                 Log out
               </DropdownItem>
             ]}
           />
@@ -56,7 +54,7 @@ Header.propTypes = {
   isDropDownOpen: PropTypes.bool.isRequired,
   onUserDropdownToggle: PropTypes.func.isRequired,
   onTitleClick: PropTypes.func.isRequired,
-  onLogoutUser: PropTypes.func.isRequired
+  logout: PropTypes.func.isRequired
 };
 
 export default Header;
