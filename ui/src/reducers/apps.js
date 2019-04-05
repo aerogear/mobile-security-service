@@ -15,7 +15,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case APPS_SORT:
+    case APPS_SORT: {
       return {
         ...state,
         sortBy: {
@@ -23,21 +23,26 @@ export default (state = initialState, action) => {
           index: action.payload.index
         }
       };
-    case APPS_REQUEST:
+    }
+    case APPS_REQUEST: {
       return {
         ...state
       };
-    case APPS_SUCCESS:
+    }
+    case APPS_SUCCESS: {
       return {
         ...state,
         data: action.result
       };
-    case APPS_FAILURE:
+    }
+    case APPS_FAILURE: {
       return {
         ...state,
         isAppsRequestFailed: true
       };
-    default:
+    }
+    default: {
       return state;
+    }
   }
 };

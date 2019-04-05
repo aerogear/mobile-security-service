@@ -12,12 +12,41 @@ export const appsTableSort = (_event, index, direction) => {
   };
 };
 
-export const appDetailsSort = (_event, index, direction) => {
+export const appVersionsTableSort = (_event, index, direction) => {
   return {
     type: actions.APP_VERSIONS_SORT,
     payload: {
       index: index,
       direction: direction
+    }
+  };
+};
+
+export const setAppDetailedDirtyState = (isDirty) => {
+  return {
+    type: actions.SET_APP_DETAILED_DIRTY,
+    payload: {
+      isDirty: isDirty
+    }
+  };
+};
+
+export const updateVersionCustomMessage = (id, value) => {
+  return {
+    type: actions.UPDATE_VERSION_CUSTOM_MESSAGE,
+    payload: {
+      id: id,
+      value: value
+    }
+  };
+};
+
+export const updateDisabledAppVersion = (id, isDisabled) => {
+  return {
+    type: actions.UPDATE_DISABLED_APP,
+    payload: {
+      id: id,
+      isDisabled: isDisabled
     }
   };
 };
@@ -38,38 +67,9 @@ export const toggleSaveAppModal = () => {
   };
 };
 
-export const updateDisabledAppVersion = (id, isDisabled) => {
-  return {
-    type: actions.UPDATE_DISABLED_APP,
-    payload: {
-      id: id,
-      isDisabled: isDisabled
-    }
-  };
-};
-
-export const setAppDetailedDirtyState = (isDirty) => {
-  return {
-    type: actions.APP_DETAILED_IS_DIRTY,
-    payload: {
-      isDirty: isDirty
-    }
-  };
-};
-
 export const toggleDisableAppModal = () => {
   return {
     type: actions.TOGGLE_DISABLE_APP_MODAL
-  };
-};
-
-export const updateVersionCustomMessage = (id, value) => {
-  return {
-    type: actions.UPDATE_VERSION_CUSTOM_MESSAGE,
-    payload: {
-      id: id,
-      value: value
-    }
   };
 };
 

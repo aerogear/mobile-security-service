@@ -44,15 +44,15 @@ const areColumnValuesEqual = (rows, index) => {
   });
 };
 
-const getSortIndex = (state, sortBy) => sortBy.index;
-const getSortDirection = (state, sortBy) => sortBy.direction;
+const getSortIndex = (_state, sortBy) => sortBy.index;
+const getSortDirection = (_state, sortBy) => sortBy.direction;
 
 /**
  * Selector to convert app objects to array of app values
  *
  * @param {Array} apps - Array of app objects
  */
-export const getAppsTableRows = (state) => {
+export const getAppsTableRows = (state, _sortBy) => {
   return state.apps.data.map(app => {
     return [
       app.appName,
@@ -64,16 +64,16 @@ export const getAppsTableRows = (state) => {
   });
 };
 
-export const getAppVersionTableRows = (state) => {
+export const getAppVersionTableRows = (state, _sortBy) => {
   return state.app.data.deployedVersions.map(version => {
     return [
-      version['version'],
-      version['numOfCurrentInstalls'] || 0,
-      version['numOfAppLaunches'] || 0,
-      version['lastLaunchedAt'] || 'Never Launched',
-      version['disabled'],
-      version['disabledMessage'] || '',
-      version['id']
+      version.version,
+      version.numOfCurrentInstalls || 0,
+      version.numOfAppLaunches || 0,
+      version.lastLaunchedAt || 'Never Launched',
+      version.disabled,
+      version.disabledMessage || '',
+      version.id
     ];
   });
 };

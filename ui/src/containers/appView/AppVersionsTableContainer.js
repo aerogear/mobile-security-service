@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import { Checkbox, TextInput } from '@patternfly/react-core';
 import { sortable, cellWidth } from '@patternfly/react-table';
 import moment from 'moment';
-import { appDetailsSort, updateDisabledAppVersion, updateVersionCustomMessage } from '../../actions/actions-ui';
+import { appVersionsTableSort, updateDisabledAppVersion, updateVersionCustomMessage } from '../../actions/actions-ui';
 import TableView from '../../components/common/TableView';
 import { getSortedAppVersionTableRows } from '../../selectors/index';
 import config from '../../config/config';
 
-const AppVersionsTableContainer = ({ className, sortBy, appVersionRows, appDetailsSort, updateDisabledAppVersion, updateVersionCustomMessage }) => {
+const AppVersionsTableContainer = ({ className, sortBy, appVersionRows, appVersionsTableSort, updateDisabledAppVersion, updateVersionCustomMessage }) => {
   const columns = [
     { title: 'APP VERSION', transforms: [sortable, cellWidth(10)] },
     { title: 'CURRENT INSTALLS', transforms: [sortable, cellWidth(10)] },
@@ -82,7 +82,7 @@ const AppVersionsTableContainer = ({ className, sortBy, appVersionRows, appDetai
           columns={columns}
           rows={renderedRows}
           sortBy={sortBy}
-          onSort={appDetailsSort}
+          onSort={appVersionsTableSort}
         />
       </div>
     );
@@ -106,7 +106,7 @@ AppVersionsTableContainer.propTypes = {
     index: PropTypes.number.isRequired
   }).isRequired,
   appVersionRows: PropTypes.array.isRequired,
-  appDetailsSort: PropTypes.func.isRequired,
+  appVersionsTableSort: PropTypes.func.isRequired,
   updateDisabledAppVersion: PropTypes.func.isRequired,
   updateVersionCustomMessage: PropTypes.func.isRequired
 };
@@ -119,7 +119,7 @@ function mapStateToProps (state) {
 }
 
 const mapDispatchToProps = {
-  appDetailsSort,
+  appVersionsTableSort,
   updateDisabledAppVersion,
   updateVersionCustomMessage
 };

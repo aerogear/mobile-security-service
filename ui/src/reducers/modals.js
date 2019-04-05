@@ -20,7 +20,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case TOGGLE_NAVIGATION_MODAL:
+    case TOGGLE_NAVIGATION_MODAL: {
       const targetLocation = action.payload.targetLocation || undefined;
       return {
         ...state,
@@ -29,13 +29,15 @@ export default (state = initialState, action) => {
           targetLocation: targetLocation
         }
       };
-    case TOGGLE_SAVE_APP_MODAL:
+    }
+    case TOGGLE_SAVE_APP_MODAL: {
       return {
         ...state,
         saveApp: {
           isOpen: !state.saveApp.isOpen
         }
       };
+    }
     case DISABLE_APP_SUCCESS: {
       return {
         ...state,
@@ -44,14 +46,16 @@ export default (state = initialState, action) => {
         }
       };
     }
-    case TOGGLE_DISABLE_APP_MODAL:
+    case TOGGLE_DISABLE_APP_MODAL: {
       return {
         ...state,
         disableApp: {
           isOpen: !state.disableApp.isOpen
         }
       };
-    default:
+    }
+    default: {
       return state;
+    }
   }
 };
