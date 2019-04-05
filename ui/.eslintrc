@@ -1,7 +1,10 @@
 {
     "extends": ["react-app","standard"],
+    "plugins": ["react-hooks"],
     "rules": {
         "semi": [2, "always"],
-        "prefer-const": [2]
+        "prefer-const": [2],
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn"
     }
 }
