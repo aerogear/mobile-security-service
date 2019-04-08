@@ -6,7 +6,12 @@ import Header from '../components/Header';
 const setup = (propOverrides) => {
   const props = Object.assign(
     {
-      currentUser: 'someuser',
+      currentUser: {
+        username: 'username',
+        email: 'email'
+      },
+      isUserRequestFailed: false,
+      getUser: jest.fn(),
       history: {
         push: jest.fn()
       }
