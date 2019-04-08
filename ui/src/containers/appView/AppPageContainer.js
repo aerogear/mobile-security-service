@@ -11,8 +11,15 @@ import AppVersionsTableContainer from './AppVersionsTableContainer';
 import DisableAppModalContainer from './DisableAppModalContainer';
 import NavigationModalContainer from './NavigationModalContainer';
 import SaveAppModalContainer from './SaveAppModalContainer';
-import { getAppById, toggleNavigationModal, toggleSaveAppModal, toggleDisableAppModal, setAppDetailedDirtyState } from '../../actions/actions-ui';
+import { getAppById, toggleNavigationModal, toggleSaveAppModal, toggleDisableAppModal, setAppDetailedDirtyState, saveAppVersions } from '../../actions/actions-ui';
+import AppService from '../../services/appService';
 
+/**
+ * Redux container component for the AppPage
+ *
+ * @class AppPageContainer
+ * @extends {React.Component}
+ */
 class AppPageContainer extends React.Component {
   componentWillMount () {
     this.props.getAppById(this.props.match.params.id);
@@ -36,36 +43,43 @@ class AppPageContainer extends React.Component {
     this.unblockHistory();
   }
 
+  /**
+   * Handles when user clicks Confirm in the Save App Model.
+   * This function closes the model, then it saves the changed versions to the server.
+   * When that is complete, it fetches fresh app data from the server.
+   *
+   * @memberof AppPageContainer
+   */
   onConfirmSaveApp () {
+    const { app: { id, deployedVersions: currentVersions }, savedData: { deployedVersions: savedVersions } } = this.props;
+
     this.props.toggleSaveAppModal();
-    // TODO: Make a PUT request to API
-    // to update the App versions
+
+    const dirtyVersions = AppService.getDirtyVersions(savedVersions, currentVersions);
+
+    this.props.saveAppVersions(id, dirtyVersions);
   }
 
+  /**
+   * Checks if the app versions form is dirty.
+   *
+   * @returns {Boolean} is the form dirty
+   * @memberof AppPageContainer
+   */
   isAppVersionsDirty () {
-    const currentVersions = this.props.app.deployedVersions;
-    const savedVersions = this.props.savedData.deployedVersions;
+    const { app: { deployedVersions: currentVersions },
+      savedData: { deployedVersions: savedVersions } } = this.props;
 
-    var isDirty = false;
+    const dirtyItems = AppService.getDirtyVersions(savedVersions, currentVersions);
 
-    for (var i = 0; i < currentVersions.length; i++) {
-      var currentVersionValues = Object.values(currentVersions[ i ]).toString();
-      var savedVersionValues = Object.values(savedVersions[ i ]).toString();
-
-      if (currentVersionValues !== savedVersionValues) {
-        isDirty = true;
-        break;
-      }
-    }
-
-    return isDirty;
+    return !!dirtyItems.length;
   };
 
   render () {
     return (
       <div className="app-detailed-view">
         <HeaderContainer />
-        <AppToolbar app={this.props.app} onSaveAppClick={this.props.toggleSaveAppModal} onDisableAppClick={this.props.toggleDisableAppModal} isViewDirty={this.props.isDirty}/>
+        <AppToolbar app={this.props.app} onSaveAppClick={this.props.toggleSaveAppModal} onDisableAppClick={this.props.toggleDisableAppModal} isViewDirty={this.props.isDirty} />
         <Content className="container">
           <AppOverview app={this.props.app} className='app-overview' />
           <Title className="table-title" size="2xl">
@@ -98,7 +112,8 @@ AppPageContainer.propTypes = {
   getAppById: PropTypes.func.isRequired,
   toggleNavigationModal: PropTypes.func.isRequired,
   toggleSaveAppModal: PropTypes.func.isRequired,
-  toggleDisableAppModal: PropTypes.func.isRequired
+  toggleDisableAppModal: PropTypes.func.isRequired,
+  saveAppVersions: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => {
@@ -114,7 +129,8 @@ const mapDispatchToProps = {
   toggleNavigationModal,
   toggleSaveAppModal,
   toggleDisableAppModal,
-  setAppDetailedDirtyState
+  setAppDetailedDirtyState,
+  saveAppVersions
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AppPageContainer));
