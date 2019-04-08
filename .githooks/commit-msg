@@ -1,12 +1,45 @@
 #!/bin/sh
 
-./scripts/commit-filter-check.sh && rc=$? || rc=$?
-echo return code : $rc
-if [ $rc == 1 ]
-then
-	echo "Script return code 1 so commit failed"
-	exit 1
-else
-	echo "No error returned so commit successful"
-fi
+commit_message_check (){
+      # gets the content of the current commit message
+      gitmessage="$(cat $1)"
+      
+      matchtypes="feat\|fix\|docs\|breaking\|build\|ci\|perf\|refactor\|style\|test"
+      types="feat, fix, docs, breaking, build, ci, perf, refactor, style, test"
+      
+      messagecheck=`echo $gitmessage | grep -w "$matchtypes"`
 
+      if [ -z "$messagecheck" ]
+      then 
+            echo -e "Your commit message must begin with one of the following: [\e[33m$types\033[0m]"
+      fi
+      messagecheck=`echo $gitmessage | grep "(AEROGEAR-"`
+      if  [ -z "$messagecheck" ]
+      then 
+            echo -e "Your commit message must end with the following: \e[33m(AEROGEAR-****)\033[0m where **** is the JIRA number"
+            echo " " 
+      fi
+
+      messagecheck=`echo $gitmessage | grep ": "`
+      if  [ -z "$messagecheck" ]
+      then 
+            echo "Your commit message has a formatting error please take note of special characters '():' position and use in the example below:"
+            echo -e "\n\t\e[34mtype(optional-scope): some txt (AEROGEAR-****)\033[0m"
+            echo " "
+      fi
+
+      messagecheck=`echo $gitmessage | grep -w "$matchtypes" | grep "(AEROGEAR-" | grep ": "`
+
+      # check to see if the messagecheck var is empty
+      if [ -z "$messagecheck" ]
+      then  
+            echo -e "\e[31m[COMMIT MESSAGE FAILED]\033[0m Please review the following:\n"
+            echo $gitmessage
+            echo " "
+            exit 1
+      else
+            echo -e "\e[92m[COMMIT MESSAGE PASSED]\033[0m\n"
+      fi  
+}
+
+commit_message_check $1
