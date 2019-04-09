@@ -20,7 +20,7 @@ import AppService from '../../services/appService';
  * @class AppPageContainer
  * @extends {React.Component}
  */
-class AppPageContainer extends React.Component {
+export class AppPageContainer extends React.Component {
   componentWillMount () {
     this.props.getAppById(this.props.match.params.id);
 

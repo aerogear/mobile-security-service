@@ -15,7 +15,7 @@ import ConfirmationModal from '../../components/common/ConfirmationModal';
  * @param {*} props.onConfirm - The action to execute when `Confirm` is clicked.
  * @param {boolean} props.toggleSaveAppModal - The action to open or close the modal.
  */
-const SaveAppModalContainer = ({ isOpen, title, children, onConfirm, toggleSaveAppModal }) => {
+export const SaveAppModalContainer = ({ isOpen, title, children, onConfirm, toggleSaveAppModal }) => {
   return (
     <ConfirmationModal
       title={title}

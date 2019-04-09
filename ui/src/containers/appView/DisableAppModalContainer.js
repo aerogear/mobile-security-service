@@ -12,7 +12,7 @@ import { toggleDisableAppModal, disableAppVersions } from '../../actions/actions
  * @param {*} props.toggleDisableAppModal - Action to toggle opened/closed state of modal
  * @param {*} props.disableAppVersions - Action to disable all app versions
  */
-const DisableAppModalContainer = ({ id, isOpen, toggleDisableAppModal, disableAppVersions }) => {
+export const DisableAppModalContainer = ({ id, isOpen, toggleDisableAppModal, disableAppVersions }) => {
   const handleDisableAppSave = () => {
     disableAppVersions(id, disableMessage);
   };
