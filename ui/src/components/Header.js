@@ -10,11 +10,22 @@ import {
   ToolbarItem
 } from '@patternfly/react-core';
 import { UserIcon } from '@patternfly/react-icons';
+import PropTypes from 'prop-types';
 import accessibleStyles from '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
 import { css } from '@patternfly/react-styles';
 import './Header.css';
-import PropTypes from 'prop-types';
 
+/**
+ * Stateless presentational component to display the UI header
+ *
+ * @param {object} props Component props
+ * @param {string} props.currentUser Name of the currently logged in user
+ * @param {string} props.appName Name of the UI
+ * @param {boolean} props.isDropDownOpen IF the dropdown should be open or not
+ * @param {func} props.onUserDropdownToggle logic to determine what should happen on dropdown toggle
+ * @param {func} props.onTitleClick logic to execute on title click
+ * @param {func} props.logout logic to execute on logout click
+ */
 const Header = ({ currentUser, appName, isDropDownOpen, onUserDropdownToggle, onTitleClick, logout }) => {
   const toolbar = (
     <Toolbar>

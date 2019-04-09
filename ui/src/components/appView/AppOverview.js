@@ -3,6 +3,12 @@ import PropTypes from 'prop-types';
 import { Grid, GridItem } from '@patternfly/react-core';
 import './AppOverview.css';
 
+/**
+ * Stateless presentational component to display app level information.
+ * @param {object} props Component props
+ * @param {string} props.className CSS className for this component
+ * @param {object} props.app Contains all app properties
+ */
 const AppOverview = ({ className, app }) => {
   return (
     <div className={className}>
@@ -20,7 +26,9 @@ const AppOverview = ({ className, app }) => {
 
 AppOverview.propTypes = {
   className: PropTypes.string.isRequired,
-  app: PropTypes.object.isRequired
+  app: PropTypes.shape({
+    appId: PropTypes.string.isRequired
+  }).isRequired
 };
 
 export default AppOverview;
