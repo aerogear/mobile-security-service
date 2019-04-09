@@ -101,7 +101,7 @@ func (a *appsService) UpdateAppVersions(id string, versions []models.Version) er
 	return nil
 }
 
-// Update all versions
+// DisableAllAppVersionsByAppID disables all versions for an app
 func (a *appsService) DisableAllAppVersionsByAppID(id string, message string) error {
 
 	// get the app id to send it to the re
@@ -111,7 +111,11 @@ func (a *appsService) DisableAllAppVersionsByAppID(id string, message string) er
 		return err
 	}
 
-	return a.repository.DisableAllAppVersionsByAppID(app.AppID, message)
+	if message == "" {
+		return a.repository.DisableAllAppVersionsByAppID(app.AppID)
+	}
+
+	return a.repository.DisableAllAppVersionsAndSetDisabledMessageByAppID(app.AppID, message)
 }
 
 func (a *appsService) DeleteAppById(id string) error {

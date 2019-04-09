@@ -8,7 +8,9 @@ import {
   UPDATE_VERSION_CUSTOM_MESSAGE,
   SAVE_APP_VERSIONS,
   SAVE_APP_VERSIONS_SUCCESS,
-  SAVE_APP_VERSIONS_FAILURE
+  SAVE_APP_VERSIONS_FAILURE,
+  DISABLE_APP_SUCCESS,
+  DISABLE_APP_FAILURE
 } from '../actions/types.js';
 
 import { SortByDirection } from '@patternfly/react-table';
@@ -23,6 +25,7 @@ const initialState = {
   sortBy: { direction: SortByDirection.asc, index: 0 },
   isAppRequestFailed: false,
   isSaveAppRequestFailed: false,
+  isDisableAppRequestFailed: false,
   isDirty: false
 };
 
@@ -120,6 +123,33 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isSaveAppRequestFailed: true
+      };
+    }
+    case DISABLE_APP_SUCCESS: {
+      const updatedVersions = state.data.deployedVersions.map((version) => {
+        return {
+          ...version,
+          disabledMessage: action.result || version.disabledMessage,
+          disabled: true
+        };
+      });
+
+      const appData = { ...state.data, deployedVersions: updatedVersions };
+
+      return {
+        ...state,
+        data: appData,
+        savedData: cloneAppData(appData),
+        isDisableAppRequestFailed: false
+      };
+    }
+    case DISABLE_APP_FAILURE: {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          isDisableAppRequestFailed: true
+        }
       };
     }
     default: {

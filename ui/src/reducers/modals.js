@@ -1,7 +1,8 @@
 import {
   TOGGLE_NAVIGATION_MODAL,
   TOGGLE_SAVE_APP_MODAL,
-  TOGGLE_DISABLE_APP_MODAL
+  TOGGLE_DISABLE_APP_MODAL,
+  DISABLE_APP_SUCCESS
 } from '../actions/types.js';
 
 const initialState = {
@@ -35,6 +36,14 @@ export default (state = initialState, action) => {
           isOpen: !state.saveApp.isOpen
         }
       };
+    case DISABLE_APP_SUCCESS: {
+      return {
+        ...state,
+        disableApp: {
+          isOpen: false
+        }
+      };
+    }
     case TOGGLE_DISABLE_APP_MODAL:
       return {
         ...state,

@@ -182,6 +182,7 @@
     "github.com/joho/godotenv",
     "github.com/labstack/echo",
     "github.com/labstack/echo/middleware",
+    "github.com/labstack/gommon/log",
     "github.com/lib/pq",
     "github.com/sirupsen/logrus",
     "gopkg.in/DATA-DOG/go-sqlmock.v1",

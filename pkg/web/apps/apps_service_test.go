@@ -26,7 +26,10 @@ var (
 		UpdateAppVersionsFunc: func(versions []models.Version) error {
 			return nil
 		},
-		DisableAllAppVersionsByAppIDFunc: func(id string, message string) error {
+		DisableAllAppVersionsByAppIDFunc: func(id string) error {
+			return nil
+		},
+		DisableAllAppVersionsAndSetDisabledMessageByAppIDFunc: func(id string, message string) error {
 			return nil
 		},
 		DeleteAppByIdFunc: func(id string) error {
@@ -66,7 +69,10 @@ var (
 		UpdateAppVersionsFunc: func(versions []models.Version) error {
 			return models.ErrNotFound
 		},
-		DisableAllAppVersionsByAppIDFunc: func(id string, message string) error {
+		DisableAllAppVersionsByAppIDFunc: func(id string) error {
+			return models.ErrNotFound
+		},
+		DisableAllAppVersionsAndSetDisabledMessageByAppIDFunc: func(id string, message string) error {
 			return models.ErrNotFound
 		},
 		DeleteAppByIdFunc: func(id string) error {
@@ -316,9 +322,15 @@ func Test_appsService_DisableAllAppVersionsByAppID(t *testing.T) {
 		repo    RepositoryMock
 	}{
 		{
-			name: "Disable all app versions",
+			name: "Disable all app versions and set custom disabled message",
 			id:   "7f89ce49-a736-459e-9110-e52d049fc025",
 			msg:  "disable",
+			repo: *mockRepositoryWithSuccessResults,
+		},
+		{
+			name: "Disable all app versions",
+			id:   "7f89ce49-a736-459e-9110-e52d049fc025",
+			msg:  "",
 			repo: *mockRepositoryWithSuccessResults,
 		},
 		{
