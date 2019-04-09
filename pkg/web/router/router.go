@@ -6,6 +6,7 @@ import (
 	"github.com/aerogear/mobile-security-service/pkg/web/checks"
 	"github.com/aerogear/mobile-security-service/pkg/web/initclient"
 	"github.com/aerogear/mobile-security-service/pkg/web/middleware"
+	"github.com/aerogear/mobile-security-service/pkg/web/user"
 	"github.com/labstack/echo"
 	validator "gopkg.in/go-playground/validator.v9"
 )
@@ -27,6 +28,24 @@ func NewRouter(config config.Config) *echo.Echo {
 
 	router.Validator = &requestValidator{validator: validator.New()}
 	return router
+}
+
+func SetUserRoutes(r *echo.Group, userHandler user.HTTPHandler) {
+	// swagger:operation GET /user User
+	//
+	// Returns user
+	// ---
+	// summary: Retrieve user
+	// operationId: getUser
+	// produces:
+	// - application/json
+	// summary: Retrieve user
+	// responses:
+	//   "200":
+	//     description: sucessful operation
+	//   "404":
+	//     description: No user found
+	r.GET("/user", userHandler.GetUser)
 }
 
 // SetAppRoutes binds the route address to their handler functions

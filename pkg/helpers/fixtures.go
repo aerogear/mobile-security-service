@@ -5,6 +5,15 @@ import (
 	"github.com/google/uuid"
 )
 
+//GetMockUser returns a dummy user
+func GetMockUser() *models.User {
+	user := &models.User{
+		Username: "TestUser",
+		Email:    "test@user.com",
+	}
+	return user
+}
+
 // GetMockAppList returns some dummy apps
 func GetMockAppList() []models.App {
 	apps := []models.App{
