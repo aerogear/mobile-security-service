@@ -23,6 +23,7 @@ import (
 	"github.com/aerogear/mobile-security-service/pkg/web/checks"
 	"github.com/aerogear/mobile-security-service/pkg/web/initclient"
 	"github.com/aerogear/mobile-security-service/pkg/web/router"
+	"github.com/aerogear/mobile-security-service/pkg/web/user"
 	dotenv "github.com/joho/godotenv"
 	"github.com/labstack/echo"
 	log "github.com/sirupsen/logrus"
@@ -94,6 +95,12 @@ func setupServer(e *echo.Echo, c config.Config, dbConn *sql.DB) {
 	// Prefix api routes
 	APIRoutePrefix := c.APIRoutePrefix
 	apiGroup := e.Group(APIRoutePrefix)
+
+	// User handler setup
+	userHandler := user.NewHTTPHandler(e)
+
+	// Setup user routes
+	router.SetUserRoutes(apiGroup, userHandler)
 
 	// App handler setup
 	appsPostgreSQLRepository := apps.NewPostgreSQLRepository(dbConn)
