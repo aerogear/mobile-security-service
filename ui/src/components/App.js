@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Switch, Redirect, Route } from 'react-router-d
 import LandingPage from './LandingPage';
 import AppPageContainer from '../containers/appView/AppPageContainer';
 
+/**
+ * Main entry point for the entire UI view
+ */
 const App = () => {
   return (
     <Router>

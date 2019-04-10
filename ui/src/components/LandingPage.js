@@ -2,9 +2,12 @@ import React from 'react';
 import { Title } from '@patternfly/react-core';
 import HeaderContainer from '../containers/HeaderContainer';
 import AppsTableContainer from '../containers/AppsTableContainer';
-import './LandingPage.css';
 import Content from './common/Content';
+import './LandingPage.css';
 
+/**
+ * Initial landing page of the UI. First view the user sees
+ */
 const LandingPage = () => {
   return (
     <>
