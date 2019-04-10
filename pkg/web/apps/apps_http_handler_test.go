@@ -449,7 +449,7 @@ func Test_HttpHandler_DisableAllAppVersionsByAppID(t *testing.T) {
 			data:        helpers.GetMockAppVersionForDisableAll(),
 			mockService: *mockedService,
 			wantErr:     false,
-			wantCode:    200,
+			wantCode:    204,
 		},
 		{
 			name:        "Disable all versions should return error with invalid ID",

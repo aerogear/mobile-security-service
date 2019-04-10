@@ -73,12 +73,26 @@ export const updateVersionCustomMessage = (id, value) => {
   };
 };
 
-export const getApps = fetchAction([ actions.APPS_REQUEST, actions.APPS_SUCCESS, actions.APPS_FAILURE ], DataService.fetchApps);
+export const setAllAppVersionsDisabled = (customMessage) => {
+  return {
+    type: actions.SET_ALL_APP_VERSIONS_DISABLED,
+    payload: {
+      customMessage
+    }
+  };
+};
+
+export const getApps = fetchAction([actions.APPS_REQUEST, actions.APPS_SUCCESS, actions.APPS_FAILURE], DataService.fetchApps);
 
 export const getAppById = (appId) =>
-  fetchAction([ actions.APP_REQUEST, actions.APP_SUCCESS, actions.APP_FAILURE ], async () => DataService.getAppById(appId))();
+  fetchAction([actions.APP_REQUEST, actions.APP_SUCCESS, actions.APP_FAILURE], async () => DataService.getAppById(appId))();
 
 export const saveAppVersions = (id, versions) =>
   fetchAction([actions.SAVE_APP_VERSIONS,
     actions.SAVE_APP_VERSIONS_SUCCESS,
     actions.SAVE_APP_VERSIONS_FAILURE], async () => DataService.updateAppVersions(id, versions))();
+
+export const disableAppVersions = (id, customMessage) =>
+  fetchAction([actions.DISABLE_APP,
+    actions.DISABLE_APP_SUCCESS,
+    actions.DISABLE_APP_FAILURE], async () => DataService.disableAppVersions(id, customMessage))();

@@ -2,12 +2,19 @@ import React, { useState } from 'react';
 import { Button, TextInput, Form, FormGroup, Stack, StackItem, Modal } from '@patternfly/react-core';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { toggleDisableAppModal } from '../../actions/actions-ui';
+import { toggleDisableAppModal, disableAppVersions } from '../../actions/actions-ui';
 
-const DisableAppModalContainer = ({ isOpen, toggleDisableAppModal }) => {
+/**
+ * Redux container component for the Disable App Modal.
+ *
+ * @param {string} props.id - ID of the app to disable versions for
+ * @param {boolean} props.isOpen - The opened state of the modal
+ * @param {*} props.toggleDisableAppModal - Action to toggle opened/closed state of modal
+ * @param {*} props.disableAppVersions - Action to disable all app versions
+ */
+const DisableAppModalContainer = ({ id, isOpen, toggleDisableAppModal, disableAppVersions }) => {
   const handleDisableAppSave = () => {
-    // TODO: This needs to send a request to the backend and update the client state
-    // this.props.toggleDisableAppModal();
+    disableAppVersions(id, disableMessage);
   };
 
   const onChangeDisableTextInput = (value) => {
@@ -64,8 +71,14 @@ DisableAppModalContainer.propTypes = {
 
 function mapStateToProps (state) {
   return {
-    isOpen: state.modals.disableApp.isOpen
+    isOpen: state.modals.disableApp.isOpen,
+    id: state.app.data.id
   };
 }
 
-export default connect(mapStateToProps, { toggleDisableAppModal })(DisableAppModalContainer);
+const mapDispatchToProps = {
+  disableAppVersions,
+  toggleDisableAppModal
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DisableAppModalContainer);

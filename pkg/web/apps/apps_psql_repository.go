@@ -288,13 +288,31 @@ func (a *appsPostgreSQLRepository) UpdateAppVersions(versions []models.Version) 
 	return nil
 }
 
-func (a *appsPostgreSQLRepository) DisableAllAppVersionsByAppID(appID string, message string) error {
+// DisableAllAppVersionsAndSetDisabledMessageByAppID disables all app versions by its app ID
+func (a *appsPostgreSQLRepository) DisableAllAppVersionsAndSetDisabledMessageByAppID(appID string, message string) error {
 
 	// Update Version
 	_, err := a.db.Exec(`
 		UPDATE version
 		SET disabled_message=$1,disabled=True
 		WHERE app_id=$2;`, message, appID)
+
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+
+	return nil
+}
+
+// DisableAllAppVersionsByAppID disables all app versions by its app ID
+func (a *appsPostgreSQLRepository) DisableAllAppVersionsByAppID(appID string) error {
+
+	// Update Version
+	_, err := a.db.Exec(`
+		UPDATE version
+		SET disabled=True
+		WHERE app_id=$1;`, appID)
 
 	if err != nil {
 		log.Error(err)

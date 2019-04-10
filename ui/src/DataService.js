@@ -57,20 +57,34 @@ const fetchItem = async url => {
 };
 
 /**
- * Update a number of app versions by their app ID
+ * Makes a PUT request to update a collection of items.
  *
- * @param {string} id - The App ID related of the versions
- * @param {Array} versions - The list of versions to update
+ * @param {string} url - The path to the REST endpoint
+ * @param {Array} body - The array of items to update
  */
-const updateAppVersions = async (id, versions) => {
-  const result = request(`apps/${id}/versions`, 'PUT', versions);
+const putItems = async (url, body) => {
+  const result = await request(url, 'PUT', body);
   return result || [];
+};
+
+/**
+ * Disable all app versions in the server. Optionally set a
+ * custom disabled message for all app versions.
+ *
+ * @param {string} id - The App ID to disable all versions for
+ * @param {string} [disabledMessage] - Sets the disabled message for all versions to this.
+ */
+const disableAppVersions = async (id, disabledMessage) => {
+  await request(`apps/${id}/versions/disable`, 'POST', { disabledMessage });
+
+  return disabledMessage;
 };
 
 const dataService = {
   fetchApps: () => fetchItems('apps'),
   getAppById: (id) => fetchItem(`apps/${id}`),
-  updateAppVersions
+  updateAppVersions: (id, versions) => putItems(`apps/${id}/versions`, versions),
+  disableAppVersions
 };
 
 export default dataService;

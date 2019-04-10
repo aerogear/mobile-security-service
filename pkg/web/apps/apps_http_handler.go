@@ -8,6 +8,7 @@ import (
 	"github.com/aerogear/mobile-security-service/pkg/httperrors"
 	"github.com/aerogear/mobile-security-service/pkg/models"
 	"github.com/labstack/echo"
+	"github.com/labstack/gommon/log"
 )
 
 type (
@@ -146,21 +147,20 @@ func (a *httpHandler) DisableAllAppVersionsByAppID(c echo.Context) error {
 	}
 
 	// Transform the body request in the version struct
-	ver := models.Version{}
-	errV := json.NewDecoder(c.Request().Body).Decode(&ver)
+	version := models.Version{}
 
-	// check if the data sent is in the correct format
-	if errV != nil {
+	if err := json.NewDecoder(c.Request().Body).Decode(&version); err != nil {
+		log.Error(err)
 		return httperrors.BadRequest(c, "Invalid data")
 	}
 
-	err := a.Service.DisableAllAppVersionsByAppID(id, ver.DisabledMessage)
+	err := a.Service.DisableAllAppVersionsByAppID(id, version.DisabledMessage)
 
 	if err != nil {
 		return httperrors.GetHTTPResponseFromErr(c, err)
 	}
 
-	return c.JSON(http.StatusOK, "")
+	return c.NoContent(http.StatusNoContent)
 
 }
 

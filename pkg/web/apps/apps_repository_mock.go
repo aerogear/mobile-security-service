@@ -9,22 +9,23 @@ import (
 )
 
 var (
-	lockRepositoryMockCreateApp                                   sync.RWMutex
-	lockRepositoryMockDeleteAppById                               sync.RWMutex
-	lockRepositoryMockDisableAllAppVersionsByAppID                sync.RWMutex
-	lockRepositoryMockGetActiveAppByAppID                         sync.RWMutex
-	lockRepositoryMockGetActiveAppByID                            sync.RWMutex
-	lockRepositoryMockGetAppByAppID                               sync.RWMutex
-	lockRepositoryMockGetAppVersionsByAppID                       sync.RWMutex
-	lockRepositoryMockGetApps                                     sync.RWMutex
-	lockRepositoryMockGetDeviceByDeviceIDAndAppID                 sync.RWMutex
-	lockRepositoryMockGetDeviceByVersionAndAppID                  sync.RWMutex
-	lockRepositoryMockGetVersionByAppIDAndVersion                 sync.RWMutex
-	lockRepositoryMockInsertDeviceOrUpdateVersionID               sync.RWMutex
-	lockRepositoryMockUnDeleteAppByAppID                          sync.RWMutex
-	lockRepositoryMockUpdateAppNameByID                           sync.RWMutex
-	lockRepositoryMockUpdateAppVersions                           sync.RWMutex
-	lockRepositoryMockUpsertVersionWithAppLaunchesAndLastLaunched sync.RWMutex
+	lockRepositoryMockCreateApp                                         sync.RWMutex
+	lockRepositoryMockDeleteAppById                                     sync.RWMutex
+	lockRepositoryMockDisableAllAppVersionsAndSetDisabledMessageByAppID sync.RWMutex
+	lockRepositoryMockDisableAllAppVersionsByAppID                      sync.RWMutex
+	lockRepositoryMockGetActiveAppByAppID                               sync.RWMutex
+	lockRepositoryMockGetActiveAppByID                                  sync.RWMutex
+	lockRepositoryMockGetAppByAppID                                     sync.RWMutex
+	lockRepositoryMockGetAppVersionsByAppID                             sync.RWMutex
+	lockRepositoryMockGetApps                                           sync.RWMutex
+	lockRepositoryMockGetDeviceByDeviceIDAndAppID                       sync.RWMutex
+	lockRepositoryMockGetDeviceByVersionAndAppID                        sync.RWMutex
+	lockRepositoryMockGetVersionByAppIDAndVersion                       sync.RWMutex
+	lockRepositoryMockInsertDeviceOrUpdateVersionID                     sync.RWMutex
+	lockRepositoryMockUnDeleteAppByAppID                                sync.RWMutex
+	lockRepositoryMockUpdateAppNameByID                                 sync.RWMutex
+	lockRepositoryMockUpdateAppVersions                                 sync.RWMutex
+	lockRepositoryMockUpsertVersionWithAppLaunchesAndLastLaunched       sync.RWMutex
 )
 
 // Ensure, that RepositoryMock does implement Repository.
@@ -43,7 +44,10 @@ var _ Repository = &RepositoryMock{}
 //             DeleteAppByIdFunc: func(id string) error {
 // 	               panic("mock out the DeleteAppById method")
 //             },
-//             DisableAllAppVersionsByAppIDFunc: func(appID string, message string) error {
+//             DisableAllAppVersionsAndSetDisabledMessageByAppIDFunc: func(appID string, message string) error {
+// 	               panic("mock out the DisableAllAppVersionsAndSetDisabledMessageByAppID method")
+//             },
+//             DisableAllAppVersionsByAppIDFunc: func(appID string) error {
 // 	               panic("mock out the DisableAllAppVersionsByAppID method")
 //             },
 //             GetActiveAppByAppIDFunc: func(appID string) (*models.App, error) {
@@ -98,8 +102,11 @@ type RepositoryMock struct {
 	// DeleteAppByIdFunc mocks the DeleteAppById method.
 	DeleteAppByIdFunc func(id string) error
 
+	// DisableAllAppVersionsAndSetDisabledMessageByAppIDFunc mocks the DisableAllAppVersionsAndSetDisabledMessageByAppID method.
+	DisableAllAppVersionsAndSetDisabledMessageByAppIDFunc func(appID string, message string) error
+
 	// DisableAllAppVersionsByAppIDFunc mocks the DisableAllAppVersionsByAppID method.
-	DisableAllAppVersionsByAppIDFunc func(appID string, message string) error
+	DisableAllAppVersionsByAppIDFunc func(appID string) error
 
 	// GetActiveAppByAppIDFunc mocks the GetActiveAppByAppID method.
 	GetActiveAppByAppIDFunc func(appID string) (*models.App, error)
@@ -156,12 +163,17 @@ type RepositoryMock struct {
 			// ID is the id argument value.
 			ID string
 		}
-		// DisableAllAppVersionsByAppID holds details about calls to the DisableAllAppVersionsByAppID method.
-		DisableAllAppVersionsByAppID []struct {
+		// DisableAllAppVersionsAndSetDisabledMessageByAppID holds details about calls to the DisableAllAppVersionsAndSetDisabledMessageByAppID method.
+		DisableAllAppVersionsAndSetDisabledMessageByAppID []struct {
 			// AppID is the appID argument value.
 			AppID string
 			// Message is the message argument value.
 			Message string
+		}
+		// DisableAllAppVersionsByAppID holds details about calls to the DisableAllAppVersionsByAppID method.
+		DisableAllAppVersionsByAppID []struct {
+			// AppID is the appID argument value.
+			AppID string
 		}
 		// GetActiveAppByAppID holds details about calls to the GetActiveAppByAppID method.
 		GetActiveAppByAppID []struct {
@@ -307,10 +319,10 @@ func (mock *RepositoryMock) DeleteAppByIdCalls() []struct {
 	return calls
 }
 
-// DisableAllAppVersionsByAppID calls DisableAllAppVersionsByAppIDFunc.
-func (mock *RepositoryMock) DisableAllAppVersionsByAppID(appID string, message string) error {
-	if mock.DisableAllAppVersionsByAppIDFunc == nil {
-		panic("RepositoryMock.DisableAllAppVersionsByAppIDFunc: method is nil but Repository.DisableAllAppVersionsByAppID was just called")
+// DisableAllAppVersionsAndSetDisabledMessageByAppID calls DisableAllAppVersionsAndSetDisabledMessageByAppIDFunc.
+func (mock *RepositoryMock) DisableAllAppVersionsAndSetDisabledMessageByAppID(appID string, message string) error {
+	if mock.DisableAllAppVersionsAndSetDisabledMessageByAppIDFunc == nil {
+		panic("RepositoryMock.DisableAllAppVersionsAndSetDisabledMessageByAppIDFunc: method is nil but Repository.DisableAllAppVersionsAndSetDisabledMessageByAppID was just called")
 	}
 	callInfo := struct {
 		AppID   string
@@ -319,22 +331,53 @@ func (mock *RepositoryMock) DisableAllAppVersionsByAppID(appID string, message s
 		AppID:   appID,
 		Message: message,
 	}
-	lockRepositoryMockDisableAllAppVersionsByAppID.Lock()
-	mock.calls.DisableAllAppVersionsByAppID = append(mock.calls.DisableAllAppVersionsByAppID, callInfo)
-	lockRepositoryMockDisableAllAppVersionsByAppID.Unlock()
-	return mock.DisableAllAppVersionsByAppIDFunc(appID, message)
+	lockRepositoryMockDisableAllAppVersionsAndSetDisabledMessageByAppID.Lock()
+	mock.calls.DisableAllAppVersionsAndSetDisabledMessageByAppID = append(mock.calls.DisableAllAppVersionsAndSetDisabledMessageByAppID, callInfo)
+	lockRepositoryMockDisableAllAppVersionsAndSetDisabledMessageByAppID.Unlock()
+	return mock.DisableAllAppVersionsAndSetDisabledMessageByAppIDFunc(appID, message)
 }
 
-// DisableAllAppVersionsByAppIDCalls gets all the calls that were made to DisableAllAppVersionsByAppID.
+// DisableAllAppVersionsAndSetDisabledMessageByAppIDCalls gets all the calls that were made to DisableAllAppVersionsAndSetDisabledMessageByAppID.
 // Check the length with:
-//     len(mockedRepository.DisableAllAppVersionsByAppIDCalls())
-func (mock *RepositoryMock) DisableAllAppVersionsByAppIDCalls() []struct {
+//     len(mockedRepository.DisableAllAppVersionsAndSetDisabledMessageByAppIDCalls())
+func (mock *RepositoryMock) DisableAllAppVersionsAndSetDisabledMessageByAppIDCalls() []struct {
 	AppID   string
 	Message string
 } {
 	var calls []struct {
 		AppID   string
 		Message string
+	}
+	lockRepositoryMockDisableAllAppVersionsAndSetDisabledMessageByAppID.RLock()
+	calls = mock.calls.DisableAllAppVersionsAndSetDisabledMessageByAppID
+	lockRepositoryMockDisableAllAppVersionsAndSetDisabledMessageByAppID.RUnlock()
+	return calls
+}
+
+// DisableAllAppVersionsByAppID calls DisableAllAppVersionsByAppIDFunc.
+func (mock *RepositoryMock) DisableAllAppVersionsByAppID(appID string) error {
+	if mock.DisableAllAppVersionsByAppIDFunc == nil {
+		panic("RepositoryMock.DisableAllAppVersionsByAppIDFunc: method is nil but Repository.DisableAllAppVersionsByAppID was just called")
+	}
+	callInfo := struct {
+		AppID string
+	}{
+		AppID: appID,
+	}
+	lockRepositoryMockDisableAllAppVersionsByAppID.Lock()
+	mock.calls.DisableAllAppVersionsByAppID = append(mock.calls.DisableAllAppVersionsByAppID, callInfo)
+	lockRepositoryMockDisableAllAppVersionsByAppID.Unlock()
+	return mock.DisableAllAppVersionsByAppIDFunc(appID)
+}
+
+// DisableAllAppVersionsByAppIDCalls gets all the calls that were made to DisableAllAppVersionsByAppID.
+// Check the length with:
+//     len(mockedRepository.DisableAllAppVersionsByAppIDCalls())
+func (mock *RepositoryMock) DisableAllAppVersionsByAppIDCalls() []struct {
+	AppID string
+} {
+	var calls []struct {
+		AppID string
 	}
 	lockRepositoryMockDisableAllAppVersionsByAppID.RLock()
 	calls = mock.calls.DisableAllAppVersionsByAppID
