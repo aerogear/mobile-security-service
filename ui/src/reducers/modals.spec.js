@@ -3,13 +3,15 @@ import {
   TOGGLE_NAVIGATION_MODAL,
   TOGGLE_SAVE_APP_MODAL,
   TOGGLE_DISABLE_APP_MODAL,
-  DISABLE_APP_SUCCESS
+  DISABLE_APP_SUCCESS,
+  SET_MODAL_DISABLE_MESSAGE
 } from '../actions/types.js';
 
 describe('modalsReducer', () => {
   const initialState = {
     disableApp: {
-      isOpen: false
+      isOpen: false,
+      disableMessage: ''
     },
     saveApp: {
       isOpen: false
@@ -71,5 +73,16 @@ describe('modalsReducer', () => {
     const isOpen = initialState.disableApp.isOpen;
     const newState = modalsReducer(initialState, { type: TOGGLE_DISABLE_APP_MODAL });
     expect(newState.disableApp.isOpen).toEqual(!isOpen);
+  });
+
+  it('should handle SET_MODAL_DISABLE_MESSAGE', () => {
+    const customMessage = 'App is disabled!!';
+    const newState = modalsReducer(initialState, {
+      type: SET_MODAL_DISABLE_MESSAGE,
+      payload: {
+        disableMessage: customMessage
+      }
+    });
+    expect(newState.disableApp.disableMessage).toEqual(customMessage);
   });
 });
