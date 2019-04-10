@@ -3,7 +3,7 @@ import {
   APP_REQUEST,
   APP_SUCCESS,
   APP_FAILURE,
-  APP_DETAILED_IS_DIRTY,
+  SET_APP_DETAILED_DIRTY,
   UPDATE_DISABLED_APP,
   UPDATE_VERSION_CUSTOM_MESSAGE,
   SAVE_APP_VERSIONS,
@@ -67,7 +67,7 @@ export default (state = initialState, action) => {
         isAppRequestFailed: true
       };
     }
-    case APP_DETAILED_IS_DIRTY: {
+    case SET_APP_DETAILED_DIRTY: {
       return {
         ...state,
         isDirty: action.payload.isDirty
@@ -90,7 +90,7 @@ export default (state = initialState, action) => {
       };
     }
     case UPDATE_VERSION_CUSTOM_MESSAGE: {
-      const updatedVersions2 = state.data.deployedVersions.map((version) => {
+      const updatedVersions = state.data.deployedVersions.map((version) => {
         if (version.id === action.payload.id) {
           version.disabledMessage = action.payload.value;
         }
@@ -102,7 +102,7 @@ export default (state = initialState, action) => {
         direction: action.payload.direct,
         data: {
           ...state.data,
-          deployedVersions: updatedVersions2
+          deployedVersions: updatedVersions
         }
       };
     }
@@ -146,10 +146,7 @@ export default (state = initialState, action) => {
     case DISABLE_APP_FAILURE: {
       return {
         ...state,
-        data: {
-          ...state.data,
-          isDisableAppRequestFailed: true
-        }
+        isDisableAppRequestFailed: true
       };
     }
     default: {
