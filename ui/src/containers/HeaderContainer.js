@@ -5,7 +5,14 @@ import PropTypes from 'prop-types';
 import config from '../config/config';
 import Header from '../components/Header';
 
-const HeaderContainer = ({ currentUser, history }) => {
+/**
+ * Container component to manage the Header state
+ *
+ * @param {object} props Component props
+ * @param {string} props.currentUser The current logged in user
+ * @param {object} props.history Contains functions to modify the react-router-dom
+ */
+export const HeaderContainer = ({ currentUser, history }) => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 
   const onUserDropdownToggle = () => {
