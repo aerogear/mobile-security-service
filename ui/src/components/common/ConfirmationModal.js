@@ -10,7 +10,7 @@ import { Modal, Button } from '@patternfly/react-core';
  * @param {boolean} props.isOpen If the modal should be displayed on the screen or not
  * @param {func} props.onClose Function to execute on click of cancel or close of the modal
  * @param {array} props.confirmAction Additional UI components to display the confirmAction, normally a single button
- * @param {node} props.children All sub components to display in the modal body
+ * @param {*} props.children All sub components to display in the modal body
  */
 const ConfirmationModal = ({ title, isOpen, onClose, confirmAction, children }) => {
   return (

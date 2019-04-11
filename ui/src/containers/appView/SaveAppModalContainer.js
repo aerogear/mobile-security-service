@@ -7,12 +7,12 @@ import { toggleSaveAppModal } from '../../actions/actions-ui';
 import ConfirmationModal from '../../components/common/ConfirmationModal';
 
 /**
- * Redux container for the Save App Modal
+ * Stateful container for the Save App Modal
  *
  * @param {boolean} props.isOpen - The open/closed state of the modal.
  * @param {string} props.title - The title to display on the modal.
  * @param {*} props.children - The child props of this component.
- * @param {*} props.onConfirm - The action to execute when `Confirm` is clicked.
+ * @param {func} props.onConfirm - The action to execute when `Confirm` is clicked.
  * @param {boolean} props.toggleSaveAppModal - The action to open or close the modal.
  */
 export const SaveAppModalContainer = ({ isOpen, title, children, onConfirm, toggleSaveAppModal }) => {
@@ -21,9 +21,12 @@ export const SaveAppModalContainer = ({ isOpen, title, children, onConfirm, togg
       title={title}
       isOpen={isOpen}
       onClose={toggleSaveAppModal}
-      confirmAction={[<Button key="confirm" variant="primary" onClick={onConfirm}>
+      confirmAction={[
+        <Button key="confirm" variant="primary" onClick={onConfirm}>
           Confirm
-      </Button>]}>
+        </Button>
+      ]}
+    >
       {children}
     </ConfirmationModal>
   );

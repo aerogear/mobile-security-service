@@ -8,7 +8,7 @@ import { getApps, appsTableSort } from '../actions/actions-ui';
 import { getSortedAppsTableRows } from '../selectors/index';
 
 /**
- * Container component to manage state and display the Apps table for the landing page
+ * Stateful container component to manage state and display the Apps table for the landing page
  *
  * @param {object} props Component props
  * @param {array} props.apps Array of app object to display
@@ -20,13 +20,22 @@ import { getSortedAppsTableRows } from '../selectors/index';
  * @param {object} props.history Contains functions to modify the react-router-dom
  * @param {string} props.className Optionally provide a custom class for the component
  */
-export const AppsTableContainer = ({ apps, appRows, sortBy, isAppsRequestFailed, getApps, appsTableSort, history, className }) => {
+export const AppsTableContainer = ({
+  apps,
+  appRows,
+  sortBy,
+  isAppsRequestFailed,
+  getApps,
+  appsTableSort,
+  history,
+  className
+}) => {
   const columns = [
-    { title: 'APP NAME', transforms: [sortable] },
-    { title: 'APP ID', transforms: [sortable] },
-    { title: 'DEPLOYED VERSIONS', transforms: [sortable] },
-    { title: 'CURRENT INSTALLS', transforms: [sortable] },
-    { title: 'LAUNCHES', transforms: [sortable] }
+    { title: 'APP NAME', transforms: [ sortable ] },
+    { title: 'APP ID', transforms: [ sortable ] },
+    { title: 'DEPLOYED VERSIONS', transforms: [ sortable ] },
+    { title: 'CURRENT INSTALLS', transforms: [ sortable ] },
+    { title: 'LAUNCHES', transforms: [ sortable ] }
   ];
 
   useEffect(() => {
@@ -45,13 +54,7 @@ export const AppsTableContainer = ({ apps, appRows, sortBy, isAppsRequestFailed,
   const getTable = () => {
     return (
       <div className={className}>
-        <TableView
-          columns={columns}
-          rows={appRows}
-          sortBy={sortBy}
-          onSort={appsTableSort}
-          onRowClick={onRowClick}
-        />
+        <TableView columns={columns} rows={appRows} sortBy={sortBy} onSort={appsTableSort} onRowClick={onRowClick} />
       </div>
     );
   };

@@ -9,14 +9,32 @@ import TableView from '../../components/common/TableView';
 import { getSortedAppVersionTableRows } from '../../selectors/index';
 import config from '../../config/config';
 
-export const AppVersionsTableContainer = ({ className, sortBy, appVersionRows, appVersionsTableSort, updateDisabledAppVersion, updateVersionCustomMessage }) => {
+/**
+ * Stateful container to render the TableView presentation component to display app versions
+ *
+ * @param {object} props Component props
+ * @param {string} props.className - Class name of the TableView component
+ * @param {string} props.sortBy - Object with column index and direction of the sort
+ * @param {boolean} props.appVersionRows - App version row data that will used for rendering
+ * @param {func} props.appVersionsTableSort - Action to sort the app versions table
+ * @param {func} props.updateDisabledAppVersion - Logic to enable/disable an app version
+ * @param {func} props.updateVersionCustomMessage - Logic to update an app versions custom disable message
+ */
+export const AppVersionsTableContainer = ({
+  className,
+  sortBy,
+  appVersionRows,
+  appVersionsTableSort,
+  updateDisabledAppVersion,
+  updateVersionCustomMessage
+}) => {
   const columns = [
-    { title: 'APP VERSION', transforms: [sortable, cellWidth(10)] },
-    { title: 'CURRENT INSTALLS', transforms: [sortable, cellWidth(10)] },
-    { title: 'LAUNCHES', transforms: [sortable, cellWidth(10)] },
-    { title: 'LAST LAUNCHED', transforms: [sortable, cellWidth(15)] },
-    { title: 'DISABLE ON STARTUP', transforms: [sortable, cellWidth(10)] },
-    { title: 'CUSTOM DISABLE MESSAGE', transforms: [sortable, cellWidth('max')] }
+    { title: 'APP VERSION', transforms: [ sortable, cellWidth(10) ] },
+    { title: 'CURRENT INSTALLS', transforms: [ sortable, cellWidth(10) ] },
+    { title: 'LAUNCHES', transforms: [ sortable, cellWidth(10) ] },
+    { title: 'LAST LAUNCHED', transforms: [ sortable, cellWidth(15) ] },
+    { title: 'DISABLE ON STARTUP', transforms: [ sortable, cellWidth(10) ] },
+    { title: 'CUSTOM DISABLE MESSAGE', transforms: [ sortable, cellWidth('max') ] }
   ];
 
   const handleDisableAppVersionChange = (value, e) => {
@@ -78,12 +96,7 @@ export const AppVersionsTableContainer = ({ className, sortBy, appVersionRows, a
 
     return (
       <div className={className}>
-        <TableView
-          columns={columns}
-          rows={renderedRows}
-          sortBy={sortBy}
-          onSort={appVersionsTableSort}
-        />
+        <TableView columns={columns} rows={renderedRows} sortBy={sortBy} onSort={appVersionsTableSort} />
       </div>
     );
   };

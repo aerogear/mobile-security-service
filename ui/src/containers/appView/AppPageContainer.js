@@ -11,11 +11,18 @@ import AppVersionsTableContainer from './AppVersionsTableContainer';
 import DisableAppModalContainer from './DisableAppModalContainer';
 import NavigationModalContainer from './NavigationModalContainer';
 import SaveAppModalContainer from './SaveAppModalContainer';
-import { getAppById, toggleNavigationModal, toggleSaveAppModal, toggleDisableAppModal, setAppDetailedDirtyState, saveAppVersions } from '../../actions/actions-ui';
+import {
+  getAppById,
+  toggleNavigationModal,
+  toggleSaveAppModal,
+  toggleDisableAppModal,
+  setAppDetailedDirtyState,
+  saveAppVersions
+} from '../../actions/actions-ui';
 import AppService from '../../services/appService';
 
 /**
- * Redux container component for the AppPage
+ * Stateful container component for the AppPage
  *
  * @class AppPageContainer
  * @extends {React.Component}
@@ -26,7 +33,7 @@ export class AppPageContainer extends React.Component {
 
     this.props.setAppDetailedDirtyState(this.isAppVersionsDirty());
 
-    this.unblockHistory = this.props.history.block(targetLocation => {
+    this.unblockHistory = this.props.history.block((targetLocation) => {
       // If the view has a dirty state, display the popup
       if (this.props.isDirty) {
         this.props.toggleNavigationModal(true, targetLocation.pathname);
@@ -51,7 +58,10 @@ export class AppPageContainer extends React.Component {
    * @memberof AppPageContainer
    */
   onConfirmSaveApp () {
-    const { app: { id, deployedVersions: currentVersions }, savedData: { deployedVersions: savedVersions } } = this.props;
+    const {
+      app: { id, deployedVersions: currentVersions },
+      savedData: { deployedVersions: savedVersions }
+    } = this.props;
 
     this.props.toggleSaveAppModal();
 
@@ -67,26 +77,33 @@ export class AppPageContainer extends React.Component {
    * @memberof AppPageContainer
    */
   isAppVersionsDirty () {
-    const { app: { deployedVersions: currentVersions },
-      savedData: { deployedVersions: savedVersions } } = this.props;
+    const { app: { deployedVersions: currentVersions }, savedData: { deployedVersions: savedVersions } } = this.props;
 
     const dirtyItems = AppService.getDirtyVersions(savedVersions, currentVersions);
 
     return !!dirtyItems.length;
-  };
+  }
 
   render () {
     return (
       <div className="app-detailed-view">
         <HeaderContainer />
-        <AppToolbar app={this.props.app} onSaveAppClick={this.props.toggleSaveAppModal} onDisableAppClick={this.props.toggleDisableAppModal} isViewDirty={this.props.isDirty} />
+        <AppToolbar
+          app={this.props.app}
+          onSaveAppClick={this.props.toggleSaveAppModal}
+          onDisableAppClick={this.props.toggleDisableAppModal}
+          isViewDirty={this.props.isDirty}
+        />
         <Content className="container">
-          <AppOverview app={this.props.app} className='app-overview' />
+          <AppOverview app={this.props.app} className="app-overview" />
           <Title className="table-title" size="2xl">
             Deployed Versions
           </Title>
-          <AppVersionsTableContainer className='table-scroll-x' />
-          <NavigationModalContainer title="Are you sure you want to leave this page?" unblockHistory={this.unblockHistory}>
+          <AppVersionsTableContainer className="table-scroll-x" />
+          <NavigationModalContainer
+            title="Are you sure you want to leave this page?"
+            unblockHistory={this.unblockHistory}
+          >
             You still have unsaved changes.
           </NavigationModalContainer>
           <SaveAppModalContainer title="Save Changes" onConfirm={() => this.onConfirmSaveApp()}>
