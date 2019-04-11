@@ -12,9 +12,9 @@ const config = {
 /**
  * Return an environment variable or use a default value
  *
- * @param {String} key is the environment variable key
- * @param {String} defaultVal is the default value to fall back on
- * @returns {String} the config option value
+ * @param {string} key is the environment variable key
+ * @param {string} defaultVal is the default value to fall back on
+ * @returns {string} the config option value
  */
 function getEnv (key, defaultVal) {
   const value = process.env[key];

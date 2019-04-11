@@ -1,73 +1,102 @@
-import React from 'react';
-import AppsTable from '../components/AppsTable';
+import React, { useEffect } from 'react';
+import TableView from '../components/common/TableView';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { sortable } from '@patternfly/react-table';
 import { getApps, appsTableSort } from '../actions/actions-ui';
-import './TableContainer.css';
+import { getSortedAppsTableRows } from '../selectors/index';
 
-export class AppsTableContainer extends React.Component {
-  constructor (props) {
-    super(props);
-    this.onSort = this.onSort.bind(this);
-    this.onRowClick = this.onRowClick.bind(this);
-    this.getTable = this.getTable.bind(this);
-  }
-  componentWillMount () {
-    this.props.getApps();
-  }
-  onRowClick (_event, rowId) {
-    var app = this.props.apps.data.filter((app) => {
+/**
+ * Stateful container component to manage state and display the Apps table for the landing page
+ *
+ * @param {object} props Component props
+ * @param {array} props.apps Array of app object to display
+ * @param {array} props.appRows Transformed app array of arrays contains just the values needed for the table
+ * @param {object} props.sortBy Contains column index and direction for sorting
+ * @param {boolean} props.isAppsRequestFailed Boolean on if the apps request has failed
+ * @param {func} props.getApps Retrieves apps from the server
+ * @param {func} props.appsTableSort Triggers redux action creator for the table sort
+ * @param {object} props.history Contains functions to modify the react-router-dom
+ * @param {string} props.className Optionally provide a custom class for the component
+ */
+export const AppsTableContainer = ({
+  apps,
+  appRows,
+  sortBy,
+  isAppsRequestFailed,
+  getApps,
+  appsTableSort,
+  history,
+  className
+}) => {
+  const columns = [
+    { title: 'APP NAME', transforms: [ sortable ] },
+    { title: 'APP ID', transforms: [ sortable ] },
+    { title: 'DEPLOYED VERSIONS', transforms: [ sortable ] },
+    { title: 'CURRENT INSTALLS', transforms: [ sortable ] },
+    { title: 'LAUNCHES', transforms: [ sortable ] }
+  ];
+
+  useEffect(() => {
+    getApps();
+  }, []);
+
+  const onRowClick = (_event, rowId) => {
+    var app = apps.filter((app) => {
       return app.appName === rowId[0];
     });
     const id = app[0].id;
     const path = '/apps/' + id;
-    this.props.history.push(path);
-  }
-  onSort (_event, index, direction) {
-    this.props.appsTableSort(index, direction);
-  }
+    history.push(path);
+  };
 
-  getTable () {
+  const getTable = () => {
     return (
-      <div className={this.props.className}>
-        <AppsTable
-          columns={this.props.columns}
-          rows={this.props.apps.rows}
-          sortBy={this.props.sortBy}
-          onSort={this.onSort}
-          onRowClick={this.onRowClick}
-        />
+      <div className={className}>
+        <TableView columns={columns} rows={appRows} sortBy={sortBy} onSort={appsTableSort} onRowClick={onRowClick} />
+      </div>
+    );
+  };
+
+  if (isAppsRequestFailed) {
+    return (
+      <div className="no-apps">
+        <p>Unable to fetch any apps :/</p>
       </div>
     );
   }
-
-  render () {
-    if (this.props.isAppsRequestFailed) {
-      return (
-        <div className="no-apps">
-          <p>Unable to fetch any apps :/</p>
-        </div>
-      );
-    }
-    return this.getTable();
-  }
-}
-
-AppsTableContainer.propTypes = {
-  apps: PropTypes.object.isRequired,
-  sortBy: PropTypes.object.isRequired,
-  columns: PropTypes.array.isRequired,
-  isAppsRequestFailed: PropTypes.bool.isRequired,
-  getApps: PropTypes.func.isRequired
+  return getTable();
 };
 
-function mapStateToProps (state) {
+AppsTableContainer.propTypes = {
+  apps: PropTypes.arrayOf(
+    PropTypes.shape({
+      appId: PropTypes.string.isRequired,
+      appName: PropTypes.string.isRequired,
+      id: PropTypes.string.isRequired,
+      numOfAppLaunches: PropTypes.number.isRequired,
+      numOfCurrentInstalls: PropTypes.number.isRequired,
+      numOfDeployedVersions: PropTypes.number.isRequired
+    })
+  ),
+  appRows: PropTypes.array.isRequired,
+  sortBy: PropTypes.object.isRequired,
+  isAppsRequestFailed: PropTypes.bool.isRequired,
+  getApps: PropTypes.func.isRequired,
+  appsTableSort: PropTypes.func.isRequired,
+  className: PropTypes.string.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired
+  }).isRequired
+};
+
+function mapStateToProps (state, props) {
   return {
-    apps: state.apps,
-    sortBy: state.sortBy,
-    columns: state.columns,
-    isAppsRequestFailed: state.isAppsRequestFailed
+    apps: state.apps.data,
+    appRows: getSortedAppsTableRows(state, state.apps.sortBy),
+    sortBy: state.apps.sortBy,
+    isAppsRequestFailed: state.apps.isAppsRequestFailed
   };
 }
 
