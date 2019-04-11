@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { toggleNavigationModal, setAppDetailedDirtyState } from '../../actions/actions-ui';
 
-const NavigationModalContainer = ({ isOpen, targetLocation, title, unblockHistory, children, history, toggleNavigationModal, setAppDetailedDirtyState }) => {
+export const NavigationModalContainer = ({ isOpen, targetLocation, title, unblockHistory, children, history, toggleNavigationModal, setAppDetailedDirtyState }) => {
   const handleModalClose = () => {
     toggleNavigationModal(false);
   };

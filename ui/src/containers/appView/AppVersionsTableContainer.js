@@ -9,7 +9,7 @@ import TableView from '../../components/common/TableView';
 import { getSortedAppVersionTableRows } from '../../selectors/index';
 import config from '../../config/config';
 
-const AppVersionsTableContainer = ({ className, sortBy, appVersionRows, appVersionsTableSort, updateDisabledAppVersion, updateVersionCustomMessage }) => {
+export const AppVersionsTableContainer = ({ className, sortBy, appVersionRows, appVersionsTableSort, updateDisabledAppVersion, updateVersionCustomMessage }) => {
   const columns = [
     { title: 'APP VERSION', transforms: [sortable, cellWidth(10)] },
     { title: 'CURRENT INSTALLS', transforms: [sortable, cellWidth(10)] },
