@@ -5,14 +5,23 @@ import { connect } from 'react-redux';
 import { toggleDisableAppModal, disableAppVersions, setModalDisableMessage } from '../../actions/actions-ui';
 
 /**
- * Redux container component for the Disable App Modal.
+ * Stateful container component for the Disable App Modal.
  *
  * @param {string} props.id - ID of the app to disable versions for
  * @param {boolean} props.isOpen - The opened state of the modal
- * @param {*} props.toggleDisableAppModal - Action to toggle opened/closed state of modal
- * @param {*} props.disableAppVersions - Action to disable all app versions
+ * @param {func} props.toggleDisableAppModal - Action to toggle opened/closed state of modal
+ * @param {func} props.disableAppVersions - Action to disable all app versions
+ * @param {string} props.disableMessage - Value of the disabled message
+ * @param {func} props.setModalDisableMessage - Action to set the disable message of modal
  */
-export const DisableAppModalContainer = ({ id, isOpen, toggleDisableAppModal, disableAppVersions, disableMessage, setModalDisableMessage }) => {
+export const DisableAppModalContainer = ({
+  id,
+  isOpen,
+  toggleDisableAppModal,
+  disableAppVersions,
+  disableMessage,
+  setModalDisableMessage
+}) => {
   const handleDisableAppSave = () => {
     disableAppVersions(id, disableMessage);
   };
@@ -38,7 +47,8 @@ export const DisableAppModalContainer = ({ id, isOpen, toggleDisableAppModal, di
     >
       <Stack gutter="md">
         <StackItem>
-          You have requested App Disablement. This will disable all current versions of the App. Are you sure you want to proceed?
+          You have requested App Disablement. This will disable all current versions of the App. Are you sure you want
+          to proceed?
         </StackItem>
         <StackItem isMain>
           <Form isHorizontal>

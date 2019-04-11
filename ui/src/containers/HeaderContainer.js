@@ -7,14 +7,15 @@ import Header from '../components/Header';
 import { getUser } from '../actions/actions-ui';
 
 /**
- * Container component to manage the Header state
+ * Stateful container component to manage the Header state
  *
  * @param {object} props Component props
  * @param {string} props.currentUser The current logged in user
  * @param {object} props.history Contains functions to modify the react-router-dom
+ * @param {object} props.getUser Contains functions to modify the react-router-dom
  */
-export const HeaderContainer = ({ currentUser, isUserRequestFailed, history, getUser }) => {
-  const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+export const HeaderContainer = ({ currentUser, history, getUser }) => {
+  const [ isDropDownOpen, setIsDropDownOpen ] = useState(false);
 
   useEffect(() => {
     getUser();
