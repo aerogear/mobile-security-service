@@ -82,6 +82,7 @@ const disableAppVersions = async (id, disabledMessage) => {
 
 const dataService = {
   fetchApps: () => fetchItems('apps'),
+  fetchUser: () => fetchItem('user'),
   getAppById: (id) => fetchItem(`apps/${id}`),
   updateAppVersions: (id, versions) => putItems(`apps/${id}/versions`, versions),
   disableAppVersions

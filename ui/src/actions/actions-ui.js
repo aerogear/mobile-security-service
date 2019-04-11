@@ -82,7 +82,9 @@ export const setAllAppVersionsDisabled = (customMessage) => {
   };
 };
 
-export const getApps = fetchAction([actions.APPS_REQUEST, actions.APPS_SUCCESS, actions.APPS_FAILURE], DataService.fetchApps);
+export const getApps = fetchAction([actions.APPS_REQUEST, actions.APPS_SUCCESS, actions.APPS_FAILURE], async () => DataService.fetchApps);
+
+export const getUser = fetchAction([actions.USER_REQUEST, actions.USER_SUCCESS, actions.USER_FAILURE], async () => DataService.fetchUser);
 
 export const getAppById = (appId) =>
   fetchAction([actions.APP_REQUEST, actions.APP_SUCCESS, actions.APP_FAILURE], async () => DataService.getAppById(appId))();

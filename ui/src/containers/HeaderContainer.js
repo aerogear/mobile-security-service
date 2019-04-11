@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import config from '../config/config';
 import Header from '../components/Header';
+import { getUser } from '../actions/actions-ui';
 
 /**
  * Container component to manage the Header state
@@ -12,8 +13,12 @@ import Header from '../components/Header';
  * @param {string} props.currentUser The current logged in user
  * @param {object} props.history Contains functions to modify the react-router-dom
  */
-export const HeaderContainer = ({ currentUser, history }) => {
+export const HeaderContainer = ({ currentUser, isUserRequestFailed, history, getUser }) => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   const onUserDropdownToggle = () => {
     setIsDropDownOpen(!isDropDownOpen);
@@ -29,7 +34,7 @@ export const HeaderContainer = ({ currentUser, history }) => {
 
   return (
     <Header
-      currentUser={currentUser}
+      username={currentUser.username}
       appName={config.app.name.toUpperCase()}
       isDropDownOpen={isDropDownOpen}
       onUserDropdownToggle={onUserDropdownToggle}
@@ -40,7 +45,9 @@ export const HeaderContainer = ({ currentUser, history }) => {
 };
 
 HeaderContainer.propTypes = {
-  currentUser: PropTypes.string.isRequired,
+  currentUser: PropTypes.object.isRequired,
+  isUserRequestFailed: PropTypes.bool.isRequired,
+  getUser: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired
   }).isRequired
@@ -48,8 +55,9 @@ HeaderContainer.propTypes = {
 
 function mapStateToProps (state) {
   return {
-    currentUser: state.header.currentUser
+    currentUser: state.header.user,
+    isUserRequestFailed: state.header.isUserRequestFailed
   };
 }
 
-export default withRouter(connect(mapStateToProps)(HeaderContainer));
+export default withRouter(connect(mapStateToProps, { getUser })(HeaderContainer));

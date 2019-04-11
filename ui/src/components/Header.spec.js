@@ -7,7 +7,7 @@ import { UserIcon } from '@patternfly/react-icons';
 const setup = (propOverrides) => {
   const props = Object.assign(
     {
-      currentUser: 'username',
+      username: 'username',
       appName: 'myApp',
       isDropDownOpen: false,
       onUserDropdownToggle: jest.fn(),

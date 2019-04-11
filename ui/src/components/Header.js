@@ -26,7 +26,7 @@ import './Header.css';
  * @param {func} props.onTitleClick logic to execute on title click
  * @param {func} props.logout logic to execute on logout click
  */
-const Header = ({ currentUser, appName, isDropDownOpen, onUserDropdownToggle, onTitleClick, logout }) => {
+const Header = ({ username, appName, isDropDownOpen, onUserDropdownToggle, onTitleClick, logout }) => {
   const toolbar = (
     <Toolbar>
       <ToolbarGroup className={css(accessibleStyles.screenReader, accessibleStyles.visibleOnLg)}>
@@ -38,7 +38,7 @@ const Header = ({ currentUser, appName, isDropDownOpen, onUserDropdownToggle, on
             isOpen={isDropDownOpen}
             toggle={
               <DropdownToggle onToggle={onUserDropdownToggle}>
-                {currentUser}
+                {username}
               </DropdownToggle>
             }
             dropdownItems={[
@@ -60,7 +60,7 @@ const Header = ({ currentUser, appName, isDropDownOpen, onUserDropdownToggle, on
 };
 
 Header.propTypes = {
-  currentUser: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
   appName: PropTypes.string.isRequired,
   isDropDownOpen: PropTypes.bool.isRequired,
   onUserDropdownToggle: PropTypes.func.isRequired,
