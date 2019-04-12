@@ -29,8 +29,14 @@ const requestConfig = (method, body) => ({
 const request = async (path, method, body) => {
   const response = await fetch(`${config.api.url}/${path}`, requestConfig(method, body));
   if (!response.ok) {
-    const msg = await response.text();
-    throw Error(`${response.statusText}: ${msg}`);
+    const body = await response.json();
+
+    // when the user is not logged in redirect them to the oauth login screen
+    if ([401, 403].includes(response.status)) {
+      window.location.replace('/oauth/sign_in');
+    }
+
+    throw Error(`${body.message}`);
   }
 
   return (method === 'DELETE' || response.status === 204) || response.json();
