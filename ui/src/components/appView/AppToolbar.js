@@ -46,7 +46,7 @@ export const AppToolbar = ({ app, onSaveAppClick, onDisableAppClick, isViewDirty
 
 AppToolbar.propTypes = {
   app: PropTypes.shape({
-    appName: PropTypes.string.isRequired
+    appName: PropTypes.string
   }).isRequired,
   onSaveAppClick: PropTypes.func.isRequired,
   onDisableAppClick: PropTypes.func.isRequired,

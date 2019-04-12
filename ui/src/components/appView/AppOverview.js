@@ -27,7 +27,7 @@ const AppOverview = ({ className, app }) => {
 AppOverview.propTypes = {
   className: PropTypes.string.isRequired,
   app: PropTypes.shape({
-    appId: PropTypes.string.isRequired
+    appId: PropTypes.string
   }).isRequired
 };
 
