@@ -14,7 +14,6 @@ import { getSortedAppsTableRows } from '../selectors/index';
  * @param {array} props.apps Array of app object to display
  * @param {array} props.appRows Transformed app array of arrays contains just the values needed for the table
  * @param {object} props.sortBy Contains column index and direction for sorting
- * @param {boolean} props.isAppsRequestFailed Boolean on if the apps request has failed
  * @param {func} props.getApps Retrieves apps from the server
  * @param {func} props.appsTableSort Triggers redux action creator for the table sort
  * @param {object} props.history Contains functions to modify the react-router-dom
@@ -24,7 +23,6 @@ export const AppsTableContainer = ({
   apps,
   appRows,
   sortBy,
-  isAppsRequestFailed,
   getApps,
   appsTableSort,
   history,
@@ -40,7 +38,7 @@ export const AppsTableContainer = ({
 
   useEffect(() => {
     getApps();
-  }, []);
+  }, [getApps]);
 
   const onRowClick = (_event, rowId) => {
     var app = apps.filter((app) => {
@@ -59,7 +57,7 @@ export const AppsTableContainer = ({
     );
   };
 
-  if (isAppsRequestFailed) {
+  if (!apps.length) {
     return (
       <div className="no-apps">
         <p>Unable to fetch any apps :/</p>
@@ -82,7 +80,6 @@ AppsTableContainer.propTypes = {
   ),
   appRows: PropTypes.array.isRequired,
   sortBy: PropTypes.object.isRequired,
-  isAppsRequestFailed: PropTypes.bool.isRequired,
   getApps: PropTypes.func.isRequired,
   appsTableSort: PropTypes.func.isRequired,
   className: PropTypes.string.isRequired,
