@@ -43,6 +43,11 @@ const request = async (path, method, body) => {
  */
 const fetchItems = async url => {
   const result = await request(url, 'GET');
+  // if a 204, return an empty array
+  if (result === true) {
+    return [];
+  }
+
   return result || [];
 };
 

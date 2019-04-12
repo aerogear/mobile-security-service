@@ -49,8 +49,8 @@ describe('components', () => {
       expect(output.props.children.type).toBe(TableView);
     });
 
-    it('should render no table with failed request', () => {
-      const { output } = setup({ isAppsRequestFailed: true });
+    it('should render no table when no apps exist', () => {
+      const { output } = setup({ apps: [] });
       expect(output.type).toBe('div');
       expect(output.props.children.props.children).toMatch('Unable to fetch any apps');
     });
