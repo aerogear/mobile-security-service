@@ -89,7 +89,7 @@ func (a *appsPostgreSQLRepository) GetAppVersionsByAppID(id string) (*[]models.V
 	for rows.Next() {
 		var v models.Version
 		var disabledMessage sql.NullString
-		if err = rows.Scan(&v.ID, &v.Version, &v.AppID, &v.Disabled, &disabledMessage, &v.NumOfCurrentInstalls, &v.LastLaunchedAt, &v.NumOfAppLaunches); err != nil {
+		if err = rows.Scan(&v.ID, &v.Version, &v.AppID, &v.Disabled, &disabledMessage, &v.NumOfAppLaunches, &v.LastLaunchedAt, &v.NumOfCurrentInstalls); err != nil {
 			log.Error(err)
 		}
 
