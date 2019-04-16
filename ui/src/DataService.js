@@ -8,7 +8,7 @@ import config from './config/config';
  * @param {object|Array} body - JSON Payload to send in the request
  * @returns a config object to send in HTTP requests
  */
-const requestConfig = (method, body) => ({
+export const requestConfig = (method, body) => ({
   method,
   cache: 'no-cache',
   credentials: 'same-origin',
@@ -30,11 +30,6 @@ const request = async (path, method, body) => {
   const response = await fetch(`${config.api.url}/${path}`, requestConfig(method, body));
   if (!response.ok) {
     const body = await response.json();
-
-    // when the user is not logged in redirect them to the oauth login screen
-    if ([401, 403].includes(response.status)) {
-      window.location.replace('/oauth/sign_in');
-    }
 
     throw Error(`${body.message}`);
   }

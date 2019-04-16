@@ -16,6 +16,8 @@ services:
       PGUSER: postgresql
       PGPASSWORD: postgres
       PGDATABASE: mobile_security_service
+      REACT_APP_API_URL: /api
+      NODE_ENV: development
     ports:
       - "3000:3000"
     depends_on:

@@ -1,15 +1,19 @@
 import {
   USER_REQUEST,
   USER_SUCCESS,
-  USER_FAILURE
+  USER_FAILURE,
+  USER_AUTHENTICATE_SUCCESS,
+  USER_AUTHENTICATE_FAILURE
 } from '../actions/types.js';
 
 const initialState = {
-  user: {
+  data: {
     username: '',
     email: ''
   },
-  isUserRequestFailed: false
+  isUserRequestFailed: false,
+  isLoggedIn: false,
+  isLoading: true
 };
 
 export default (state = initialState, action) => {
@@ -22,13 +26,27 @@ export default (state = initialState, action) => {
     case USER_SUCCESS: {
       return {
         ...state,
-        user: action.result
+        data: action.result
       };
     }
     case USER_FAILURE: {
       return {
         ...state,
         isUserRequestFailed: true
+      };
+    }
+    case USER_AUTHENTICATE_SUCCESS: {
+      return {
+        ...state,
+        isLoggedIn: true,
+        isLoading: false
+      };
+    }
+    case USER_AUTHENTICATE_FAILURE: {
+      return {
+        ...state,
+        isLoggedIn: false,
+        isLoading: false
       };
     }
     default: {
