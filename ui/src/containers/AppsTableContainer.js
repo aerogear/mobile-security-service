@@ -59,7 +59,7 @@ export const AppsTableContainer = ({
 
   if (!apps.length) {
     return (
-      <div className="no-apps">
+      <div className="empty-table-message text-center">
         <p>Unable to fetch any apps :/</p>
       </div>
     );

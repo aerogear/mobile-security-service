@@ -20,6 +20,7 @@ import {
   saveAppVersions
 } from '../../actions/actions-ui';
 import AppService from '../../services/appService';
+import CustomAlert from '../../components/common/CustomAlert/CustomAlert';
 
 /**
  * Stateful container component for the AppPage
@@ -28,6 +29,10 @@ import AppService from '../../services/appService';
  * @extends {React.Component}
  */
 export class AppPageContainer extends React.Component {
+  state = {
+    alert: { visible: false }
+  }
+
   componentWillMount () {
     this.props.getAppById(this.props.match.params.id);
 
@@ -38,6 +43,44 @@ export class AppPageContainer extends React.Component {
       if (this.props.isDirty) {
         this.props.toggleNavigationModal(true, targetLocation.pathname);
         return false;
+      }
+    });
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.saveAppFailed && nextProps.saveAppFailed !== this.props.saveAppFailed) {
+      this.showAlert('Save failed', 'danger');
+    }
+
+    if (nextProps.saveAppSuccess && nextProps.saveAppSuccess !== this.props.saveAppSuccess) {
+      this.showAlert('Save successful', 'success');
+    }
+  }
+
+  /**
+   * Show an Alert
+   *
+   * @param {string} title - The alert title
+   * @param {*} variant - one of danger, success, warning, info
+   * @param {*} [description] - displays an optional Alert body
+   */
+  showAlert (title, variant, description = null) {
+    this.setState({
+      alert: { title, variant, visible: true, description }
+    });
+  }
+
+  /**
+   * Set the alert's visibility
+   *
+   * @param {boolean} visible - visibility level of the alert.
+   */
+  setAlertVisibility (visible) {
+    this.setState({
+      ...this.state,
+      alert: {
+        ...this.state.alert,
+        visible
       }
     });
   }
@@ -78,7 +121,6 @@ export class AppPageContainer extends React.Component {
    */
   isAppVersionsDirty () {
     const { app: { deployedVersions: currentVersions }, savedData: { deployedVersions: savedVersions } } = this.props;
-
     const dirtyItems = AppService.getDirtyVersions(savedVersions, currentVersions);
 
     return !!dirtyItems.length;
@@ -88,6 +130,9 @@ export class AppPageContainer extends React.Component {
     return (
       <div className="app-detailed-view">
         <HeaderContainer />
+        <div className="alert-group alert-top-right">
+          <CustomAlert title={this.state.alert.title} variant={this.state.alert.variant} visible={this.state.alert.visible} onClose={() => this.setAlertVisibility(false)} />
+        </div>
         <AppToolbar
           app={this.props.app}
           onSaveAppClick={this.props.toggleSaveAppModal}
@@ -137,7 +182,9 @@ const mapStateToProps = (state) => {
   return {
     app: state.app.data,
     savedData: state.app.savedData,
-    isDirty: state.app.isDirty
+    isDirty: state.app.isDirty,
+    saveAppFailed: state.app.isSaveAppRequestFailed,
+    saveAppSuccess: state.app.isSaveAppRequestSuccess
   };
 };
 

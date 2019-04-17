@@ -62,7 +62,7 @@ describe('components', () => {
   describe('AppToolbar', () => {
     it('should render', () => {
       const { output } = setup();
-      const [ , appToolbar ] = output.props.children;
+      const [ , , appToolbar ] = output.props.children;
       expect(appToolbar.type).toBe(AppToolbar);
     });
   });
@@ -70,14 +70,14 @@ describe('components', () => {
   describe('Content', () => {
     it('should render', () => {
       const { output } = setup();
-      const [ , , content ] = output.props.children;
+      const [ , , , content ] = output.props.children;
       expect(content.type).toBe(Content);
     });
 
     describe('AppOverview', () => {
       it('should render', () => {
         const { output } = setup();
-        const [ , , content ] = output.props.children;
+        const [ , , , content ] = output.props.children;
         const [ appOverview ] = content.props.children;
         expect(appOverview.type).toBe(AppOverview);
       });
@@ -86,7 +86,7 @@ describe('components', () => {
     describe('Title', () => {
       it('should render', () => {
         const { output } = setup();
-        const [ , , content ] = output.props.children;
+        const [ , , , content ] = output.props.children;
         const [ , title ] = content.props.children;
         expect(title.type).toBe(Title);
       });
@@ -95,7 +95,7 @@ describe('components', () => {
     describe('AppVersionsTableContainer', () => {
       it('should render', () => {
         const { output } = setup();
-        const [ , , content ] = output.props.children;
+        const [ , , , content ] = output.props.children;
         const [ , , appVersionsTableContainer ] = content.props.children;
         expect(appVersionsTableContainer.type).toBe(AppVersionsTableContainer);
       });
@@ -104,7 +104,7 @@ describe('components', () => {
     describe('NavigationModalContainer', () => {
       it('should render', () => {
         const { output } = setup();
-        const [ , , content ] = output.props.children;
+        const [ , , , content ] = output.props.children;
         const [ , , , navigationModalContainer ] = content.props.children;
         expect(navigationModalContainer.type).toBe(NavigationModalContainer);
       });
@@ -113,7 +113,7 @@ describe('components', () => {
     describe('SaveAppModalContainer', () => {
       it('should render', () => {
         const { output } = setup();
-        const [ , , content ] = output.props.children;
+        const [ , , , content ] = output.props.children;
         const [ , , , , saveAppModalContainer ] = content.props.children;
         expect(saveAppModalContainer.type).toBe(SaveAppModalContainer);
       });
@@ -122,7 +122,7 @@ describe('components', () => {
     describe('DisableAppModalContainer', () => {
       it('should render', () => {
         const { output } = setup();
-        const [ , , content ] = output.props.children;
+        const [ , , , content ] = output.props.children;
         const [ , , , , , disableAppModalContainer ] = content.props.children;
         expect(disableAppModalContainer.type).toBe(DisableAppModalContainer);
       });
@@ -134,14 +134,14 @@ describe('events', () => {
   describe('AppToolbar handles clicks', () => {
     it('onSaveAppClick should call toggleSaveAppModal', () => {
       const { output, props } = setup();
-      const [ , appToolbar ] = output.props.children;
+      const [ , , appToolbar ] = output.props.children;
       appToolbar.props.onSaveAppClick();
       expect(props.toggleSaveAppModal).toBeCalled();
     });
 
     it('onDisableAppClick should call toggleDisableAppModal', () => {
       const { output, props } = setup();
-      const [ , appToolbar ] = output.props.children;
+      const [ , , appToolbar ] = output.props.children;
       appToolbar.props.onDisableAppClick();
       expect(props.toggleDisableAppModal).toBeCalled();
     });
