@@ -25,6 +25,7 @@ const initialState = {
   sortBy: { direction: SortByDirection.asc, index: 0 },
   isAppRequestFailed: false,
   isSaveAppRequestFailed: false,
+  isSaveAppRequestSuccess: false,
   isDisableAppRequestFailed: false,
   isDirty: false
 };
@@ -108,13 +109,16 @@ export default (state = initialState, action) => {
     }
     case SAVE_APP_VERSIONS: {
       return {
-        ...state
+        ...state,
+        isSaveAppRequestSuccess: false,
+        isSaveAppRequestFailed: false
       };
     }
     case SAVE_APP_VERSIONS_SUCCESS: {
       return {
         ...state,
         isSaveAppRequestFailed: false,
+        isSaveAppRequestSuccess: true,
         savedData: cloneAppData(state.data),
         isDirty: false
       };
@@ -122,7 +126,8 @@ export default (state = initialState, action) => {
     case SAVE_APP_VERSIONS_FAILURE: {
       return {
         ...state,
-        isSaveAppRequestFailed: true
+        isSaveAppRequestFailed: true,
+        isSaveAppRequestSuccess: false
       };
     }
     case DISABLE_APP_SUCCESS: {

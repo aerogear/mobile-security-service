@@ -24,6 +24,7 @@ describe('appReducer', () => {
     sortBy: { direction: SortByDirection.asc, index: 0 },
     isAppRequestFailed: false,
     isSaveAppRequestFailed: false,
+    isSaveAppRequestSuccess: false,
     isDisableAppRequestFailed: false,
     isDirty: false
   };

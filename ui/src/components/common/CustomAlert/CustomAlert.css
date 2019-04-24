@@ -1,0 +1,12 @@
+.alert-group {
+  position: absolute;
+  z-index: 10;
+}
+
+.alert-group.alert-top-right {
+  right: 3em;
+}
+
+.alert-group.alert-top-right .Alert {
+  margin-bottom: .5em;
+}

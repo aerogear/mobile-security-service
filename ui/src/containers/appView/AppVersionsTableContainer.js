@@ -103,7 +103,7 @@ export const AppVersionsTableContainer = ({
 
   if (!appVersionRows || !appVersionRows.length) {
     return (
-      <div className="no-versions">
+      <div className="empty-table-message text-center">
         <p>This app has no versions</p>
       </div>
     );

@@ -17,6 +17,10 @@ code {
   margin-top: 3rem;
 }
 
+.text-center {
+  text-align: center;
+}
+
 .table-title {
   margin-bottom: 1rem;
 }
