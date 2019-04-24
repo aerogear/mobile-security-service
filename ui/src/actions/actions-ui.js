@@ -1,5 +1,6 @@
 import * as actions from '../actions/types.js';
 import DataService from '../DataService';
+import AuthService from '../AuthService';
 import fetchAction from './fetch';
 
 export const appsTableSort = (_event, index, direction) => {
@@ -81,6 +82,8 @@ export const setAllAppVersionsDisabled = (customMessage) => {
     }
   };
 };
+
+export const authenticate = fetchAction([actions.USER_AUTHENTICATE_REQUEST, actions.USER_AUTHENTICATE_SUCCESS, actions.USER_AUTHENTICATE_FAILURE], AuthService.authenticate);
 
 export const getApps = fetchAction([actions.APPS_REQUEST, actions.APPS_SUCCESS, actions.APPS_FAILURE], DataService.fetchApps);
 

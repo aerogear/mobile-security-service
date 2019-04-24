@@ -19,7 +19,7 @@ export const HeaderContainer = ({ currentUser, history, getUser }) => {
 
   useEffect(() => {
     getUser();
-  }, []);
+  }, [getUser]);
 
   const onUserDropdownToggle = () => {
     setIsDropDownOpen(!isDropDownOpen);
@@ -30,7 +30,7 @@ export const HeaderContainer = ({ currentUser, history, getUser }) => {
   };
 
   const logout = () => {
-    window.location.replace('/oauth/sign_in');
+    window.location.replace(config.auth.signInUrl);
   };
 
   return (
@@ -56,8 +56,8 @@ HeaderContainer.propTypes = {
 
 function mapStateToProps (state) {
   return {
-    currentUser: state.header.user,
-    isUserRequestFailed: state.header.isUserRequestFailed
+    currentUser: state.user.data,
+    isUserRequestFailed: state.user.isUserRequestFailed
   };
 }
 
