@@ -12,10 +12,11 @@ BINARY ?= mobile-security-service
 # This follows the output format for goreleaser
 BINARY_LINUX_64 = ./dist/linux_amd64/$(BINARY)
 
-DOCKER_LATEST_TAG = $(ORG_NAME)/$(APP_NAME):latest
-DOCKER_MASTER_TAG = $(ORG_NAME)/$(APP_NAME):master
+IMAGE_REGISTRY=quay.io
+DOCKER_LATEST_TAG = $(IMAGE_REGISTRY)/$(ORG_NAME)/$(APP_NAME):latest
+DOCKER_MASTER_TAG = $(IMAGE_REGISTRY)/$(ORG_NAME)/$(APP_NAME):master
 RELEASE_TAG ?= $(CIRLE_TAG)
-DOCKER_RELEASE_TAG = $(ORG_NAME)/$(APP_NAME):$(RELEASE_TAG)
+DOCKER_RELEASE_TAG = $(IMAGE_REGISTRY)/$(ORG_NAME)/$(APP_NAME):$(RELEASE_TAG)
 
 LDFLAGS=-ldflags "-w -s -X main.Version=${TAG}"
 
@@ -55,23 +56,23 @@ build_linux: setup
 docker_build: build_linux
 	docker build -t $(DOCKER_LATEST_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
 
-.PHONY: docker_build_release
-docker_build_release:
+.PHONY: build_release_image
+build_release_image:
 	docker build -t $(DOCKER_LATEST_TAG) -t $(DOCKER_RELEASE_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
 
-.PHONY: docker_build_master
-docker_build_master:
+.PHONY: build_master_image
+build_master_image:
 	docker build -t $(DOCKER_MASTER_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
 
-.PHONY: docker_push_release
-docker_push_release:
-	@docker login --username $(DOCKERHUB_USERNAME) --password $(DOCKERHUB_PASSWORD)
+.PHONY: push_release_image
+push_release_image:
+	@docker login --username $(QUAY_USERNAME) --password $(QUAY_PASSWORD) $(IMAGE_REGISTRY)
 	docker push $(DOCKER_LATEST_TAG)
 	docker push $(DOCKER_RELEASE_TAG)
 
-.PHONY: docker_push_master
-docker_push_master:
-	@docker login --username $(DOCKERHUB_USERNAME) --password $(DOCKERHUB_PASSWORD)
+.PHONY: push_master_image
+push_master_image:
+	@docker login --username $(QUAY_USERNAME) --password $(QUAY_PASSWORD) $(IMAGE_REGISTRY)
 	docker push $(DOCKER_MASTER_TAG)
 
 .PHONY: release

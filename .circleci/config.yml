@@ -46,7 +46,7 @@ jobs:
           paths:
             - ui/build
 
-  docker_push_master:
+  push_master_image:
     working_directory: /go/src/github.com/aerogear/mobile-security-service
     docker:
       - image: circleci/golang:1.10
@@ -56,10 +56,10 @@ jobs:
       - run: make setup
       - setup_remote_docker
       - run: make build_linux
-      - run: make docker_build_master
-      - run: make docker_push_master
+      - run: make build_master_image
+      - run: make push_master_image
 
-  docker_release:
+  push_release_image:
     working_directory: /go/src/github.com/aerogear/mobile-security-service
     docker:
       - image: circleci/golang:1.10
@@ -69,8 +69,8 @@ jobs:
       - run: make setup
       - run: curl -sL https://raw.githubusercontent.com/goreleaser/get/master/get | bash
       - setup_remote_docker
-      - run: make docker_build_release
-      - run: make docker_push_release
+      - run: make build_release_image
+      - run: make push_release_image
       - store_artifacts:
           path: dist
 
@@ -86,7 +86,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - docker_push_master:
+      - push_master_image:
           requires:
             - build_server
             - build_ui
@@ -94,7 +94,7 @@ workflows:
             branches:
               only:
                 - master
-      - docker_release:
+      - push_release_image:
           requires:
             - build_server
             - build_ui
