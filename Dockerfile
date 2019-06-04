@@ -1,4 +1,4 @@
-FROM openshift/origin-release:golang-1.10 as builder
+FROM openshift/origin-release:golang-1.12 as builder
 WORKDIR /go/src/github.com/aerogear/mobile-security-service
 COPY . .
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh \
