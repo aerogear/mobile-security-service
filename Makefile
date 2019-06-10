@@ -8,7 +8,7 @@ PACKAGES     ?= $(shell sh -c "find $(TOP_SRC_DIRS) -name \\*_test.go \
                    -exec dirname {} \\; | sort | uniq")
 BIN_DIR := $(GOPATH)/bin				   
 BINARY ?= mobile-security-service
-RELEASE_TAG = 0.0.1
+RELEASE_TAG = $(CIRCLE_TAG)
 
 # This follows the output format for goreleaser
 BINARY_LINUX_64 = ./dist/linux_amd64/$(BINARY)
