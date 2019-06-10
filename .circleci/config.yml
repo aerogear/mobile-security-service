@@ -7,99 +7,99 @@ jobs:
     working_directory: /go/src/github.com/aerogear/mobile-security-service
 
     docker:
-      - image: circleci/golang:1.10
-      - image: registry.access.redhat.com/rhscl/postgresql-96-rhel7:latest
-        ports:
-          - 5432:5432
-        environment:
-          POSTGRESQL_PASSWORD: postgres
-          POSTGRESQL_USER: postgresql
-          POSTGRESQL_DATABASE: mobile_security_service
-    
+    - image: circleci/golang:1.10
+    - image: registry.access.redhat.com/rhscl/postgresql-96-rhel7:latest
+      ports:
+      - 5432:5432
+      environment:
+        POSTGRESQL_PASSWORD: postgres
+        POSTGRESQL_USER: postgresql
+        POSTGRESQL_DATABASE: mobile_security_service
+
     steps:
-      - checkout
-      - run: ./scripts/commit-filter-check.sh
-      - run: ./scripts/code-check-install-dep.sh
-      - run: ./scripts/code-check.sh
-      - run: go get github.com/mattn/goveralls
-      - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-      # The script need to be called after the dep be installed and before the make build command
-      - run: ./scripts/check-if-swagger-api-file-is-update.sh  # Do not move it for after the make build
-      - run: make build
-      - run: make test-unit
-      - run: make test-integration-cover
-      - run: /go/bin/goveralls -coverprofile=coverage-all.out -service=circle-ci -repotoken=IccwXNeC1niB17Du1tCWu8LA0wd7uBbCh
+    - checkout
+    - run: ./scripts/commit-filter-check.sh
+    - run: ./scripts/code-check-install-dep.sh
+    - run: ./scripts/code-check.sh
+    - run: go get github.com/mattn/goveralls
+    - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+    # The script need to be called after the dep be installed and before the make build command
+    - run: ./scripts/check-if-swagger-api-file-is-update.sh  # Do not move it for after the make build
+    - run: make build
+    - run: make test-unit
+    - run: make test-integration-cover
+    - run: /go/bin/goveralls -coverprofile=coverage-all.out -service=circle-ci -repotoken=IccwXNeC1niB17Du1tCWu8LA0wd7uBbCh
 
   build_ui:
     working_directory: ~/mobile-security-service
 
     docker:
-      - image: circleci/node:8.15.0
+    - image: circleci/node:8.15.0
 
     steps:
-      - checkout
-      - run: make ui-check-code-style
-      - run: make ui-test-cover
-      - run: make ui
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ui/build
+    - checkout
+    - run: make ui-check-code-style
+    - run: make ui-test-cover
+    - run: make ui
+    - persist_to_workspace:
+        root: .
+        paths:
+        - ui/build
 
   push_master_image:
     working_directory: /go/src/github.com/aerogear/mobile-security-service
     docker:
-      - image: circleci/golang:1.10
+    - image: circleci/golang:1.10
     steps:
-      - checkout
-      - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-      - run: make setup
-      - setup_remote_docker
-      - run: make build_linux
-      - run: make build_master_image
-      - run: make push_master_image
+    - checkout
+    - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+    - run: make setup
+    - setup_remote_docker
+    - run: make build-linux
+    - run: make build-master-image
+    - run: make push-master-image
 
   push_release_image:
     working_directory: /go/src/github.com/aerogear/mobile-security-service
     docker:
-      - image: circleci/golang:1.10
+    - image: circleci/golang:1.10
     steps:
-      - checkout
-      - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-      - run: make setup
-      - run: curl -sL https://raw.githubusercontent.com/goreleaser/get/master/get | bash
-      - setup_remote_docker
-      - run: make build_release_image
-      - run: make push_release_image
-      - store_artifacts:
-          path: dist
+    - checkout
+    - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+    - run: make setup
+    - run: curl -sL https://raw.githubusercontent.com/goreleaser/get/master/get | bash
+    - setup_remote_docker
+    - run: make build-release-image
+    - run: make push-release-image
+    - store_artifacts:
+        path: dist
 
 workflows:
   version: 2
   build_and_push:
     jobs:
-      - build_server:
-          filters:
-            tags:
-              only: /.*/
-      - build_ui:
-          filters:
-            tags:
-              only: /.*/
-      - push_master_image:
-          requires:
-            - build_server
-            - build_ui
-          filters:
-            branches:
-              only:
-                - master
-      - push_release_image:
-          requires:
-            - build_server
-            - build_ui
-          filters:
-            tags:
-              only: /\d{1,2}\.\d{1,2}\.\d{1,2}/
-            branches:
-              ignore: /.*/
+    - build_server:
+        filters:
+          tags:
+            only: /.*/
+    - build_ui:
+        filters:
+          tags:
+            only: /.*/
+    - push_master_image:
+        requires:
+        - build_server
+        - build_ui
+        filters:
+          branches:
+            only:
+            - master
+    - push_release_image:
+        requires:
+        - build_server
+        - build_ui
+        filters:
+          tags:
+            only: /\d{1,2}\.\d{1,2}\.\d{1,2}/
+          branches:
+            ignore: /.*/

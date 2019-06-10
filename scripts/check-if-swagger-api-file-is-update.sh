@@ -6,12 +6,12 @@ check-if-swagger-api-file-is-update (){
     # create a copy of the original file
     cp api/swagger.yaml api/original.yaml
     # run the make file task to update the swagger file definition
-    make build_swagger_api
+    make build-swagger-api
     # Check if it is updated
     if ! cmp api/swagger.yaml api/original.yaml >/dev/null 2>&1
     then
         echo "The REST API Swagger doc was updated and it was not committed."
-        echo "Please, run 'make setup' or 'build_swagger_api' and commit the changes in the file 'api/swagger.yaml'."
+        echo "Please, run 'make setup' or 'make build-swagger-api' and commit the changes in the file 'api/swagger.yaml'."
         exit 1
     fi
 

@@ -24,20 +24,20 @@ LDFLAGS=-ldflags "-w -s -X main.Version=${TAG}"
 # SERVER
 # SERVER setup
 .PHONY: setup
-setup: setup_githooks
+setup: setup-githooks
 	@echo Installing application dependencies:
 	dep ensure
-	make build_swagger_api
+	make build-swagger-api
 
-.PHONY: build_swagger_api
-build_swagger_api:
+.PHONY: build-swagger-api
+build-swagger-api:
 	@echo Installing Swagger dep:
 	go get -u github.com/go-swagger/go-swagger/cmd/swagger
 	@echo Updating Swagger api:
 	cd $(APP_FILE_DIR); swagger generate spec -m -o ../../api/swagger.yaml
 
-.PHONY: setup_githooks
-setup_githooks:
+.PHONY: setup-githooks
+setup-githooks:
 	@echo Installing errcheck dependence:
 	go get -u github.com/kisielk/errcheck
 	@echo Setting up Git hooks:
@@ -48,30 +48,30 @@ setup_githooks:
 build: setup
 	go build -o $(BINARY) $(APP_FILE)
 
-.PHONY: build_linux
-build_linux: setup
+.PHONY: buil-linux
+build-linux: setup
 	env GOOS=linux GOARCH=amd64 go build -o $(BINARY_LINUX_64) $(APP_FILE)
 
-.PHONY: docker_build
-docker_build: build_linux
+.PHONY: docker-build
+docker-build: build-linux
 	docker build -t $(LATEST_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
 
-.PHONY: build_release_image
-build_release_image:
+.PHONY: build-release-image
+build-release-image:
 	docker build -t $(LATEST_TAG) -t $(DOCKER_RELEASE_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
 
-.PHONY: build_master_image
-build_master_image:
+.PHONY: build-master-image
+build-master-image:
 	docker build -t $(MASTER_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
 
-.PHONY: push_release_image
-push_release_image:
+.PHONY: push-release-image
+push-release-image:
 	@docker login --username $(QUAY_USERNAME) --password $(QUAY_PASSWORD) $(IMAGE_REGISTRY)
 	docker push $(LATEST_TAG)
 	docker push $(DOCKER_RELEASE_TAG)
 
-.PHONY: push_master_image
-push_master_image:
+.PHONY: push-master-image
+push-master-image:
 	@docker login --username $(QUAY_USERNAME) --password $(QUAY_PASSWORD) $(IMAGE_REGISTRY)
 	docker push $(MASTER_TAG)
 
