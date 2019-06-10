@@ -8,15 +8,15 @@ PACKAGES     ?= $(shell sh -c "find $(TOP_SRC_DIRS) -name \\*_test.go \
                    -exec dirname {} \\; | sort | uniq")
 BIN_DIR := $(GOPATH)/bin				   
 BINARY ?= mobile-security-service
+RELEASE_TAG = 0.0.1
 
 # This follows the output format for goreleaser
 BINARY_LINUX_64 = ./dist/linux_amd64/$(BINARY)
 
 IMAGE_REGISTRY=quay.io
-LATEST_TAG = $(IMAGE_REGISTRY)/$(ORG_NAME)/$(APP_NAME):latest
-MASTER_TAG = $(IMAGE_REGISTRY)/$(ORG_NAME)/$(APP_NAME):master
-RELEASE_TAG ?= $(CIRLE_TAG)
-DOCKER_RELEASE_TAG = $(IMAGE_REGISTRY)/$(ORG_NAME)/$(APP_NAME):$(RELEASE_TAG)
+IMAGE_LATEST_TAG = $(IMAGE_REGISTRY)/$(ORG_NAME)/$(APP_NAME):latest
+IMAGE_MASTER_TAG = $(IMAGE_REGISTRY)/$(ORG_NAME)/$(APP_NAME):master
+IMAGE_RELEASE_TAG = $(IMAGE_REGISTRY)/$(ORG_NAME)/$(APP_NAME):$(RELEASE_TAG)
 
 LDFLAGS=-ldflags "-w -s -X main.Version=${TAG}"
 
@@ -48,32 +48,32 @@ setup-githooks:
 build: setup
 	go build -o $(BINARY) $(APP_FILE)
 
-.PHONY: buil-linux
+.PHONY: build-linux
 build-linux: setup
 	env GOOS=linux GOARCH=amd64 go build -o $(BINARY_LINUX_64) $(APP_FILE)
 
-.PHONY: docker-build
-docker-build: build-linux
-	docker build -t $(LATEST_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
+.PHONY: build-image
+build-image: build-linux
+	docker build -t $(IMAGE_LATEST_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
 
 .PHONY: build-release-image
 build-release-image:
-	docker build -t $(LATEST_TAG) -t $(DOCKER_RELEASE_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
+	docker build -t $(IMAGE_LATEST_TAG) -t $(IMAGE_RELEASE_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
 
 .PHONY: build-master-image
 build-master-image:
-	docker build -t $(MASTER_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
+	docker build -t $(IMAGE_MASTER_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
 
 .PHONY: push-release-image
 push-release-image:
 	@docker login --username $(QUAY_USERNAME) --password $(QUAY_PASSWORD) $(IMAGE_REGISTRY)
-	docker push $(LATEST_TAG)
-	docker push $(DOCKER_RELEASE_TAG)
+	docker push $(IMAGE_LATEST_TAG)
+	docker push $(IMAGE_RELEASE_TAG)
 
 .PHONY: push-master-image
 push-master-image:
 	@docker login --username $(QUAY_USERNAME) --password $(QUAY_PASSWORD) $(IMAGE_REGISTRY)
-	docker push $(MASTER_TAG)
+	docker push $(IMAGE_MASTER_TAG)
 
 .PHONY: release
 release: setup
