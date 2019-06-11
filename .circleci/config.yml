@@ -15,7 +15,7 @@ jobs:
           POSTGRESQL_PASSWORD: postgres
           POSTGRESQL_USER: postgresql
           POSTGRESQL_DATABASE: mobile_security_service
-    
+
     steps:
       - checkout
       - run: ./scripts/commit-filter-check.sh
@@ -55,22 +55,22 @@ jobs:
       - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       - run: make setup
       - setup_remote_docker
-      - run: make build_linux
-      - run: make build_master_image
-      - run: make push_master_image
+      - run: make build-linux
+      - run: make build-master-image
+      - run: make push-master-image
 
   push_release_image:
     working_directory: /go/src/github.com/aerogear/mobile-security-service
     docker:
-      - image: circleci/golang:1.10
+      - image: circleci/golang:1.12
     steps:
       - checkout
       - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       - run: make setup
       - run: curl -sL https://raw.githubusercontent.com/goreleaser/get/master/get | bash
       - setup_remote_docker
-      - run: make build_release_image
-      - run: make push_release_image
+      - run: make build-release-image
+      - run: make push-release-image
       - store_artifacts:
           path: dist
 
