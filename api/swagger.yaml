@@ -262,6 +262,16 @@ paths:
         "404":
           description: Data not found
       summary: Init call from SDK
+  /metrics:
+    get:
+      description: Get the metrics of the service
+      operationId: metrics
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: successful operation
+      summary: Retrieve all metrics for the Go server
   /ping:
     get:
       description: Check the status of the REST SERVICE API
