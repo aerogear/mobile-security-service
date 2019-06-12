@@ -17,6 +17,7 @@ package main
 
 import (
 	"database/sql"
+
 	"github.com/aerogear/mobile-security-service/pkg/config"
 	"github.com/aerogear/mobile-security-service/pkg/db"
 	"github.com/aerogear/mobile-security-service/pkg/web/apps"
@@ -119,4 +120,7 @@ func setupServer(e *echo.Echo, c config.Config, dbConn *sql.DB) {
 	// Setup initclient routes
 	router.SetInitRoutes(apiGroup, initclientHandler)
 	router.SetChecksRouter(apiGroup, checksHandler)
+
+	// Setup metrics route
+	router.SetMetricsRouter(apiGroup)
 }

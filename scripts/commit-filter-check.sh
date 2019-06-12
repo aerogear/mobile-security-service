@@ -29,7 +29,7 @@ commit_message_check (){
             echo "  docs(docs-change)"
             echo " "
       fi
-      messagecheck=`echo $gitmessage | grep "(AEROGEAR-"`
+      messagecheck=`echo $gitmessage | grep "(AEROGEAR-\|(INTLY-"`
       if  [ -z "$messagecheck" ]
       then 
             echo "Your commit message must end with the following"
@@ -46,7 +46,7 @@ commit_message_check (){
             echo " "
       fi
 
-      messagecheck=`echo $gitmessage | grep -w "feat\|fix\|docs\|breaking" | grep "(AEROGEAR-" | grep ": "`
+      messagecheck=`echo $gitmessage | grep -w "feat\|fix\|docs\|breaking" | grep "(AEROGEAR-\|(INTLY-" | grep ": "`
 
       
 

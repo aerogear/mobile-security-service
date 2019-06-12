@@ -8,6 +8,7 @@ import (
 	"github.com/aerogear/mobile-security-service/pkg/web/middleware"
 	"github.com/aerogear/mobile-security-service/pkg/web/user"
 	"github.com/labstack/echo"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
@@ -283,4 +284,19 @@ func SetChecksRouter(r *echo.Group, handler *checks.HTTPHandler) {
 	//   500:
 	//     description: Internal Server Error
 	r.GET("/healthz", handler.Healthz)
+}
+
+func SetMetricsRouter(r *echo.Group) {
+	// swagger:operation GET /metrics Metrics
+	//
+	// Get the metrics of the service
+	// ---
+	// summary: Retrieve all metrics for the Go server
+	// operationId: metrics
+	// produces:
+	// - application/json
+	// responses:
+	//   200:
+	//     description: successful operation
+	r.GET("/metrics", echo.WrapHandler(promhttp.Handler()))
 }

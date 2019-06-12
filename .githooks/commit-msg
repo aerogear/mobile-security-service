@@ -13,7 +13,7 @@ commit_message_check (){
       then 
             echo -e "Your commit message must begin with one of the following: [\e[33m$types\033[0m]"
       fi
-      messagecheck=`echo $gitmessage | grep "(AEROGEAR-"`
+      messagecheck=`echo $gitmessage | grep "(AEROGEAR-\|(INTLY-"`
       if  [ -z "$messagecheck" ]
       then 
             echo -e "Your commit message must end with the following: \e[33m(AEROGEAR-****)\033[0m where **** is the JIRA number"
@@ -28,7 +28,7 @@ commit_message_check (){
             echo " "
       fi
 
-      messagecheck=`echo $gitmessage | grep -w "$matchtypes" | grep "(AEROGEAR-" | grep ": "`
+      messagecheck=`echo $gitmessage | grep -w "$matchtypes" | grep "(AEROGEAR-\|(INTLY-" | grep ": "`
 
       # check to see if the messagecheck var is empty
       if [ -z "$messagecheck" ]
