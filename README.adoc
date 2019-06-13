@@ -409,6 +409,30 @@ NOTE: The link:./Makefile[Makefile] is implemented with tasks which you should u
 * https://golang.org/[Golang] - Programming language used
 * https://echo.labstack.com/[Echo] - Web framework used
 
+== Release
+
+Following the steps
+
+* Create a new tag following the http://semver.org/spec/v2.0.0.html[semver], for example:
+
+[source,shell]
+----
+$ git tag -a 0.1.0 -m "version 0.1.0"
+----
+
+* Push the new tag to the upstream repository, for example:
+
+[source,shell]
+----
+$ git push upstream 0.1.0
+----
+
+* Update the the link:./CHANGELOG.MD[CHANGELOG.MD] with the new release.
+
+NOTE: The image with the tag will be created and pushed to the https://quay.io/repository/aerogear/mobile-security-service[mobile-security-service image repository] by the CI.
+
+WARNING: Do not use letters in the tag such as `v`. It will not work.
+
 == Contributing
 
 All contributions are hugely appreciated. Please see our https://aerogear.org/community/#guides[Contributing Guide] for guidelines on how to open issues and pull requests. Please check out our link:./.github/CODE_OF_CONDUCT.md[Code of Conduct] too.

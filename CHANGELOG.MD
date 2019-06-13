@@ -8,5 +8,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Released
 
-## [v0.1.0] - Tue Jun 11 2019
+## [0.1.0] - Tue Jun 11 2019
 - Initial version meeting requirements defined for Service and UI
