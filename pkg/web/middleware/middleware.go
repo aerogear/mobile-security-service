@@ -1,18 +1,50 @@
 package middleware
 
 import (
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/aerogear/mobile-security-service/pkg/config"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	"strings"
-	"time"
+)
+
+var (
+	ApiRequestsTotal = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "api_requests_total",
+			Help: "A counter for total HTTP requests",
+		},
+		[]string{"code", "method", "path"},
+	)
+	ApiRequestsFailureTotal = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "api_requests_failure_total",
+			Help: "A counter for total HTTP request failures",
+		},
+		[]string{"code", "method", "path"},
+	)
+	ApiRequestsInFlight = prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "api_requests_in_flight",
+		Help: "A gauge of concurrent requests",
+	})
+	ApiRequestsDuration = prometheus.NewSummaryVec(
+		prometheus.SummaryOpts{
+			Name: "api_requests_duration_seconds",
+			Help: "HTTP request latencies in seconds.",
+		},
+		[]string{"method", "path"},
+	)
 )
 
 // Init - Initialise custom middleware
 func Init(e *echo.Echo, c config.Config) {
+	prometheus.MustRegister(ApiRequestsTotal, ApiRequestsFailureTotal, ApiRequestsInFlight, ApiRequestsDuration)
+
 	e.Use(corsWithConfig(c)) // CORS
-	e.Use(Logger)
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Root:  c.StaticFilesDir,
 		HTML5: true,
@@ -33,20 +65,39 @@ func corsWithConfig(c config.Config) echo.MiddlewareFunc {
 	})
 }
 
-// Logger logs information about all incoming requests
-func Logger(next echo.HandlerFunc) echo.HandlerFunc {
+// LogHTTPMetrics captures information about all incoming requests for Prometheus
+func LogHTTPMetrics(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
+		req := c.Request()
+		res := c.Response()
 		start := time.Now()
 
-		r := c.Request()
+		ApiRequestsInFlight.Inc()
 
+		// Execute the http handler by calling next(c)
+		if err := next(c); err != nil {
+			c.Error(err)
+		}
+
+		status := strconv.Itoa(res.Status)
+		method := req.Method
+		path := req.RequestURI
+		elapsed := time.Since(start).Seconds()
+
+		// Capture Prometheus metrics
+		ApiRequestsTotal.WithLabelValues(status, method, path).Inc()
+		ApiRequestsDuration.WithLabelValues(method, path).Observe(elapsed)
+		ApiRequestsInFlight.Dec()
+
+		// Log request details at Info level
 		log.WithFields(log.Fields{
-			"method":        r.Method,
-			"path":          r.RequestURI,
-			"client_ip":     r.RemoteAddr,
+			"status":        status,
+			"method":        req.Method,
+			"path":          req.RequestURI,
+			"client_ip":     req.RemoteAddr,
 			"response_time": time.Since(start),
 		}).Info()
 
-		return next(c)
+		return nil
 	}
 }

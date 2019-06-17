@@ -2,6 +2,9 @@ package httperrors
 
 import (
 	"encoding/json"
+	"strconv"
+
+	"github.com/aerogear/mobile-security-service/pkg/web/middleware"
 
 	"github.com/aerogear/mobile-security-service/pkg/models"
 	"github.com/labstack/echo"
@@ -143,6 +146,8 @@ func HTTPError(c echo.Context, statusCode int, message string) (e error) {
 	if err != nil {
 		return err
 	}
+
+	middleware.ApiRequestsFailureTotal.WithLabelValues(strconv.Itoa(statusCode), c.Request().Method, c.Request().RequestURI).Inc()
 
 	return c.JSON(statusCode, resBody)
 }
