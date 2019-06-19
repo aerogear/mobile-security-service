@@ -46,7 +46,7 @@ func SetUserRoutes(r *echo.Group, userHandler user.HTTPHandler) {
 	//     description: sucessful operation
 	//   "404":
 	//     description: No user found
-	r.GET("/user", userHandler.GetUser)
+	r.GET("/user", middleware.LogHTTPMetrics(userHandler.GetUser))
 }
 
 // SetAppRoutes binds the route address to their handler functions
@@ -74,7 +74,7 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	//     description: successful operation by no apps were found
 	//   404:
 	//     description: App not found
-	r.GET("/apps", appsHandler.GetApps)
+	r.GET("/apps", middleware.LogHTTPMetrics(appsHandler.GetApps))
 
 	// swagger:operation GET /apps/{id} App
 	//
@@ -99,7 +99,7 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	//     description: Invalid id supplied
 	//   404:
 	//     description: App not found
-	r.GET("/apps/:id", appsHandler.GetActiveAppByID)
+	r.GET("/apps/:id", middleware.LogHTTPMetrics(appsHandler.GetActiveAppByID))
 
 	// swagger:operation DELETE /apps/{id} App
 	//
@@ -122,7 +122,7 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	//     description: Invalid id supplied
 	//   404:
 	//     description: App not found
-	r.DELETE("/apps/:id", appsHandler.DeleteAppById)
+	r.DELETE("/apps/:id", middleware.LogHTTPMetrics(appsHandler.DeleteAppById))
 
 	// swagger:operation PUT /apps/:id/versions Version
 	//
@@ -151,7 +151,7 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	//     description: Invalid app and/or versions supplied
 	//   404:
 	//     description: App not found
-	r.PUT("/apps/:id/versions", appsHandler.UpdateAppVersions)
+	r.PUT("/apps/:id/versions", middleware.LogHTTPMetrics(appsHandler.UpdateAppVersions))
 
 	// swagger:operation POST /apps/:id/versions/disable Version
 	//
@@ -180,7 +180,7 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	//     description: Invalid app supplied
 	//   404:
 	//     description: App not found
-	r.POST("/apps/:id/versions/disable", appsHandler.DisableAllAppVersionsByAppID)
+	r.POST("/apps/:id/versions/disable", middleware.LogHTTPMetrics(appsHandler.DisableAllAppVersionsByAppID))
 
 	// Create an app
 	// ---
@@ -202,7 +202,7 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	//     description: successful operation
 	//   400:
 	//     description: Invalid data supplied
-	r.POST("/apps", appsHandler.CreateApp)
+	r.POST("/apps", middleware.LogHTTPMetrics(appsHandler.CreateApp))
 
 	// Update an app
 	// ---
@@ -227,7 +227,7 @@ func SetAppRoutes(r *echo.Group, appsHandler apps.HTTPHandler) {
 	//     description: successful operation
 	//   400:
 	//     description: Invalid data supplied
-	r.PATCH("/apps/:id", appsHandler.UpdateAppNameByID)
+	r.PATCH("/apps/:id", middleware.LogHTTPMetrics(appsHandler.UpdateAppNameByID))
 }
 
 func SetInitRoutes(r *echo.Group, initHandler *initclient.HTTPHandler) {
@@ -253,7 +253,7 @@ func SetInitRoutes(r *echo.Group, initHandler *initclient.HTTPHandler) {
 	//     description: Invalid id supplied
 	//   404:
 	//     description: Data not found
-	r.POST("/init", initHandler.InitClientApp)
+	r.POST("/init", middleware.LogHTTPMetrics(initHandler.InitClientApp))
 }
 
 func SetChecksRouter(r *echo.Group, handler *checks.HTTPHandler) {
@@ -298,5 +298,5 @@ func SetMetricsRouter(r *echo.Group) {
 	// responses:
 	//   200:
 	//     description: successful operation
-	r.GET("/metrics", echo.WrapHandler(promhttp.Handler()))
+	r.GET("/metrics", middleware.LogHTTPMetrics(echo.WrapHandler(promhttp.Handler())))
 }
