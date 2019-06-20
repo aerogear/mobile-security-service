@@ -60,8 +60,6 @@ cd $GOPATH/src/github.com/aerogear/mobile-security-service
 
 === Installing Dependencies
 
-NOTE: You will need to add the bin directories in your GOPATH to your PATH. At a minimum this is required to run swagger during make. (e.g. on bash: export PATH=$PATH:${GOPATH//://bin:}/bin)
-
 [source,shell]
 ----
 make setup
