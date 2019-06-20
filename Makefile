@@ -6,7 +6,7 @@ APP_FILE_DIR=cmd/mobile-security-service
 TOP_SRC_DIRS = pkg
 PACKAGES     ?= $(shell sh -c "find $(TOP_SRC_DIRS) -name \\*_test.go \
                    -exec dirname {} \\; | sort | uniq")
-BIN_DIR := $(GOPATH)/bin				   
+BIN_DIR := $(GOPATH)/bin
 BINARY ?= mobile-security-service
 RELEASE_TAG = $(CIRCLE_TAG)
 
@@ -34,7 +34,7 @@ build-swagger-api:
 	@echo Installing Swagger dep:
 	go get -u github.com/go-swagger/go-swagger/cmd/swagger
 	@echo Updating Swagger api:
-	cd $(APP_FILE_DIR); swagger generate spec -m -o ../../api/swagger.yaml
+	cd $(APP_FILE_DIR); $(BIN_DIR)/swagger generate spec -m -o ../../api/swagger.yaml
 
 .PHONY: setup-githooks
 setup-githooks:
