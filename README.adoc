@@ -51,6 +51,12 @@ Golang projects are kept in a https://golang.org/doc/code.html#Workspaces[worksp
 ----
 git clone git@github.com:aerogear/mobile-security-service.git $GOPATH/src/github.com/aerogear/mobile-security-service
 ----
+=== Change to correct working directory
+
+[source,shell]
+----
+cd $GOPATH/src/github.com/aerogear/mobile-security-service
+----
 
 === Installing Dependencies
 
