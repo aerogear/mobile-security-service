@@ -12,7 +12,7 @@ type (
 	Service interface {
 		GetApps() (*[]models.App, error)
 		GetActiveAppByID(ID string) (*models.App, error)
-		GetActiveAppByAppID(appId string) (*models.App, error)
+		GetActiveAppByAppID(appID string) (*models.App, error)
 		UpdateAppVersions(id string, versions []models.Version) error
 		DisableAllAppVersionsByAppID(id string, message string) error
 		DeleteAppById(id string) error
@@ -131,6 +131,10 @@ func (a *appsService) CreateApp(app models.App) error {
 	// Check if it exist
 	appStored, err := a.repository.GetAppByAppID(app.AppID)
 
+	if appStored != nil && appStored.DeletedAt == "" {
+		return models.ErrConflict
+	}
+
 	// If it is new then create an app
 	if err != nil && err == models.ErrNotFound {
 		id := helpers.GetUUID()
@@ -171,7 +175,7 @@ func (a *appsService) UpdateAppNameByID(id, name string) error {
 	return nil
 }
 
-// // InitClientApp returns information about the current state of the app - its disabled status
+// InitClientApp returns information about the current state of the app - its disabled status
 func (a *appsService) InitClientApp(deviceInfo *models.Device) (*models.Version, error) {
 	if _, err := a.repository.GetActiveAppByAppID(deviceInfo.AppID); err != nil {
 		return nil, err

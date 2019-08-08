@@ -404,7 +404,7 @@ func Test_appsService_UpdateAppVersions(t *testing.T) {
 	}
 }
 
-func Test_appsService_CreateUpdateApp(t *testing.T) {
+func Test_appsService_CreateApp(t *testing.T) {
 	// make and configure a mocked Repository
 	mockRepositoryWithNewBindingSuccessResults := &RepositoryMock{
 		UnDeleteAppByAppIDFunc: func(appID string) error {
@@ -449,14 +449,14 @@ func Test_appsService_CreateUpdateApp(t *testing.T) {
 		},
 	}
 
-	mockRepositoryWithDisabledAppSuccessResults := &RepositoryMock{
+	mockRepositoryWithDeletedAppSuccessResults := &RepositoryMock{
 		UnDeleteAppByAppIDFunc: func(appID string) error {
 			return nil
 		},
 		GetAppByAppIDFunc: func(appID string) (*models.App, error) {
-			disabledApp := helpers.GetMockApp()
-			disabledApp.DeletedAt = "2019-02-15T09:38:33+00:00"
-			return disabledApp, nil
+			deletedApp := helpers.GetMockApp()
+			deletedApp.DeletedAt = "2019-02-15T09:38:33+00:00"
+			return deletedApp, nil
 		},
 		CreateAppFunc: func(id string, appId string, name string) error {
 			return nil
@@ -490,7 +490,7 @@ func Test_appsService_CreateUpdateApp(t *testing.T) {
 		repo    RepositoryMock
 	}{
 		{
-			name: "Should  create/update an new app by app_id and name",
+			name: "Should create/update an new app by app_id and name",
 			data: helpers.GetMockApp(),
 			repo: *mockRepositoryWithNewBindingSuccessResults,
 		},
@@ -511,9 +511,9 @@ func Test_appsService_CreateUpdateApp(t *testing.T) {
 			wantErr: models.ErrInternalServerError,
 		},
 		{
-			name: "Should update an disabled app by app_id and name",
+			name: "Should update a deleted app by app_id and name",
 			data: helpers.GetMockApp(),
-			repo: *mockRepositoryWithDisabledAppSuccessResults,
+			repo: *mockRepositoryWithDeletedAppSuccessResults,
 		},
 		{
 			name:    "Should return error to binding an new app by app_id and name",
@@ -534,7 +534,7 @@ func Test_appsService_CreateUpdateApp(t *testing.T) {
 			err := a.CreateApp(*tt.data)
 
 			if (err != nil) && (tt.wantErr != err || tt.wantErr == nil) {
-				t.Errorf("appsService.BindingAppByApp() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("appsService.CreateApp() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})
