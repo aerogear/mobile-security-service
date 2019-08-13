@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Released
 
+## [0.2.0] Tue 13 Aug 2019
+
+- Make app ID check case insensitive
+
 ## [0.1.1] - Tue Jun 11 2019
 
 - Make unique constraint on app ID case-insensitive

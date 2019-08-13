@@ -112,7 +112,7 @@ definitions:
 info:
   description: This is a sample mobile security service server.
   title: API for Mobile Security Service
-  version: 0.1.0
+  version: 0.2.0
 paths:
   /apps:
     get:
