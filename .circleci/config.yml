@@ -29,7 +29,7 @@ jobs:
       - run: make test-unit
       - run: make test-integration-cover
       # fixme: removed this while coveralls is down. Re-add in future
-      # - run: /go/bin/goveralls -coverprofile=coverage-all.out -service=circle-ci -repotoken=IccwXNeC1niB17Du1tCWu8LA0wd7uBbCh
+      - run: /go/bin/goveralls -coverprofile=coverage-all.out -service=circle-ci -repotoken=IccwXNeC1niB17Du1tCWu8LA0wd7uBbCh
 
   build_ui:
     working_directory: ~/mobile-security-service
