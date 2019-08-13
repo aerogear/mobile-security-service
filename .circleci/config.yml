@@ -7,7 +7,7 @@ jobs:
     working_directory: /go/src/github.com/aerogear/mobile-security-service
 
     docker:
-      - image: circleci/golang:1.10
+      - image: circleci/golang:1.12
       - image: registry.access.redhat.com/rhscl/postgresql-96-rhel7:latest
         ports:
           - 5432:5432
@@ -28,14 +28,13 @@ jobs:
       - run: make build
       - run: make test-unit
       - run: make test-integration-cover
-      # fixme: removed this while coveralls is down. Re-add in future
-      # - run: /go/bin/goveralls -coverprofile=coverage-all.out -service=circle-ci -repotoken=IccwXNeC1niB17Du1tCWu8LA0wd7uBbCh
+      - run: /go/bin/goveralls -coverprofile=coverage-all.out -service=circle-ci -repotoken=IccwXNeC1niB17Du1tCWu8LA0wd7uBbCh
 
   build_ui:
     working_directory: ~/mobile-security-service
 
     docker:
-      - image: circleci/node:8.15.0
+      - image: circleci/node:10
 
     steps:
       - checkout
@@ -50,7 +49,7 @@ jobs:
   push_master_image:
     working_directory: /go/src/github.com/aerogear/mobile-security-service
     docker:
-      - image: circleci/golang:1.10
+      - image: circleci/golang:1.12
     steps:
       - checkout
       - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
