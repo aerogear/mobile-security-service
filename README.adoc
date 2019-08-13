@@ -446,4 +446,3 @@ All contributions are hugely appreciated. Please see our https://aerogear.org/co
 == Questions
 
 There are a number of ways you can get in in touch with us, please see the https://aerogear.org/community/#contact[AeroGear community].
-
