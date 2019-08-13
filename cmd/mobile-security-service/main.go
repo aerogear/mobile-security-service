@@ -3,7 +3,7 @@
 // This is a sample mobile security service server.
 //
 //     Schemes: http, https
-//     Version: 0.1.0
+//     Version: 0.2.0
 //     basePath: /api
 //
 //     Consumes:
