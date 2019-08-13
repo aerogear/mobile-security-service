@@ -2,6 +2,7 @@ package apps
 
 import (
 	"database/sql"
+	"strings"
 
 	"time"
 
@@ -192,10 +193,10 @@ func (a *appsPostgreSQLRepository) GetDeviceByVersionAndAppID(version string, ap
 func (a *appsPostgreSQLRepository) GetAppByAppID(appID string) (*models.App, error) {
 	app := models.App{}
 
-	sqlStatement := `SELECT id,app_id,app_name,deleted_at FROM app WHERE app_id=$1;`
+	sqlStatement := `SELECT id,app_id,app_name,deleted_at FROM app WHERE LOWER(app_id)=$1;`
 
 	var deletedAt sql.NullString
-	err := a.db.QueryRow(sqlStatement, appID).Scan(&app.ID, &app.AppID, &app.AppName, &deletedAt)
+	err := a.db.QueryRow(sqlStatement, strings.ToLower(appID)).Scan(&app.ID, &app.AppID, &app.AppName, &deletedAt)
 	app.DeletedAt = deletedAt.String
 
 	if err != nil {
@@ -213,9 +214,9 @@ func (a *appsPostgreSQLRepository) GetAppByAppID(appID string) (*models.App, err
 func (a *appsPostgreSQLRepository) GetActiveAppByAppID(appID string) (*models.App, error) {
 	app := models.App{}
 
-	sqlStatement := `SELECT id,app_id,app_name FROM app WHERE app_id=$1 AND deleted_at IS NULL;`
+	sqlStatement := `SELECT id,app_id,app_name FROM app WHERE LOWER(app_id)=$1 AND deleted_at IS NULL;`
 
-	err := a.db.QueryRow(sqlStatement, appID).Scan(&app.ID, &app.AppID, &app.AppName)
+	err := a.db.QueryRow(sqlStatement, strings.ToLower(appID)).Scan(&app.ID, &app.AppID, &app.AppName)
 
 	if err != nil {
 		log.Error(err)
@@ -295,7 +296,7 @@ func (a *appsPostgreSQLRepository) DisableAllAppVersionsAndSetDisabledMessageByA
 	_, err := a.db.Exec(`
 		UPDATE version
 		SET disabled_message=$1,disabled=True
-		WHERE app_id=$2;`, message, appID)
+		WHERE LOWER(app_id)=$2;`, message, strings.ToLower(appID))
 
 	if err != nil {
 		log.Error(err)
@@ -312,7 +313,7 @@ func (a *appsPostgreSQLRepository) DisableAllAppVersionsByAppID(appID string) er
 	_, err := a.db.Exec(`
 		UPDATE version
 		SET disabled=True
-		WHERE app_id=$1;`, appID)
+		WHERE LOWER(app_id)=$1;`, strings.ToLower(appID))
 
 	if err != nil {
 		log.Error(err)
@@ -355,7 +356,7 @@ func (a *appsPostgreSQLRepository) UnDeleteAppByAppID(appId string) error {
 	_, err := a.db.Exec(`
 		UPDATE app
 		SET deleted_at=NULL
-		WHERE app_id=$1;`, appId)
+		WHERE LOWER(app_id)=$1;`, strings.ToLower(appId))
 
 	if err != nil {
 		log.Error(err)

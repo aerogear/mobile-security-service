@@ -31,7 +31,7 @@ var (
 
 	GetActiveAppByIDQueryString = `SELECT id,app_id,app_name FROM app WHERE deleted_at IS NULL AND id=\$1;`
 
-	GetActiveAppByAppIDQueryString = `SELECT id,app_id,app_name FROM app WHERE app_id=\$1;`
+	GetActiveAppByAppIDQueryString = `SELECT id,app_id,app_name FROM app WHERE LOWER\(app_id\)=\$1;`
 
 	getUpdateAppVersionsQueryString = `UPDATE version
 		SET disabled_message=\$1,disabled=\$2
@@ -43,15 +43,15 @@ var (
 
 	getDisableAllAppVersionsByAppIDQueryString = `UPDATE version
 		SET disabled=True
-		WHERE app_id=\$1;`
+		WHERE LOWER\(app_id\)=\$1;`
 
 	getDisableAllAppVersionsAndSetDisabledMessageByAppIDQueryString = `UPDATE version
 		SET disabled_message=\$1,disabled=True
-		WHERE app_id=\$2;`
+		WHERE LOWER\(app_id\)=\$2;`
 
 	getUnDeleteAppByAppIDQueryString = `UPDATE app
 		SET deleted_at=NULL
-		WHERE app_id=\$1;`
+		WHERE LOWER\(app_id\)=\$1;`
 
 	getUpdateAppNameByIDQueryString = `UPDATE app
 		SET app_name=\$1
@@ -73,9 +73,9 @@ var (
 		FROM device as d
 		WHERE d.app_id = \$1 AND d.device_version = \$2;`
 
-	GetActiveAppByAppIDQuery = `SELECT id,app_id,app_name FROM app WHERE app_id=\$1 AND deleted_at IS NULL;`
+	GetActiveAppByAppIDQuery = `SELECT id,app_id,app_name FROM app WHERE LOWER\(app_id\)=\$1 AND deleted_at IS NULL;`
 
-	GetAppByAppIDQuery = `SELECT id,app_id,app_name,deleted_at FROM app WHERE app_id=\$1;`
+	GetAppByAppIDQuery = `SELECT id,app_id,app_name,deleted_at FROM app WHERE LOWER\(app_id\)=\$1;`
 
 	upsertVersionWithAppLaunchesAndLastLaunchedStatement = `INSERT INTO version as v \(id, version, app_id, disabled, disabled_message, last_launched_at\)
 		VALUES\(\$1, \$2, \$3, \$4, \$5, NOW\(\)\)
