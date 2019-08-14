@@ -9,7 +9,7 @@
     "@patternfly/react-core": "2.3.6",
     "@patternfly/react-table": "1.0.7",
     "dotenv": "^6.2.0",
-    "lodash": "4.17.11",
+    "lodash": "^4.17.15",
     "lodash-es": "4.17.11",
     "moment": "^2.24.0",
     "react": "16.8.0",

@@ -90,19 +90,19 @@ test: test-unit
 .PHONY: test-unit
 test-unit:
 	@echo Running tests:
-	GOCACHE=off go test -cover \
+	go test -cover \
 	  $(addprefix $(PKG)/,$(PACKAGES))
 
 .PHONY: test-integration
 test-integration:
 	@echo Running tests:
-	GOCACHE=off go test -failfast -cover -tags=integration \
+	go test -failfast -cover -tags=integration \
 	  $(addprefix $(PKG)/,$(PACKAGES))
 
 .PHONY: test-integration-cover
 test-integration-cover:
 	echo "mode: count" > coverage-all.out
-	GOCACHE=off $(foreach pkg,$(PACKAGES),\
+	$(foreach pkg,$(PACKAGES),\
 		go test -failfast -tags=integration -coverprofile=coverage.out -covermode=count $(addprefix $(PKG)/,$(pkg)) || exit 1;\
 		tail -n +2 coverage.out >> coverage-all.out;)
 	make cleanup-coverage-file
