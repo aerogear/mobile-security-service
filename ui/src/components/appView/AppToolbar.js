@@ -13,7 +13,7 @@ import './AppToolbar.css';
  * @param {boolean} props.isViewDirty Boolean on if the app view is dirty due to unsaved changes
  * @param {object} props.history Contains functions to modify the react-router-dom
  */
-export const AppToolbar = ({ app, onSaveAppClick, onDisableAppClick, isViewDirty, history }) => {
+export const AppToolbar = ({ app, onSaveAppClick, onDisableAppClick, isDisabledDisableAppButton, isViewDirty, history }) => {
   const onHomeClick = () => {
     history.push('/');
   };
@@ -33,7 +33,7 @@ export const AppToolbar = ({ app, onSaveAppClick, onDisableAppClick, isViewDirty
         </ToolbarItem>
       </ToolbarGroup>
       <ToolbarGroup className="toolbar-buttons">
-        <Button className="toolbar-button" onClick={onDisableAppClick} variant="primary">
+        <Button className="toolbar-button" onClick={onDisableAppClick} variant="primary" isDisabled={isDisabledDisableAppButton}>
           Disable App
         </Button>
         <Button className="toolbar-button" onClick={onSaveAppClick} isDisabled={!isViewDirty} variant="primary">
