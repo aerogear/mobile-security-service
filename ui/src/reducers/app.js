@@ -27,7 +27,8 @@ const initialState = {
   isSaveAppRequestFailed: false,
   isSaveAppRequestSuccess: false,
   isDisableAppRequestFailed: false,
-  isDirty: false
+  isDirty: false,
+  isDisabledDisableAppButton: true
 };
 
 export const cloneAppData = (appData) => {
@@ -56,10 +57,17 @@ export default (state = initialState, action) => {
       };
     }
     case APP_SUCCESS: {
+      let disabled;
+      if (action.result.deployedVersions.length === 0) {
+        disabled = true;
+      } else {
+        disabled = false;
+      }
       return {
         ...state,
         data: cloneAppData(action.result),
-        savedData: cloneAppData(action.result)
+        savedData: cloneAppData(action.result),
+        isDisabledDisableAppButton: disabled
       };
     }
     case APP_FAILURE: {

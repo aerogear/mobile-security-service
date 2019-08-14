@@ -26,7 +26,8 @@ describe('appReducer', () => {
     isSaveAppRequestFailed: false,
     isSaveAppRequestSuccess: false,
     isDisableAppRequestFailed: false,
-    isDirty: false
+    isDirty: false,
+    isDisabledDisableAppButton: true
   };
 
   const resultApp = {
@@ -85,6 +86,7 @@ describe('appReducer', () => {
   it('should handle APP_SUCCESS', () => {
     const newState = appReducer(initialState, { type: APP_SUCCESS, result: resultApp });
     expect(newState.isAppRequestFailed).toEqual(false);
+    expect(newState.isDisabledDisableAppButton).toEqual(false);
     expect(newState.data).toEqual(resultApp);
   });
 

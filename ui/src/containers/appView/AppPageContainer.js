@@ -137,6 +137,7 @@ export class AppPageContainer extends React.Component {
           app={this.props.app}
           onSaveAppClick={this.props.toggleSaveAppModal}
           onDisableAppClick={this.props.toggleDisableAppModal}
+          isDisabledDisableAppButton={this.props.isDisabledDisableAppButton}
           isViewDirty={this.props.isDirty}
         />
         <Content className="container">
@@ -175,7 +176,8 @@ AppPageContainer.propTypes = {
   toggleNavigationModal: PropTypes.func.isRequired,
   toggleSaveAppModal: PropTypes.func.isRequired,
   toggleDisableAppModal: PropTypes.func.isRequired,
-  saveAppVersions: PropTypes.func.isRequired
+  saveAppVersions: PropTypes.func.isRequired,
+  isDisabledDisableAppButton: PropTypes.bool
 };
 
 const mapStateToProps = (state) => {
@@ -184,7 +186,8 @@ const mapStateToProps = (state) => {
     savedData: state.app.savedData,
     isDirty: state.app.isDirty,
     saveAppFailed: state.app.isSaveAppRequestFailed,
-    saveAppSuccess: state.app.isSaveAppRequestSuccess
+    saveAppSuccess: state.app.isSaveAppRequestSuccess,
+    isDisabledDisableAppButton: state.app.isDisabledDisableAppButton
   };
 };
 
