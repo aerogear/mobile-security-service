@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Released
 
+## [0.2.1] Wed 14 Aug
+
+- Update lodash-es
+
 ## [0.2.0] Tue 13 Aug 2019
 
 - Make app ID check case insensitive
