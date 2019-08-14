@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Released
 
+## [0.2.2] Wed 14 Aug
+
+- Disable app button when has no versions- Disable app button when has no versions
+
 ## [0.2.1] Wed 14 Aug
 
 - Update lodash-es
