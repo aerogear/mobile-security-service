@@ -67,7 +67,7 @@ func validateInitBody(d *models.Device) error {
 	}
 
 	if !helpers.IsValidUUID(d.DeviceID) {
-		return errors.New("appId is invalid")
+		return errors.New("deviceId is invalid")
 	}
 
 	return nil
